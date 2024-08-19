@@ -3,8 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function WebsiteFooter() {
-  const logoSize = "100px";
-
   return (
     <Stack
       direction="row"
@@ -38,7 +36,7 @@ export default function WebsiteFooter() {
           <Typography color="gray" variant="body2">
             <Link href="about-us">About Us</Link>
             {" | "}
-            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/privacy-policy">Privacy Policy</Link>
             {" | "}
             <Link href="/terms">Terms of Use</Link>
             {" | "}
