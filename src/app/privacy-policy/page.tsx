@@ -59,11 +59,11 @@ export default function Page() {
                 paddingLeft: "25px",
               }}
             >
-              Welcome to TheLocalMusicFinder.com (the "Site"). We are committed
-              to protecting your privacy and ensuring that your personal
-              information is handled in a safe and responsible manner. This
-              Privacy Policy outlines how we collect, use, and safeguard your
-              information when you use our Site. When you use our Site, you
+              Welcome to TheLocalMusicFinder.com (the &quot;Site&quot;). We are
+              committed to protecting your privacy and ensuring that your
+              personal information is handled in a safe and responsible manner.
+              This Privacy Policy outlines how we collect, use, and safeguard
+              your information when you use our Site. When you use our Site, you
               consent to our collection, use, and disclosure of information
               about you as described in this Privacy Policy.
             </Typography>
@@ -232,7 +232,7 @@ export default function Page() {
                 fontWeight: "bold",
               }}
             >
-              7. Children's Privacy
+              7. Children&apos;s Privacy
             </Typography>
             <Typography
               sx={{

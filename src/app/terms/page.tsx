@@ -61,9 +61,9 @@ export default function Page() {
               }}
             >
               By accessing and using the TheLocalMusicFinder.com website (the
-              "Site"), you agree to comply with and be bound by these Terms and
-              Conditions. If you do not agree to these terms, please do not use
-              the Site.
+              &quot;Site&quot;), you agree to comply with and be bound by these
+              Terms and Conditions. If you do not agree to these terms, please
+              do not use the Site.
             </Typography>
           </Stack>
           <Stack direction="column" spacing={0.5}>
@@ -207,11 +207,11 @@ export default function Page() {
                 paddingLeft: "25px",
               }}
             >
-              <strong>No Warranty:</strong> The Site is provided on an "as-is"
-              and "as-available" basis. We make no warranties, express or
-              implied, regarding the operation or availability of the Site or
-              the accuracy, completeness, or reliability of any content
-              available on the Site.
+              <strong>No Warranty:</strong> The Site is provided on an
+              &quot;as-is&quot; and &quot;as-available&quot; basis. We make no
+              warranties, express or implied, regarding the operation or
+              availability of the Site or the accuracy, completeness, or
+              reliability of any content available on the Site.
             </Typography>
             <Typography
               sx={{
