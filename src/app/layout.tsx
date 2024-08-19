@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NavBar from "../components/NavBar";
 import WebsiteFooter from "../components/WebsiteFooter";
+import { Box } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar />
-        <div>{children}</div>
-        <WebsiteFooter />
+        <Box sx={{ minHeight: "100vh" }}>
+          <NavBar />
+          <div>{children}</div>
+        </Box>
+        <Box sx={{ paddingTop: "100px" }}>
+          <WebsiteFooter />
+        </Box>
       </body>
     </html>
   );

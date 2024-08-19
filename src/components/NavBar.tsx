@@ -60,9 +60,9 @@ export default function NavBar() {
           }}
         >
           <Stack direction="row" spacing={5}>
-            <Link href="/create">
+            <Link href="/post">
               <Typography sx={{ color: "whitesmoke" }}>
-                Create An Event
+                Post An Event
               </Typography>
             </Link>
             <Link href="/find">
@@ -123,7 +123,7 @@ export default function NavBar() {
               >
                 Sign up for weekly event notifications
               </Button>
-              <Link href="/create">
+              <Link href="/post">
                 <Button
                   variant="contained"
                   sx={{ width: "275px" }}
@@ -131,7 +131,7 @@ export default function NavBar() {
                     setOpenMenu(false);
                   }}
                 >
-                  Create An Event
+                  Post An Event
                 </Button>
               </Link>
               <Link href="/faqs">
@@ -156,7 +156,7 @@ export default function NavBar() {
                   About Us
                 </Button>
               </Link>
-              <Link href="/privacy">
+              <Link href="/privacy-policy">
                 <Button
                   variant="contained"
                   sx={{ width: "275px" }}
@@ -175,7 +175,7 @@ export default function NavBar() {
                     setOpenMenu(false);
                   }}
                 >
-                  Terms of Use
+                  Terms and Conditions
                 </Button>
               </Link>
             </Stack>
