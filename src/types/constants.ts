@@ -3,7 +3,7 @@ import Filters from "@/types/Filters"
 
 export const GENRES = [
   "Alternative", "Blues", "Classic Rock", "Country", "Dance", "Folk", 
-  "Hip Hop", "EDM", "Jazz", "Latin", "Metal", "Pop", "R&B/Soul", "Reggae", "Rock", "World Music"
+  "Hip Hop", "EDM", "Jazz", "Latin", "Metal", "Pop", "R'n'B/Soul", "Reggae", "Rock", "World Music"
 ]
 
 export const BAND_TYPES =[
@@ -60,7 +60,6 @@ export const blankEvent: Event = {
   website: "",
   phone_number: "",
   band_or_venue: "",
-  address_description: "",
   address_id: "",
   event_id: "",
   email_address: "",

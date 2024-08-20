@@ -20,7 +20,6 @@ interface Event {
   website: string;
   phone_number: string;
   band_or_venue: string;
-  address_description: string;
   address_id: string;
   event_id: string;
   email_address: string;

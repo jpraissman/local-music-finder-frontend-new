@@ -72,11 +72,9 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
       filters.address !== null
     ) {
       router.push(
-        `/find/${filters.address.description}/${filters.address.place_id}/${
-          filters.maxDistance
-        }/${filters.dateRange}/${filters.genres.join(
-          ","
-        )}/${filters.bandTypes.join(",")}`
+        `/find/${filters.address.description}/${filters.maxDistance}/${
+          filters.dateRange
+        }/${filters.genres.join(",")}/${filters.bandTypes.join(",")}`
       );
     }
   };

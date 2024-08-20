@@ -11,7 +11,6 @@ interface StructuredFormatting {
 
 interface PlaceType {
   description: string;
-  place_id: string;
   structured_formatting: StructuredFormatting;
 }
 export default PlaceType;
