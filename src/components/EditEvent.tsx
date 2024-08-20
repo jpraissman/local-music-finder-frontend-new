@@ -125,8 +125,7 @@ const EditEvent: React.FC = () => {
                 ? null
                 : dayjs("1900-01-01 " + event.end_time, "YYYY-MM-DD h:mm A"),
             address: {
-              description: event.address_description,
-              place_id: event.address_id,
+              description: event.address,
               structured_formatting: blankStructuredFormatting,
             },
             hasCoverCharge: event.cover_charge === 0 ? "No" : "Yes",

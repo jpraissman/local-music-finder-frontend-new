@@ -67,7 +67,7 @@ const RegistrationForm: React.FC = () => {
       try {
         const body = {
           email_address: emailAddress,
-          address_id: filters.address?.place_id,
+          address: filters.address?.description,
           max_distance: filters.maxDistance,
           genres: filters.genres,
           band_types: filters.bandTypes,

@@ -123,7 +123,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
             eventDetails.endTime === null
               ? null
               : eventDetails.endTime?.format("HH:mm"),
-          address_id: eventDetails.address?.place_id,
+          address: eventDetails.address?.description,
           cover_charge:
             eventDetails.hasCoverCharge === "No"
               ? 0
