@@ -3,16 +3,10 @@ import {
   blankStructuredFormatting,
   GENRES,
   BAND_TYPES,
+  TOWNS,
 } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
-
-const towns: { [key: string]: string[] } = {
-  "Wayne-NJ": ["Wayne, NJ, USA", "Wayne, NJ"],
-  "Franklin-Lakes-NJ": ["Franklin Lakes, NJ, USA", "Franklin Lakes, NJ"],
-  "Oakland-NJ": ["Oakland, NJ, USA", "Oakland, NJ"],
-  "Pompton-Lakes-NJ": ["Pompton Lakes, NJ, USA", "Pompton Lakes, NJ"],
-};
 
 interface PageProps {
   params: {
@@ -22,8 +16,8 @@ interface PageProps {
 
 export function generateMetadata({ params: { address } }: PageProps): Metadata {
   return {
-    title: "Live Music near " + towns[address][1],
-    description: `There are live music events near ${towns[address][1]}. Explore bars, bands, and venues near you to enjoy.`,
+    title: "Live Music near " + TOWNS[address][1],
+    description: `There are live music events near ${TOWNS[address][1]}. Explore bars, bands, and venues near you to enjoy.`,
   };
 }
 
@@ -35,7 +29,7 @@ export default async function Page({ params: { address } }: PageProps) {
 
   const response = await fetch(
     process.env.NEXT_PUBLIC_API_BASE_URL +
-      `/events?date_range=All+Future+Dates&address=${towns[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
+      `/events?date_range=All+Future+Dates&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
   );
   const eventsRaw = await response.json();
   const events: Event[] = eventsRaw.events;
@@ -47,7 +41,7 @@ export default async function Page({ params: { address } }: PageProps) {
       filters={{
         dateRange: "All Future Dates",
         address: {
-          description: towns[address][0],
+          description: TOWNS[address][0],
           structured_formatting: blankStructuredFormatting,
         },
         maxDistance: "35 mi",

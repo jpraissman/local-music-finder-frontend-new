@@ -36,7 +36,7 @@ export default function NavBar() {
       >
         <Box
           sx={{
-            width: { xs: "80%", sm: "20%" },
+            width: { xs: "80%", md: "20%" },
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-start",
@@ -56,23 +56,51 @@ export default function NavBar() {
             width: "70%",
             flexDirection: "row",
             justifyContent: "flex-end",
-            display: { xs: "none", sm: "flex" },
+            display: { xs: "none", md: "flex" },
           }}
         >
-          <Stack direction="row" spacing={5}>
+          <Stack direction="row" spacing={7}>
+            <Link href="/find">
+              <Typography
+                sx={{
+                  color: "whitesmoke",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                }}
+              >
+                Find Events
+              </Typography>
+            </Link>
             <Link href="/post">
-              <Typography sx={{ color: "whitesmoke" }}>
+              <Typography
+                sx={{
+                  color: "whitesmoke",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                }}
+              >
                 Post An Event
               </Typography>
             </Link>
-            <Link href="/find">
-              <Typography sx={{ color: "whitesmoke" }}>Find Events</Typography>
+            <Link href="/edit">
+              <Typography
+                sx={{
+                  color: "whitesmoke",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                }}
+              >
+                Edit Your Event
+              </Typography>
             </Link>
           </Stack>
         </Box>
         <Box
           sx={{
-            width: { xs: "20%", sm: "10%" },
+            width: { xs: "20%", md: "10%" },
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
@@ -97,7 +125,7 @@ export default function NavBar() {
                 fontWeight={"bold"}
                 sx={{
                   paddingBottom: "10px",
-                  fontSize: { xs: "16px", sm: "20px" },
+                  fontSize: { xs: "16px", md: "20px" },
                 }}
               >
                 Where would you like to go?
@@ -105,7 +133,7 @@ export default function NavBar() {
               <Link href="/find">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}
@@ -119,14 +147,14 @@ export default function NavBar() {
                   setOpenMenu(false);
                   setOpenSignUp(true);
                 }}
-                sx={{ width: "275px" }}
+                sx={{ width: "275px", fontWeight: "bold" }}
               >
                 Sign up for weekly event notifications
               </Button>
               <Link href="/post">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}
@@ -134,10 +162,21 @@ export default function NavBar() {
                   Post An Event
                 </Button>
               </Link>
+              <Link href="/edit">
+                <Button
+                  variant="contained"
+                  sx={{ width: "275px", fontWeight: "bold" }}
+                  onClick={() => {
+                    setOpenMenu(false);
+                  }}
+                >
+                  Edit Your Event
+                </Button>
+              </Link>
               <Link href="/faqs">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}
@@ -148,7 +187,7 @@ export default function NavBar() {
               <Link href="/about-us">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}
@@ -159,7 +198,7 @@ export default function NavBar() {
               <Link href="/privacy-policy">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}
@@ -170,7 +209,7 @@ export default function NavBar() {
               <Link href="/terms">
                 <Button
                   variant="contained"
-                  sx={{ width: "275px" }}
+                  sx={{ width: "275px", fontWeight: "bold" }}
                   onClick={() => {
                     setOpenMenu(false);
                   }}

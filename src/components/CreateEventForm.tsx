@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import {
-  DesktopDatePicker,
-  DesktopTimePicker,
   LocalizationProvider,
+  MobileDatePicker,
+  MobileTimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
@@ -49,9 +49,6 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
 }) => {
   const [eventDetails, setEventDetails] = useState<EventDetails>(event);
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [openCalendar, setOpenCalendar] = useState<boolean>(false);
-  const [openStartTime, setOpenStartTime] = useState<boolean>(false);
-  const [openEndTime, setOpenEndTime] = useState<boolean>(false);
   const [blankError, setBlankError] = useState<boolean>(false);
   const [newEventId, setNewEventId] = useState<string>("");
   const [updatedEvent, setUpdatedEvent] = useState<boolean>(false);
@@ -518,10 +515,8 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
               >
                 Event Information
               </Typography>
-              <DesktopDatePicker
+              <MobileDatePicker
                 name="date"
-                open={openCalendar}
-                onClose={() => setOpenCalendar(false)}
                 slotProps={{
                   textField: {
                     error: eventDetails.date === null && submitted,
@@ -531,7 +526,6 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                         : "",
                     fullWidth: true,
                     required: true,
-                    onClick: () => setOpenCalendar(true),
                   },
                 }}
                 label="Date of Event"
@@ -543,10 +537,8 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   }))
                 }
               />
-              <DesktopTimePicker
+              <MobileTimePicker
                 name="start-time"
-                open={openStartTime}
-                onClose={() => setOpenStartTime(false)}
                 slotProps={{
                   textField: {
                     error: eventDetails.startTime === null && submitted,
@@ -556,9 +548,6 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                         : "",
                     fullWidth: true,
                     required: true,
-                    onClick: () => {
-                      setOpenStartTime(true);
-                    },
                   },
                 }}
                 label="Start Time"
@@ -570,16 +559,11 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   }))
                 }
               />
-              <DesktopTimePicker
+              <MobileTimePicker
                 name="end-time"
-                open={openEndTime}
-                onClose={() => setOpenEndTime(false)}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    onClick: () => {
-                      setOpenEndTime(true);
-                    },
                   },
                 }}
                 label="End Time (optional)"

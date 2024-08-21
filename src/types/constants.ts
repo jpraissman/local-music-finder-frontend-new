@@ -72,3 +72,26 @@ export const blankFilters: Filters = {
   genres: [],
   bandTypes: [],
 }
+
+export const TOWNS: { [key: string]: string[] } = {
+  "Paterson-NJ": ["Paterson, NJ, USA", "Paterson, NJ"],
+  "Clifton-NJ": ["Clifton, NJ, USA", "Clifton, NJ"],
+  "Wayne-NJ": ["Wayne, NJ, USA", "Wayne, NJ"],
+  "Passaic-NJ": ["Passaic, NJ, USA", "Passaic, NJ"],
+  "WestMilford-NJ": ["West Milford, NJ, USA", "West Milford, NJ"],
+  "Vernon-NJ": ["Vernon, NJ, USA", "Vernon, NJ"],
+  "Hopatcong-NJ": ["Hopatcong, NJ, USA", "Hopatcong, NJ"],
+  "Sparta-NJ": ["Sparta, NJ, USA", "Sparta, NJ"],
+  "Frankford-NJ": ["Frankford, NJ, USA", "Frankford, NJ"],
+  "Byram-NJ": ["Byram, NJ, USA", "Byram, NJ"],
+  "Hackensack-NJ": ["Hackensack, NJ, USA", "Hackensack, NJ"],
+  "Teaneck-NJ": ["Teaneck, NJ, USA", "Teaneck, NJ"],
+  "FortLee-NJ": ["Fort Lee, NJ, USA", "Fort Lee, NJ"],
+  "FairLawn-NJ": ["Fair Lawn, NJ, USA", "Fair Lawn, NJ"],
+  "Paramus-NJ": ["Paramus, NJ, USA", "Paramus, NJ"],
+  "Parsippany-NJ": ["Parsippany, NJ, USA", "Parsippany, NJ"],
+  "MountOlive-NJ": ["Mount Olive, NJ, USA", "Mount Olive, NJ"],
+  "Morris-NJ": ["Morris, NJ, USA", "Morris, NJ"],
+  "Denville-NJ": ["Denville, NJ, USA", "Denville, NJ"],
+  "Randolph-NJ": ["Randolph, NJ, USA", "Randolph, NJ"],
+};

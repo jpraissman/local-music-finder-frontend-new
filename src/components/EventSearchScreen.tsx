@@ -45,7 +45,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
 }) => {
   const [displayFiltersForm, setDisplayFiltersForm] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>(eventsInit);
-  const [sort, setSort] = useState<string>("distance");
+  const [sort, setSort] = useState<string>("date");
   const [displayRegistration, setDisplayRegistration] =
     useState<boolean>(false);
   const [fetching, setFetching] = useState<boolean>(false);
@@ -61,7 +61,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   }, []);
 
   return (
-    <Grid container spacing={5}>
+    <Grid container spacing={5} sx={{ paddingTop: "20px" }}>
       <Grid
         item
         xs={3}

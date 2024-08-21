@@ -38,7 +38,7 @@ export default function WebsiteFooter() {
             {" | "}
             <Link href="/privacy-policy">Privacy Policy</Link>
             {" | "}
-            <Link href="/terms">Terms of Use</Link>
+            <Link href="/terms">Terms and Conditions</Link>
             {" | "}
             <Link href="/faqs">FAQs</Link>
           </Typography>
