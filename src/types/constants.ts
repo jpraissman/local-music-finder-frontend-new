@@ -3,7 +3,7 @@ import Filters from "@/types/Filters"
 
 export const GENRES = [
   "Alternative", "Blues", "Classic Rock", "Country", "Dance", "DJ", "EDM", "Folk", 
-  "Hip Hop", "Jazz", "Karaoke", "Latin", "Metal", "Pop", "R'n'B/Soul", "Reggae", "Rock", "World Music"
+  "Hip Hop", "Jazz", "Karaoke", "Latin", "Metal", "Pop", "R'n'B Soul", "Reggae", "Rock", "World Music"
 ]
 
 export const BAND_TYPES =[

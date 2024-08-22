@@ -34,6 +34,7 @@ import { BAND_TYPES, blankEventDetails, GENRES } from "@/types/constants";
 import EventDetails from "@/types/EventDetails";
 import Link from "next/link";
 import PhoneNumber from "./PhoneNumber";
+import dayjs from "dayjs";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -89,7 +90,9 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
       eventDetails.bandType === "Tribute Band" &&
       eventDetails.tributeBandName === "";
     const genreErr = eventDetails.genres.length === 0;
-    const dateErr = eventDetails.date === null;
+    const dateErr =
+      eventDetails.date === null ||
+      eventDetails.date?.isBefore(dayjs().startOf("day"));
     const startTimeErr = eventDetails.startTime === null;
     const hasCoverChargeErr = eventDetails.hasCoverCharge === "";
     const coverChargeErr =
@@ -530,10 +533,15 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                 name="date"
                 slotProps={{
                   textField: {
-                    error: eventDetails.date === null && submitted,
+                    error:
+                      (eventDetails.date === null ||
+                        eventDetails.date?.isBefore(dayjs().startOf("day"))) &&
+                      submitted,
                     helperText:
                       eventDetails.date === null && submitted
                         ? "This field is required."
+                        : eventDetails.date?.isBefore(dayjs().startOf("day"))
+                        ? "You can't create an event in the past."
                         : "",
                     fullWidth: true,
                     required: true,
