@@ -58,10 +58,19 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
   const deleteEvent = async () => {
     setWaiting(true);
     try {
-      // await axios.delete(`${baseUrl}/events/` + eventId);
-      setEventDetails(blankEventDetails);
-      setSubmitted(false);
-      setDeletedEvent(true);
+      const response = await fetch(`${baseUrl}/events/` + eventId, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        setEventDetails(blankEventDetails);
+        setSubmitted(false);
+        setDeletedEvent(true);
+      } else {
+        console.log("Error deleting event:", response.statusText);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -133,6 +142,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
           phone_number: eventDetails.venuePhoneNumber,
           address_description: eventDetails.address?.description,
           email_address: eventDetails.emailAddress,
+          send_emails: "Yes",
         };
         if (createOrEdit === "Create") {
           const response = await fetch(`${baseUrl}/events`, {

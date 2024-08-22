@@ -409,7 +409,6 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
         </>
         <Modal
           open={displayFiltersForm}
-          onClose={() => setDisplayFiltersForm(false)}
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -437,7 +436,12 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               </IconButton>
             </Box>
             <Box sx={{ p: 4 }}>
-              <GetFiltersForm initialFilters={filters} />
+              <GetFiltersForm
+                initialFilters={filters}
+                hideFiltersForm={() => {
+                  setDisplayFiltersForm(false);
+                }}
+              />
             </Box>
           </Box>
         </Modal>

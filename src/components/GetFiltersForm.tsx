@@ -1,4 +1,4 @@
-import { Stack, Button, Typography } from "@mui/material";
+import { Stack, Button, Typography, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import MultiselectPicklist from "@/components/MultiselectPicklist";
 import Picklist from "@/components/Picklist";
@@ -15,16 +15,23 @@ import {
 } from "@mui/icons-material";
 import { BAND_TYPES, GENRES } from "@/types/constants";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface CustomInputProps {
   initialFilters: Filters;
+  hideFiltersForm: () => void;
 }
 
-const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
+const GetFiltersForm: React.FC<CustomInputProps> = ({
+  initialFilters,
+  hideFiltersForm,
+}) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<boolean>(false);
 
   const handleGenresChange = (newGenres: string[]) => {
     setFilters((prevFilters) => ({
@@ -71,11 +78,18 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
       filters.genres.length > 0 &&
       filters.address !== null
     ) {
-      router.push(
-        `/find/${filters.address.description}/${filters.maxDistance}/${
-          filters.dateRange
-        }/${filters.genres.join(",")}/${filters.bandTypes.join(",")}`
-      );
+      const url = `/find/${filters.address.description}/${
+        filters.maxDistance
+      }/${filters.dateRange}/${filters.genres.join(
+        ","
+      )}/${filters.bandTypes.join(",")}`.replaceAll(" ", "%20");
+
+      if (url === pathname) {
+        hideFiltersForm();
+      } else {
+        setFetching(true);
+        router.push(url);
+      }
     }
   };
 
@@ -194,9 +208,12 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
           error={filters.bandTypes.length === 0 && submitted}
         />
       </Stack>
-      <Button variant="contained" endIcon={<Search />} onClick={handleSubmit}>
-        Find Events
-      </Button>
+      {!fetching && (
+        <Button variant="contained" endIcon={<Search />} onClick={handleSubmit}>
+          Find Events
+        </Button>
+      )}
+      {fetching && <CircularProgress />}
     </Stack>
   );
 };
