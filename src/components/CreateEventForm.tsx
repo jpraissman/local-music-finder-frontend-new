@@ -33,6 +33,7 @@ import {
 import { BAND_TYPES, blankEventDetails, GENRES } from "@/types/constants";
 import EventDetails from "@/types/EventDetails";
 import Link from "next/link";
+import PhoneNumber from "./PhoneNumber";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -96,6 +97,9 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
     const addressErr = eventDetails.address === null;
     const venueOrBandError = eventDetails.bandOrVenue === "";
     const emailAddressError = eventDetails.emailAddress === "";
+    const phoneNumberError =
+      eventDetails.venuePhoneNumber !== "" &&
+      eventDetails.venuePhoneNumber.length != 12;
 
     if (
       !(
@@ -110,7 +114,8 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         coverChargeErr ||
         addressErr ||
         venueOrBandError ||
-        emailAddressError
+        emailAddressError ||
+        phoneNumberError
       )
     ) {
       try {
@@ -390,25 +395,21 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                     : ""
                 }
               />
-              <TextField
+              <PhoneNumber
                 id="venue-phone-number"
                 label="Venue Phone Number"
-                fullWidth
-                variant="outlined"
+                error={
+                  eventDetails.venuePhoneNumber !== "" &&
+                  eventDetails.venuePhoneNumber.length != 12 &&
+                  submitted
+                }
                 value={eventDetails.venuePhoneNumber}
-                onChange={(newPhoneNum) => {
+                setValue={(newPhoneNum: string) =>
                   setEventDetails((prevDetails) => ({
                     ...prevDetails,
-                    venuePhoneNumber: newPhoneNum.target.value,
-                  }));
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Phone />
-                    </InputAdornment>
-                  ),
-                }}
+                    venuePhoneNumber: newPhoneNum,
+                  }))
+                }
               />
             </Stack>
             <Stack
