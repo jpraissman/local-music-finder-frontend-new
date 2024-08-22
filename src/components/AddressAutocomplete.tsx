@@ -127,7 +127,7 @@ const AddressAutocomplete: React.FC<CustomInputProps> = ({
         includeInputInList
         filterSelectedOptions
         value={address}
-        noOptionsText="No locations found"
+        noOptionsText="Start typing location ..."
         onChange={(_event: any, newValue: PlaceType | null) => {
           setOptions(newValue ? [newValue, ...options] : options);
           onAddressChange(newValue);

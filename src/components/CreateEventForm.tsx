@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import {
+  DesktopDatePicker,
+  DesktopTimePicker,
   LocalizationProvider,
-  MobileDatePicker,
-  MobileTimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
@@ -149,7 +149,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
             console.log("Error:", response.statusText);
           }
         } else {
-          const response = await fetch(`${baseUrl}/events` + eventId, {
+          const response = await fetch(`${baseUrl}/events/` + eventId, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -515,7 +515,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
               >
                 Event Information
               </Typography>
-              <MobileDatePicker
+              <DesktopDatePicker
                 name="date"
                 slotProps={{
                   textField: {
@@ -537,7 +537,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   }))
                 }
               />
-              <MobileTimePicker
+              <DesktopTimePicker
                 name="start-time"
                 slotProps={{
                   textField: {
@@ -559,7 +559,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   }))
                 }
               />
-              <MobileTimePicker
+              <DesktopTimePicker
                 name="end-time"
                 slotProps={{
                   textField: {

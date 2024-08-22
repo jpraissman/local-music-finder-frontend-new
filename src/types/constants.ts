@@ -2,13 +2,13 @@ import Event from "@/types/Event"
 import Filters from "@/types/Filters"
 
 export const GENRES = [
-  "Alternative", "Blues", "Classic Rock", "Country", "Dance", "Folk", 
-  "Hip Hop", "EDM", "Jazz", "Latin", "Metal", "Pop", "R'n'B/Soul", "Reggae", "Rock", "World Music"
+  "Alternative", "Blues", "Classic Rock", "Country", "Dance", "DJ", "EDM", "Folk", 
+  "Hip Hop", "Jazz", "Karaoke", "Latin", "Metal", "Pop", "R'n'B/Soul", "Reggae", "Rock", "World Music"
 ]
 
 export const BAND_TYPES =[
   "Cover Band", "Tribute Band",
-  "Originals Only", "Originals and Covers",
+  "Originals Only", "Originals and Covers", "Other"
 ]
 
 export const blankEventDetails = {

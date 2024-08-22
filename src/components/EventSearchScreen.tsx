@@ -48,7 +48,6 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   const [sort, setSort] = useState<string>("date");
   const [displayRegistration, setDisplayRegistration] =
     useState<boolean>(false);
-  const [fetching, setFetching] = useState<boolean>(false);
 
   const showFilters = () => setDisplayFiltersForm(true);
 
@@ -83,7 +82,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             </Typography>
             <TextField
               id="date-filter-value"
-              label="Date"
+              label="When?"
               variant="outlined"
               value={filters.dateRange}
               multiline
@@ -104,7 +103,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             />
             <TextField
               id="address-filter-value"
-              label="Address, Town, or City"
+              label="Your Location (town, city, or zip)"
               variant="outlined"
               value={filters.address?.description}
               multiline
@@ -125,7 +124,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             />
             <TextField
               id="max-distance-filter-value"
-              label="Distance"
+              label="Distance you'd travel?"
               variant="outlined"
               value={filters.maxDistance}
               multiline
@@ -257,173 +256,156 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
       </Grid>
       <Grid item xs={12} lg={9}>
         <>
-          {!fetching && (
-            <Stack direction="column" spacing={2}>
+          <Stack direction="column" spacing={2}>
+            <Stack
+              direction="row"
+              sx={{
+                display: { xs: "flex", lg: "none" },
+                paddingLeft: "20px",
+              }}
+            >
               <Stack
-                direction="row"
+                direction="column"
+                spacing={0.5}
                 sx={{
-                  display: { xs: "flex", lg: "none" },
-                  paddingLeft: "20px",
+                  display: "flex",
+                  width: { xs: "50%", sm: "70%" },
                 }}
               >
-                <Stack
-                  direction="column"
-                  spacing={0.5}
-                  sx={{
-                    display: "flex",
-                    width: { xs: "50%", sm: "70%" },
-                  }}
-                >
-                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                    Sort By
-                  </Typography>
-                  <RadioGroup
-                    row
-                    name="sort-by-value"
-                    value={sort}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      const newSort = (event.target as HTMLInputElement).value;
-                      setSort(newSort);
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  Sort By
+                </Typography>
+                <RadioGroup
+                  row
+                  name="sort-by-value"
+                  value={sort}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    const newSort = (event.target as HTMLInputElement).value;
+                    setSort(newSort);
 
-                      if (newSort === "distance") {
-                        setEvents(
-                          events.sort(
-                            (a, b) => a.distance_value - b.distance_value
-                          )
-                        );
-                      } else if (newSort === "date") {
-                        setEvents(
-                          events.sort((a, b) => {
-                            const dateA = dayjs(a.date_string);
-                            const dateB = dayjs(b.date_string);
-                            return dateA.isAfter(dateB) ? 1 : -1;
-                          })
-                        );
-                      } else if (newSort === "cover charge") {
-                        setEvents(
-                          events.sort((a, b) => a.cover_charge - b.cover_charge)
-                        );
-                      }
-                    }}
-                  >
-                    <FormControlLabel
-                      value="distance"
-                      label="Distance"
-                      control={<Radio />}
-                    />
-                    <FormControlLabel
-                      value="date"
-                      label="Date"
-                      control={<Radio />}
-                    />
-                    <FormControlLabel
-                      value="cover charge"
-                      label="Cover Charge"
-                      control={<Radio />}
-                    />
-                  </RadioGroup>
-                </Stack>
-                <Box
-                  sx={{
-                    width: { xs: "50%", sm: "30%" },
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    paddingRight: "20px",
+                    if (newSort === "distance") {
+                      setEvents(
+                        events.sort(
+                          (a, b) => a.distance_value - b.distance_value
+                        )
+                      );
+                    } else if (newSort === "date") {
+                      setEvents(
+                        events.sort((a, b) => {
+                          const dateA = dayjs(a.date_string);
+                          const dateB = dayjs(b.date_string);
+                          return dateA.isAfter(dateB) ? 1 : -1;
+                        })
+                      );
+                    } else if (newSort === "cover charge") {
+                      setEvents(
+                        events.sort((a, b) => a.cover_charge - b.cover_charge)
+                      );
+                    }
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    onClick={showFilters}
-                    sx={{ fontWeight: "bold" }}
-                    color="primary"
-                  >
-                    Edit Search
-                  </Button>
-                </Box>
+                  <FormControlLabel
+                    value="distance"
+                    label="Distance"
+                    control={<Radio />}
+                  />
+                  <FormControlLabel
+                    value="date"
+                    label="Date"
+                    control={<Radio />}
+                  />
+                  <FormControlLabel
+                    value="cover charge"
+                    label="Cover Charge"
+                    control={<Radio />}
+                  />
+                </RadioGroup>
               </Stack>
-              {!fetching && (
-                <Stack
-                  direction="column"
-                  spacing={1}
-                  sx={{ width: "100%", textAlign: "center" }}
+              <Box
+                sx={{
+                  width: { xs: "50%", sm: "30%" },
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  paddingRight: "20px",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={showFilters}
+                  sx={{ fontWeight: "bold" }}
+                  color="primary"
                 >
-                  {!noFilters && (
-                    <Typography
-                      fontWeight={"bold"}
-                      sx={{ fontSize: { xs: "20px", lg: "25px" } }}
-                    >
-                      {"Live Music near " + filters.address?.description}
-                    </Typography>
-                  )}
-                  <Typography sx={{ fontSize: { xs: "20px", lg: "24px" } }}>
-                    {events.length === 1
-                      ? events.length + " event found"
-                      : events.length + " events found "}
-                  </Typography>
-                </Stack>
-              )}
-              {events.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-              {!fetching && (
-                <Box
-                  sx={{
-                    paddingTop: "10px",
-                    display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      paddingLeft: { xs: "0px", sm: "25px" },
-                      paddingTop: { xs: "15px", sm: "0px" },
-                      width: "275px",
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={showFilters}
-                      sx={{ fontSize: "16px", fontWeight: "bold" }}
-                      color="primary"
-                    >
-                      Look for something else
-                    </Button>
-                  </Box>
-                  <Box
-                    sx={{
-                      paddingLeft: { xs: "0px", sm: "25px" },
-                      paddingTop: { xs: "20px", sm: "0px" },
-                      width: "275px",
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={showRegistration}
-                      sx={{ fontSize: "16px", fontWeight: "bold" }}
-                      color="warning"
-                    >
-                      Sign up for weekly event notifications
-                    </Button>
-                  </Box>
-                </Box>
-              )}
+                  Edit Search
+                </Button>
+              </Box>
             </Stack>
-          )}
-          {fetching && (
+            <Stack
+              direction="column"
+              spacing={1}
+              sx={{ width: "100%", textAlign: "center" }}
+            >
+              {!noFilters && (
+                <Typography
+                  fontWeight={"bold"}
+                  sx={{ fontSize: { xs: "20px", lg: "25px" } }}
+                >
+                  {"Live Music near " + filters.address?.description}
+                </Typography>
+              )}
+              <Typography sx={{ fontSize: { xs: "20px", lg: "24px" } }}>
+                {events.length === 1
+                  ? events.length + " event found"
+                  : events.length + " events found "}
+              </Typography>
+            </Stack>
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
             <Box
               sx={{
+                paddingTop: "10px",
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <CircularProgress />
+              <Box
+                sx={{
+                  paddingLeft: { xs: "0px", sm: "25px" },
+                  paddingTop: { xs: "15px", sm: "0px" },
+                  width: "275px",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={showFilters}
+                  sx={{ fontSize: "16px", fontWeight: "bold" }}
+                  color="primary"
+                >
+                  Look for something else
+                </Button>
+              </Box>
+              <Box
+                sx={{
+                  paddingLeft: { xs: "0px", sm: "25px" },
+                  paddingTop: { xs: "20px", sm: "0px" },
+                  width: "275px",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={showRegistration}
+                  sx={{ fontSize: "16px", fontWeight: "bold" }}
+                  color="warning"
+                >
+                  Sign up for weekly event notifications
+                </Button>
+              </Box>
             </Box>
-          )}
+          </Stack>
         </>
         <Modal
           open={displayFiltersForm}

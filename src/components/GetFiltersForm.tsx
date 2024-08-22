@@ -97,7 +97,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
         <CalendarMonth color="primary" />
         <Picklist
           id="date-range-filter"
-          label="Date"
+          label="When?"
           error={filters.dateRange === "" && submitted}
           value={filters.dateRange}
           setValue={handleDateRangeChange}
@@ -127,7 +127,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
         <House color="secondary" />
         <AddressAutocomplete
           id="address-filter"
-          label="Location *"
+          label="Your Location (town, city, or zip) *"
           address={filters.address}
           error={filters.address === null && submitted}
           onAddressChange={handleAddressChange}
@@ -146,7 +146,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
         <Place color="secondary" />
         <Picklist
           id="max-distance-filter"
-          label="Distance"
+          label="Distance you'd travel?"
           error={filters.maxDistance === "" && submitted}
           value={filters.maxDistance}
           setValue={handleMaxDistanceChange}

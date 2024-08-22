@@ -31,7 +31,7 @@ export default function WebsiteFooter() {
       >
         <Stack direction="column" spacing={0.2}>
           <Typography color="gray" variant="body2">
-            {"Copyright © Worm Inc. All rights reserved. "}
+            {"Copyright © The Local Music Finder Inc. All rights reserved. "}
           </Typography>
           <Typography color="gray" variant="body2">
             <Link href="about-us">About Us</Link>
