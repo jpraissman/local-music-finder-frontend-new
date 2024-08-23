@@ -20,6 +20,7 @@ import {
   Clear,
   Facebook,
   Group,
+  Home,
   Instagram,
   MonetizationOn,
   MusicNote,
@@ -37,13 +38,19 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
 
   return (
     <div>
-      <Card elevation={3}>
+      <Card
+        elevation={3}
+        sx={{
+          maxWidth: "800px",
+          width: "95vw",
+        }}
+      >
         <CardHeader
           title={event.venue_name}
           subheader={"Band/Performer: " + event.band_name}
         />
         <CardContent>
-          <Stack spacing={2} direction="column">
+          <Stack spacing={2.5} direction="column">
             <Stack spacing={2} direction="row">
               <Stack spacing={0.5} direction="row">
                 <Tooltip title="Date of Event">
@@ -68,20 +75,8 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                 direction="row"
                 sx={{ display: { xs: "none", sm: "flex" } }}
               >
-                <Tooltip title="Distance">
-                  <Place color="secondary" sx={{ fontSize: "21px" }} />
-                </Tooltip>
-                <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                  {event.distance_formatted}
-                </Typography>
-              </Stack>
-              <Stack
-                spacing={0.5}
-                direction="row"
-                sx={{ display: { xs: "none", sm: "flex" } }}
-              >
                 <Tooltip title="Cover Charge">
-                  <MonetizationOn color="secondary" sx={{ fontSize: "21px" }} />
+                  <MonetizationOn color="primary" sx={{ fontSize: "21px" }} />
                 </Tooltip>
                 {event.cover_charge === 0 ? (
                   <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
@@ -92,6 +87,28 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                     {"$" + event.cover_charge + " cover charge"}
                   </Typography>
                 )}
+              </Stack>
+            </Stack>
+            <Stack spacing={2} direction="row">
+              <Stack spacing={0.5} direction="row">
+                <Tooltip title="Venue Address">
+                  <Home color="secondary" sx={{ fontSize: "21px" }} />
+                </Tooltip>
+                <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                  {event.address}
+                </Typography>
+              </Stack>
+              <Stack
+                spacing={0.5}
+                direction="row"
+                sx={{ display: { xs: "none", sm: "flex" } }}
+              >
+                <Tooltip title="Distance">
+                  <Place color="secondary" sx={{ fontSize: "21px" }} />
+                </Tooltip>
+                <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                  {event.distance_formatted}
+                </Typography>
               </Stack>
             </Stack>
             <Stack
@@ -141,9 +158,29 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                     : event.band_type}
                 </Typography>
               </Stack>
+              {event.phone_number !== "" && (
+                <Stack
+                  spacing={0.5}
+                  direction="row"
+                  sx={{ display: { xs: "none", sm: "flex" } }}
+                >
+                  <Tooltip title="Venue Phone Number">
+                    <Phone color="action" sx={{ fontSize: "21px" }} />
+                  </Tooltip>
+                  <Box sx={{ minWidth: "120px" }}>
+                    <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                      {event.phone_number}
+                    </Typography>
+                  </Box>
+                </Stack>
+              )}
             </Stack>
             {event.phone_number !== "" && (
-              <Stack spacing={0.5} direction="row">
+              <Stack
+                spacing={0.5}
+                direction="row"
+                sx={{ display: { xs: "flex", sm: "none" } }}
+              >
                 <Tooltip title="Venue Phone Number">
                   <Phone sx={{ fontSize: "21px" }} />
                 </Tooltip>

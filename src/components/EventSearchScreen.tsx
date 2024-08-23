@@ -256,7 +256,11 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
       </Grid>
       <Grid item xs={12} lg={9}>
         <>
-          <Stack direction="column" spacing={2}>
+          <Stack
+            direction="column"
+            spacing={2}
+            sx={{ display: "flex", alignItems: "center" }}
+          >
             <Stack
               direction="row"
               sx={{
