@@ -124,7 +124,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
             "This Week (Mon-Sun)",
             "Next Week (Mon-Sun)",
             "Next 30 Days",
-            "All Future Dates",
+            "Next 60 Days",
           ]}
         />
       </Stack>
