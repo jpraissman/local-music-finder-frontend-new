@@ -265,7 +265,7 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
               }}
             >
               <Stack
-                spacing={0.5}
+                spacing={2}
                 direction="column"
                 sx={{
                   display: "flex",
@@ -279,14 +279,15 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                 {event.facebook_handle !== "" && (
                   <Link
                     href={
-                      "https://www.facebook.com/search/top?q=" +
-                      event.facebook_handle
+                      event.facebook_handle.startsWith("https://")
+                        ? event.facebook_handle
+                        : `https://${event.facebook_handle}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Stack
-                      spacing={-0.5}
+                      spacing={0.5}
                       direction="row"
                       sx={{ display: "flex", alignItems: "center" }}
                     >
@@ -305,15 +306,15 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                 {event.instagram_handle !== "" && (
                   <Link
                     href={
-                      "https://www.instagram.com/" +
-                      event.instagram_handle +
-                      "/"
+                      event.instagram_handle.startsWith("https://")
+                        ? event.instagram_handle
+                        : `https://${event.instagram_handle}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Stack
-                      spacing={-0.5}
+                      spacing={0.5}
                       direction="row"
                       sx={{ display: "flex", alignItems: "center" }}
                     >
@@ -345,7 +346,7 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                         event.website.startsWith("http://") ||
                         event.website.startsWith("https://")
                           ? event.website
-                          : `https://${event.website}`
+                          : `http://${event.website}`
                       }
                       target="_blank"
                       rel="noopener noreferrer"

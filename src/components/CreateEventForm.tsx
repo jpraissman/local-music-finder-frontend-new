@@ -113,6 +113,14 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
     const phoneNumberError =
       eventDetails.venuePhoneNumber !== "" &&
       eventDetails.venuePhoneNumber.length != 12;
+    const facebookError =
+      eventDetails.facebookHandle !== "" &&
+      (!eventDetails.facebookHandle.includes(".") ||
+        !eventDetails.facebookHandle.includes("/"));
+    const instagramError =
+      eventDetails.instagramHandle !== "" &&
+      (!eventDetails.instagramHandle.includes(".") ||
+        !eventDetails.instagramHandle.includes("/"));
     const websiteError =
       eventDetails.website !== "" && !eventDetails.website.includes(".");
 
@@ -131,8 +139,10 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         venueOrBandError ||
         emailAddressError ||
         phoneNumberError ||
+        facebookError ||
+        instagramError ||
         websiteError ||
-        !agreeToTerms
+        (!agreeToTerms && createOrEdit == "Create")
       )
     ) {
       try {
@@ -228,7 +238,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         {newEventId !== "" && !updatedEvent && !deletedEvent && (
           <Stack
             sx={{
-              width: { xs: "90%", sm: "80%", md: "60%" },
+              width: { xs: "90%", sm: "80%", md: "75%" },
               paddingTop: "20px",
               textAlign: "center",
             }}
@@ -684,7 +694,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                 </Typography>
                 <TextField
                   id="facebook-handle"
-                  label="Your Facebook Username (optional)"
+                  label="Link to your facebook page (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.facebookHandle}
@@ -701,10 +711,24 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                       </InputAdornment>
                     ),
                   }}
+                  error={
+                    eventDetails.facebookHandle !== "" &&
+                    (!eventDetails.facebookHandle.includes(".") ||
+                      !eventDetails.facebookHandle.includes("/")) &&
+                    submitted
+                  }
+                  helperText={
+                    eventDetails.facebookHandle !== "" &&
+                    (!eventDetails.facebookHandle.includes(".") ||
+                      !eventDetails.facebookHandle.includes("/")) &&
+                    submitted
+                      ? "Please enter a valid facebook link."
+                      : "Ex: https://www.facebook.com/PaulMcCartney"
+                  }
                 />
                 <TextField
                   id="instagram-handle"
-                  label="Your Instagram Username (optional)"
+                  label="Link to your instagram page (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.instagramHandle}
@@ -721,10 +745,24 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                       </InputAdornment>
                     ),
                   }}
+                  error={
+                    eventDetails.instagramHandle !== "" &&
+                    (!eventDetails.instagramHandle.includes(".") ||
+                      !eventDetails.instagramHandle.includes("/")) &&
+                    submitted
+                  }
+                  helperText={
+                    eventDetails.instagramHandle !== "" &&
+                    (!eventDetails.instagramHandle.includes(".") ||
+                      !eventDetails.instagramHandle.includes("/")) &&
+                    submitted
+                      ? "Please enter a valid instagram link."
+                      : "Ex: https://www.instagram.com/paulmccartney/"
+                  }
                 />
                 <TextField
                   id="website"
-                  label="Your Website (ex: google.com) (optional)"
+                  label="Link to your website (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.website}
@@ -751,7 +789,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                     !eventDetails.website.includes(".") &&
                     submitted
                       ? "Please enter a valid website."
-                      : ""
+                      : "Ex: https://www.google.com/"
                   }
                 />
               </Stack>

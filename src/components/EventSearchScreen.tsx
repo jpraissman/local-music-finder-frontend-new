@@ -30,7 +30,6 @@ import {
   Place,
 } from "@mui/icons-material";
 import dayjs from "dayjs";
-import RegistrationForm from "./RegistrationForm";
 
 interface CustomInputProps {
   filters: Filters;
@@ -46,12 +45,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   const [displayFiltersForm, setDisplayFiltersForm] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>(eventsInit);
   const [sort, setSort] = useState<string>("date");
-  const [displayRegistration, setDisplayRegistration] =
-    useState<boolean>(false);
 
   const showFilters = () => setDisplayFiltersForm(true);
-
-  const showRegistration = () => setDisplayRegistration(true);
 
   useEffect(() => {
     if (noFilters) {
@@ -392,22 +387,6 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                   Look for something else
                 </Button>
               </Box>
-              <Box
-                sx={{
-                  paddingLeft: { xs: "0px", sm: "25px" },
-                  paddingTop: { xs: "20px", sm: "0px" },
-                  width: "275px",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  onClick={showRegistration}
-                  sx={{ fontSize: "16px", fontWeight: "bold" }}
-                  color="warning"
-                >
-                  Sign up for weekly event notifications
-                </Button>
-              </Box>
             </Box>
           </Stack>
         </>
@@ -446,40 +425,6 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                   setDisplayFiltersForm(false);
                 }}
               />
-            </Box>
-          </Box>
-        </Modal>
-        <Modal
-          open={displayRegistration}
-          onClose={() => setDisplayRegistration(false)}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              backgroundColor: "white",
-              width: {
-                xs: "90vw",
-                sm: "60vw",
-                md: "50vw",
-                lg: "40vw",
-                xl: "30vw",
-              },
-              maxHeight: "95vh",
-              boxShadow: 24,
-              overflow: "auto",
-            }}
-          >
-            <Box sx={{ textAlign: "right" }}>
-              <IconButton onClick={() => setDisplayRegistration(false)}>
-                <Clear color="error" sx={{ fontSize: "30px" }} />
-              </IconButton>
-            </Box>
-            <Box sx={{ paddingLeft: 4, paddingRight: 4, paddingBottom: 4 }}>
-              <RegistrationForm />
             </Box>
           </Box>
         </Modal>

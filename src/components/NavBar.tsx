@@ -13,11 +13,9 @@ import { Clear, Menu } from "@mui/icons-material";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import RegistrationForm from "@/components/RegistrationForm";
 
 export default function NavBar() {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  const [openSignUp, setOpenSignUp] = useState<boolean>(false);
 
   const handleMenuClick = () => {
     setOpenMenu(true);
@@ -141,16 +139,6 @@ export default function NavBar() {
                   Find Events
                 </Button>
               </Link>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setOpenMenu(false);
-                  setOpenSignUp(true);
-                }}
-                sx={{ width: "275px", fontWeight: "bold" }}
-              >
-                Sign up for weekly event notifications
-              </Button>
               <Link href="/post">
                 <Button
                   variant="contained"
@@ -221,40 +209,6 @@ export default function NavBar() {
           </Drawer>
         </Box>
       </Box>
-      <Modal
-        open={openSignUp}
-        onClose={() => setOpenSignUp(false)}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: "white",
-            width: {
-              xs: "90vw",
-              sm: "60vw",
-              md: "50vw",
-              lg: "40vw",
-              xl: "30vw",
-            },
-            maxHeight: "95vh",
-            boxShadow: 24,
-            overflow: "auto",
-          }}
-        >
-          <Box sx={{ textAlign: "right" }}>
-            <IconButton onClick={() => setOpenSignUp(false)}>
-              <Clear color="error" sx={{ fontSize: "30px" }} />
-            </IconButton>
-          </Box>
-          <Box sx={{ paddingLeft: 4, paddingRight: 4, paddingBottom: 4 }}>
-            <RegistrationForm />
-          </Box>
-        </Box>
-      </Modal>
     </>
   );
 }
