@@ -130,7 +130,14 @@ const AddressAutocomplete: React.FC<CustomInputProps> = ({
         noOptionsText="Start typing location ..."
         onChange={(_event: any, newValue: PlaceType | null) => {
           setOptions(newValue ? [newValue, ...options] : options);
-          onAddressChange(newValue);
+          let newValueFinal: PlaceType | null = newValue;
+          if (newValue !== null) {
+            newValueFinal = {
+              description: newValue.description.replaceAll("&", "n"),
+              structured_formatting: newValue.structured_formatting,
+            };
+          }
+          onAddressChange(newValueFinal);
         }}
         onInputChange={(_event, newInputValue) => {
           setInputValue(newInputValue);

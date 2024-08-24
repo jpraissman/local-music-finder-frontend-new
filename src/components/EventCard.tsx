@@ -28,6 +28,7 @@ import {
   Place,
 } from "@mui/icons-material";
 import { useState } from "react";
+import Link from "next/link";
 
 interface CustomInputProps {
   event: Event;
@@ -228,9 +229,6 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
       </Card>
       <Modal
         open={showMoreInfo}
-        onClose={() => {
-          setShowMoreInfo(false);
-        }}
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -242,6 +240,7 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
             backgroundColor: "white",
             boxShadow: 24,
             overflow: "auto",
+            maxWidth: "90vw",
           }}
         >
           <Box sx={{ textAlign: "right" }}>
@@ -266,7 +265,7 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
               }}
             >
               <Stack
-                spacing={1}
+                spacing={0.5}
                 direction="column"
                 sx={{
                   display: "flex",
@@ -274,28 +273,64 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                   alignItems: "center",
                 }}
               >
-                <Typography
-                  fontWeight={"bold"}
-                  fontSize={"20px"}
-                  sx={{ textDecoration: "underline" }}
-                >
+                <Typography fontWeight={"bold"} fontSize={"20px"}>
                   {event.band_or_venue + " Information"}
                 </Typography>
                 {event.facebook_handle !== "" && (
-                  <Stack spacing={0.5} direction="row">
-                    <Facebook color="primary" sx={{ fontSize: "21px" }} />
-                    <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                      {event.facebook_handle}
-                    </Typography>
-                  </Stack>
+                  <Link
+                    href={
+                      "https://www.facebook.com/search/top?q=" +
+                      event.facebook_handle
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Stack
+                      spacing={-0.5}
+                      direction="row"
+                      sx={{ display: "flex", alignItems: "center" }}
+                    >
+                      <IconButton>
+                        <Facebook color="primary" sx={{ fontSize: "21px" }} />
+                      </IconButton>
+                      <Typography
+                        color="textPrimary"
+                        sx={{ fontSize: "16px", wordBreak: "break-all" }}
+                      >
+                        {event.facebook_handle}
+                      </Typography>
+                    </Stack>
+                  </Link>
                 )}
                 {event.instagram_handle !== "" && (
-                  <Stack spacing={0.5} direction="row">
-                    <Instagram color="secondary" sx={{ fontSize: "21px" }} />
-                    <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                      {event.instagram_handle}
-                    </Typography>
-                  </Stack>
+                  <Link
+                    href={
+                      "https://www.instagram.com/" +
+                      event.instagram_handle +
+                      "/"
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Stack
+                      spacing={-0.5}
+                      direction="row"
+                      sx={{ display: "flex", alignItems: "center" }}
+                    >
+                      <IconButton>
+                        <Instagram
+                          color="secondary"
+                          sx={{ fontSize: "21px" }}
+                        />
+                      </IconButton>
+                      <Typography
+                        color="textPrimary"
+                        sx={{ fontSize: "16px", wordBreak: "break-all" }}
+                      >
+                        {event.instagram_handle}
+                      </Typography>
+                    </Stack>
+                  </Link>
                 )}
                 {event.website !== "" && (
                   <Stack spacing={0.5} direction="row">
@@ -305,9 +340,23 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                     >
                       {"Website: "}
                     </Typography>
-                    <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                      {event.website}
-                    </Typography>
+                    <Link
+                      href={
+                        event.website.startsWith("http://") ||
+                        event.website.startsWith("https://")
+                          ? event.website
+                          : `https://${event.website}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Typography
+                        color="textPrimary"
+                        sx={{ fontSize: "16px", wordBreak: "break-all" }}
+                      >
+                        {event.website}
+                      </Typography>
+                    </Link>
                   </Stack>
                 )}
               </Stack>

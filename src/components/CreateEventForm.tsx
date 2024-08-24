@@ -17,6 +17,9 @@ import {
   CircularProgress,
   Modal,
   IconButton,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import Picklist from "@/components/Picklist";
@@ -61,6 +64,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
   const [deletedEvent, setDeletedEvent] = useState<boolean>(false);
   const [waiting, setWaiting] = useState<boolean>(false);
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
 
   const deleteEvent = async () => {
     setConfirmDelete(false);
@@ -109,6 +113,8 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
     const phoneNumberError =
       eventDetails.venuePhoneNumber !== "" &&
       eventDetails.venuePhoneNumber.length != 12;
+    const websiteError =
+      eventDetails.website !== "" && !eventDetails.website.includes(".");
 
     if (
       !(
@@ -124,7 +130,9 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         addressErr ||
         venueOrBandError ||
         emailAddressError ||
-        phoneNumberError
+        phoneNumberError ||
+        websiteError ||
+        !agreeToTerms
       )
     ) {
       try {
@@ -220,7 +228,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         {newEventId !== "" && !updatedEvent && !deletedEvent && (
           <Stack
             sx={{
-              width: { xs: "90%", sm: "80%", md: "60%", lg: "50%", xl: "40%" },
+              width: { xs: "90%", sm: "80%", md: "60%" },
               paddingTop: "20px",
               textAlign: "center",
             }}
@@ -255,14 +263,17 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
             </Typography>
             <Typography
               sx={{
-                fontSize: { xs: "18px", sm: "22px" },
+                fontSize: { xs: "16px", sm: "22px" },
                 paddingTop: "40px",
                 paddingBottom: "50px",
               }}
             >
               This Event ID should be used to edit or delete your event. You
-              will receive an email containing this Event ID to change any event
-              information.
+              will receive an email shortly containing this Event ID. If you do
+              not see this email in a few minutes, check your junk or spam
+              folders and add "info@thelocalmusicfinder.com" to your safe
+              senders list. We recommend saving this email until your event is
+              over.
             </Typography>
             <Button
               onClick={() => {
@@ -673,7 +684,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                 </Typography>
                 <TextField
                   id="facebook-handle"
-                  label="Your Facebook Handle (optional)"
+                  label="Your Facebook Username (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.facebookHandle}
@@ -693,7 +704,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                 />
                 <TextField
                   id="instagram-handle"
-                  label="Your Instagram Handle (optional)"
+                  label="Your Instagram Username (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.instagramHandle}
@@ -713,7 +724,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                 />
                 <TextField
                   id="website"
-                  label="Your Website (optional)"
+                  label="Your Website (ex: google.com) (optional)"
                   fullWidth
                   variant="outlined"
                   value={eventDetails.website}
@@ -730,6 +741,18 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                       </InputAdornment>
                     ),
                   }}
+                  error={
+                    eventDetails.website !== "" &&
+                    !eventDetails.website.includes(".") &&
+                    submitted
+                  }
+                  helperText={
+                    eventDetails.website !== "" &&
+                    !eventDetails.website.includes(".") &&
+                    submitted
+                      ? "Please enter a valid website."
+                      : ""
+                  }
                 />
               </Stack>
               <Stack
@@ -839,16 +862,52 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
               )}
               {createOrEdit === "Create" && (
                 <>
-                  {!waiting && (
-                    <Button
-                      onClick={createOrEditEvent}
-                      variant="contained"
-                      size="large"
+                  <Stack
+                    direction="column"
+                    spacing={1}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Stack
+                      direction="row"
+                      spacing={-0.5}
+                      sx={{ display: "flex", alignItems: "center" }}
                     >
-                      Create Event
-                    </Button>
-                  )}
-                  {waiting && <CircularProgress />}
+                      <Checkbox
+                        checked={agreeToTerms}
+                        onChange={() => {
+                          setAgreeToTerms(!agreeToTerms);
+                        }}
+                      />
+                      <Typography fontSize={"14px"}>
+                        By posting an event, you agree to our{" "}
+                        <Link href="/terms" target="_blank">
+                          Terms and Conditions
+                        </Link>{" "}
+                        and{" "}
+                        <Link href="/privacy-policy" target="_blank">
+                          Privacy Policy
+                        </Link>
+                        .
+                      </Typography>
+                    </Stack>
+                    {!agreeToTerms && submitted && (
+                      <Typography sx={{ color: "red", fontSize: "16x" }}>
+                        You must agree to the statement above to post an event.
+                      </Typography>
+                    )}
+                  </Stack>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    {!waiting && (
+                      <Button
+                        onClick={createOrEditEvent}
+                        variant="contained"
+                        size="large"
+                      >
+                        Post Event
+                      </Button>
+                    )}
+                    {waiting && <CircularProgress />}
+                  </Box>
                 </>
               )}
             </Stack>

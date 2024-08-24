@@ -42,7 +42,7 @@ export default function NavBar() {
             justifyContent: "flex-start",
           }}
         >
-          <Link href="/find">
+          <Link href="/">
             <Image
               src="/logo2.png"
               width={100}
