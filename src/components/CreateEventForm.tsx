@@ -271,9 +271,9 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
               This Event ID should be used to edit or delete your event. You
               will receive an email shortly containing this Event ID. If you do
               not see this email in a few minutes, check your junk or spam
-              folders and add "info@thelocalmusicfinder.com" to your safe
-              senders list. We recommend saving this email until your event is
-              over.
+              folders and add <strong>info@thelocalmusicfinder.com</strong> to
+              your safe senders list. We recommend saving this email until your
+              event is over.
             </Typography>
             <Button
               onClick={() => {
