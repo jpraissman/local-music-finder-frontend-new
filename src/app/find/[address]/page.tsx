@@ -27,14 +27,15 @@ export default async function Page({ params: { address } }: PageProps) {
   const genres = GENRES.join("::").replaceAll(" ", "+");
   const types = BAND_TYPES.join("::").replaceAll(" ", "+");
 
-  const response = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL +
-      `/events?date_range=Next+60+Days&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
-  );
-  const eventsRaw = await response.json();
-  const events: Event[] = eventsRaw.events;
-
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  let events: Event[] = [];
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_BASE_URL +
+        `/events?date_range=Next+60+Days&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
+    );
+    const eventsRaw = await response.json();
+    events = eventsRaw.events;
+  } catch (error) {}
 
   return (
     <EventSearchScreen

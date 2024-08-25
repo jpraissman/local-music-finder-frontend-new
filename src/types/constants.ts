@@ -63,6 +63,7 @@ export const blankEvent: Event = {
   address_id: "",
   event_id: "",
   email_address: "",
+  event_datetime: "",
 }
 
 export const blankFilters: Filters = {

@@ -127,27 +127,6 @@ export default function Page() {
               </Typography>
             </Link>
           </Stack>
-          <Stack direction="column" spacing={1}>
-            <Typography
-              sx={{
-                fontWeight: "bold",
-                fontSize: { xs: "17px", md: "20px" },
-              }}
-            >
-              How can I get notified automatically about upcoming events?
-            </Typography>
-            <Link href="/get-notified">
-              <Typography
-                sx={{
-                  fontSize: { xs: "16px", md: "18px" },
-                  paddingLeft: "10px",
-                }}
-              >
-                Click here to sign up for personalized weekly event
-                notifications.
-              </Typography>
-            </Link>
-          </Stack>
           <Stack direction="column" spacing={1.5}>
             <Typography
               sx={{

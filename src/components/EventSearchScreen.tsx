@@ -217,14 +217,22 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                 } else if (newSort === "date") {
                   setEvents(
                     events.sort((a, b) => {
-                      const dateA = dayjs(a.date_string);
-                      const dateB = dayjs(b.date_string);
+                      const dateA = dayjs(a.event_datetime);
+                      const dateB = dayjs(b.event_datetime);
                       return dateA.isAfter(dateB) ? 1 : -1;
                     })
                   );
                 } else if (newSort === "cover charge") {
                   setEvents(
-                    events.sort((a, b) => a.cover_charge - b.cover_charge)
+                    events.sort((a, b) => {
+                      if (a.cover_charge === b.cover_charge) {
+                        const dateA = dayjs(a.event_datetime);
+                        const dateB = dayjs(b.event_datetime);
+                        return dateA.isAfter(dateB) ? 1 : -1;
+                      } else {
+                        return a.cover_charge - b.cover_charge;
+                      }
+                    })
                   );
                 }
 

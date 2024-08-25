@@ -18,8 +18,6 @@ import {
   Modal,
   IconButton,
   Checkbox,
-  FormGroup,
-  FormControlLabel,
 } from "@mui/material";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import Picklist from "@/components/Picklist";
@@ -30,11 +28,9 @@ import {
   CheckCircleOutline,
   Clear,
   Delete,
-  DeleteForever,
   Facebook,
   Instagram,
   Language,
-  Phone,
   Save,
 } from "@mui/icons-material";
 import { BAND_TYPES, blankEventDetails, GENRES } from "@/types/constants";
@@ -81,11 +77,9 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
         setSubmitted(false);
         setDeletedEvent(true);
       } else {
-        console.log("Error deleting event:", response.statusText);
+        // console.log("Error deleting event:", response.statusText);
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) {}
     setWaiting(false);
   };
 
@@ -188,7 +182,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
             const data = await response.json();
             setNewEventId(data.event.event_id);
           } else {
-            console.log("Error:", response.statusText);
+            // console.log("Error:", response.statusText);
           }
         } else {
           const response = await fetch(`${baseUrl}/events/` + eventId, {
@@ -201,13 +195,13 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
           if (response.ok) {
             setUpdatedEvent(true);
           } else {
-            console.log("Error:", response.statusText);
+            // console.log("Error:", response.statusText);
           }
         }
         setEventDetails(blankEventDetails);
         setSubmitted(false);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     } else {
       setBlankError(true);

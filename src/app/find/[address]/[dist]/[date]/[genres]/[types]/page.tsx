@@ -48,14 +48,15 @@ export default async function Page({
     typesFormatted = BAND_TYPES.join("::").replaceAll(" ", "+");
   }
 
-  const response = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL +
-      `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}`
-  );
-  const eventsRaw = await response.json();
-  const events: Event[] = eventsRaw.events;
-
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  let events: Event[] = [];
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_BASE_URL +
+        `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}`
+    );
+    const eventsRaw = await response.json();
+    events = eventsRaw.events;
+  } catch (error) {}
 
   return (
     <EventSearchScreen

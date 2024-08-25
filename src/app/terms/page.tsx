@@ -158,7 +158,8 @@ export default function Page() {
             >
               <strong>Optional Registration:</strong> Registration on the Site
               is optional. However, certain features may only be accessible to
-              registered users.
+              registered users, including posting events. By registering you
+              consent to receive emails from The Local Music Finder Inc.
             </Typography>
             <Typography
               sx={{
@@ -167,10 +168,9 @@ export default function Page() {
               }}
             >
               <strong>Account Responsibility:</strong> If you choose to register
-              (post an event and/or sign up for weekly email notifications about
-              events), you are responsible for maintaining the confidentiality
-              of your account information (including your Event ID) and for all
-              activities that occur under your account.
+              (to post events), you are responsible for maintaining the
+              confidentiality of your account information (including your Event
+              ID) and for all activities that occur under your account.
             </Typography>
           </Stack>
           <Stack direction="column" spacing={0.5}>

@@ -131,7 +131,7 @@ const AddressAutocomplete: React.FC<CustomInputProps> = ({
         onChange={(_event: any, newValue: PlaceType | null) => {
           setOptions(newValue ? [newValue, ...options] : options);
           let newValueFinal: PlaceType | null = newValue;
-          if (newValue !== null) {
+          if (newValue !== null && newValue.description.includes("&")) {
             newValueFinal = {
               description: newValue.description.replaceAll("&", "n"),
               structured_formatting: newValue.structured_formatting,

@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Clear, Menu } from "@mui/icons-material";
+import { Menu } from "@mui/icons-material";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";

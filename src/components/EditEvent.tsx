@@ -35,7 +35,6 @@ const EditEvent: React.FC = () => {
         setEvent(event);
         setFoundEvent(true);
       } catch (err) {
-        console.error(err);
         setInvalidId(true);
       }
       setFetching(false);

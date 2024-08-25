@@ -23,5 +23,6 @@ interface Event {
   address_id: string;
   event_id: string;
   email_address: string;
+  event_datetime: string;
 }
 export default Event;
