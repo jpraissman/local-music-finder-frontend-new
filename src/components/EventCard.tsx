@@ -83,6 +83,10 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                   <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
                     Free Admission
                   </Typography>
+                ) : event.cover_charge === 0.01 ? (
+                  <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                    Unknown Cover Charge
+                  </Typography>
                 ) : (
                   <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
                     {"$" + event.cover_charge + " cover charge"}
@@ -132,6 +136,10 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                 {event.cover_charge === 0 ? (
                   <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
                     Free Admission
+                  </Typography>
+                ) : event.cover_charge === 0.01 ? (
+                  <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                    Unknown Cover Charge
                   </Typography>
                 ) : (
                   <Typography color="textPrimary" sx={{ fontSize: "16px" }}>

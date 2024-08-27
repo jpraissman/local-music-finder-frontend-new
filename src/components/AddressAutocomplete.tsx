@@ -133,7 +133,7 @@ const AddressAutocomplete: React.FC<CustomInputProps> = ({
           let newValueFinal: PlaceType | null = newValue;
           if (newValue !== null && newValue.description.includes("&")) {
             newValueFinal = {
-              description: newValue.description.replaceAll("&", "n"),
+              description: newValue.description.replaceAll("&", ""),
               structured_formatting: newValue.structured_formatting,
             };
           }
