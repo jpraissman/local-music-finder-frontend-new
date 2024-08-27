@@ -46,10 +46,15 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
           width: "95vw",
         }}
       >
-        <CardHeader
-          title={event.venue_name}
-          subheader={"Band/Performer: " + event.band_name}
-        />
+        <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+          <CardHeader title={event.band_name + " @ " + event.venue_name} />
+        </Box>
+        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+          <CardHeader
+            title={event.venue_name}
+            subheader={"Band/Performer: " + event.band_name}
+          />
+        </Box>
         <CardContent>
           <Stack spacing={2.5} direction="column">
             <Stack spacing={2} direction="row">
