@@ -23,7 +23,10 @@ export function generateMetadata({ params: { address } }: PageProps): Metadata {
     .replaceAll("%2C", ",");
 
   return {
-    title: "Live Music near " + addressFormatted,
+    title:
+      "Live Music Events near " +
+      addressFormatted +
+      " - The Local Music Finder",
     description: `There are live music events near ${addressFormatted}. Explore bars, bands, and venues near you to enjoy.`,
   };
 }

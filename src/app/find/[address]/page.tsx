@@ -16,7 +16,10 @@ interface PageProps {
 
 export function generateMetadata({ params: { address } }: PageProps): Metadata {
   return {
-    title: "Live Music near " + TOWNS[address][1],
+    title:
+      "Live Music Events near " +
+      TOWNS[address][1] +
+      " - The Local Music Finder",
     description: `There are live music events near ${TOWNS[address][1]}. Explore bars, bands, and venues near you to enjoy.`,
   };
 }
