@@ -36,8 +36,10 @@ export default async function Page({ params: { address } }: PageProps) {
       process.env.NEXT_PUBLIC_API_BASE_URL +
         `/events?date_range=Next+60+Days&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
     );
-    const eventsRaw = await response.json();
-    events = eventsRaw.events;
+    if (response.ok) {
+      const eventsRaw = await response.json();
+      events = eventsRaw.events;
+    }
   } catch (error) {}
 
   return (

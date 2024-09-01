@@ -57,8 +57,10 @@ export default async function Page({
       process.env.NEXT_PUBLIC_API_BASE_URL +
         `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}`
     );
-    const eventsRaw = await response.json();
-    events = eventsRaw.events;
+    if (response.ok) {
+      const eventsRaw = await response.json();
+      events = eventsRaw.events;
+    }
   } catch (error) {}
 
   return (

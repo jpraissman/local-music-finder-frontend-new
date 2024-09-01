@@ -30,10 +30,14 @@ const EditEvent: React.FC = () => {
       try {
         const url = process.env.NEXT_PUBLIC_API_BASE_URL + "/events/" + eventId;
         const response = await fetch(url);
-        const data = await response.json();
-        const event: Event = data.event;
-        setEvent(event);
-        setFoundEvent(true);
+        if (response.ok) {
+          const data = await response.json();
+          const event: Event = data.event;
+          setEvent(event);
+          setFoundEvent(true);
+        } else {
+          setInvalidId(true);
+        }
       } catch (err) {
         setInvalidId(true);
       }
