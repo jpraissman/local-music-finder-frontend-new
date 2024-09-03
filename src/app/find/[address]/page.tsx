@@ -24,7 +24,11 @@ export function generateMetadata({ params: { address } }: PageProps): Metadata {
   };
 }
 
-export const revalidate = 0;
+export async function generateStaticParams() {
+  return Object.keys(TOWNS).map((key) => ({ address: key }));
+}
+
+export const revalidate = 120;
 
 export default async function Page({ params: { address } }: PageProps) {
   const genres = GENRES.join("::").replaceAll(" ", "+");
