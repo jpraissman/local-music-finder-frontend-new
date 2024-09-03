@@ -861,7 +861,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                       otherInfo: newOtherInfo.target.value,
                     }))
                   }
-                  inputProps={{ maxLength: 150 }}
+                  inputProps={{ maxLength: 250 }}
                 />
               </Stack>
               {createOrEdit === "Edit" && (

@@ -34,7 +34,7 @@ export default function WebsiteFooter() {
             {"Copyright © The Local Music Finder Inc. All rights reserved. "}
           </Typography>
           <Typography color="gray" variant="body2">
-            <Link href="about-us">About Us</Link>
+            <Link href="/about-us">About Us</Link>
             {" | "}
             <Link href="/privacy-policy">Privacy Policy</Link>
             {" | "}
