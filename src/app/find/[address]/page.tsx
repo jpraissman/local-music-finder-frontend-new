@@ -34,7 +34,7 @@ export default async function Page({ params: { address } }: PageProps) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?date_range=Next+60+Days&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
+        `/events?date_range=This+Week+(Mon-Sun)&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -45,7 +45,7 @@ export default async function Page({ params: { address } }: PageProps) {
   return (
     <EventSearchScreen
       filters={{
-        dateRange: "Next 60 Days",
+        dateRange: "This Week (Mon-Sun)",
         address: {
           description: TOWNS[address][0],
           structured_formatting: blankStructuredFormatting,
