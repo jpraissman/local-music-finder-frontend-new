@@ -6,6 +6,7 @@ import {
 } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 
 interface PageProps {
   params: {
@@ -36,6 +37,12 @@ export const revalidate = 0;
 export default async function Page({
   params: { address, dist, date, genres, types },
 }: PageProps) {
+  const allCookies = cookies();
+  let fromCookie = allCookies.get("from")?.value;
+  if (fromCookie == undefined) {
+    fromCookie = "Unknown";
+  }
+
   const addressFormatted = address
     .replaceAll("%20", "+")
     .replaceAll("%2C", ",");
@@ -55,7 +62,7 @@ export default async function Page({
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}`
+        `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();

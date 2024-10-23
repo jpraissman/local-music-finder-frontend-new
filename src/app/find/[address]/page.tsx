@@ -6,6 +6,7 @@ import {
   TOWNS,
 } from "@/types/constants";
 import Event from "@/types/Event";
+import { cookies } from "next/headers";
 import { Metadata } from "next";
 
 interface PageProps {
@@ -27,6 +28,12 @@ export function generateMetadata({ params: { address } }: PageProps): Metadata {
 export const revalidate = 0;
 
 export default async function Page({ params: { address } }: PageProps) {
+  const allCookies = cookies();
+  let fromCookie = allCookies.get("from")?.value;
+  if (fromCookie == undefined) {
+    fromCookie = "Unknown";
+  }
+
   const genres = GENRES.join("::").replaceAll(" ", "+");
   const types = BAND_TYPES.join("::").replaceAll(" ", "+");
 
@@ -34,7 +41,7 @@ export default async function Page({ params: { address } }: PageProps) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?date_range=Today&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}`
+        `/events?date_range=Today&address=${TOWNS[address][0]}&max_distance=35+mi&genres=${genres}&band_types=${types}&from_where=${fromCookie}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
