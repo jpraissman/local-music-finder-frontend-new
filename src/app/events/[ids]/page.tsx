@@ -23,12 +23,6 @@ export function generateMetadata(): Metadata {
 export const revalidate = 0;
 
 export default async function Page({ params: { ids } }: PageProps) {
-  const allCookies = cookies();
-  let fromCookie = allCookies.get("from")?.value;
-  if (fromCookie == undefined) {
-    fromCookie = "Unknown";
-  }
-
   let events: Event[] = [];
   try {
     const response = await fetch(
