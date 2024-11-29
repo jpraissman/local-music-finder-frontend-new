@@ -348,25 +348,27 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                 </Button>
               </Box>
             </Stack>
-            <Stack
-              direction="column"
-              spacing={1}
-              sx={{ width: "100%", textAlign: "center" }}
-            >
-              {!noFilters && (
-                <Typography
-                  fontWeight={"bold"}
-                  sx={{ fontSize: { xs: "20px", lg: "25px" } }}
-                >
-                  {"Live Music near " + filters.address?.description}
+            {filters.address?.description !== "" && (
+              <Stack
+                direction="column"
+                spacing={1}
+                sx={{ width: "100%", textAlign: "center" }}
+              >
+                {!noFilters && (
+                  <Typography
+                    fontWeight={"bold"}
+                    sx={{ fontSize: { xs: "20px", lg: "25px" } }}
+                  >
+                    {"Live Music near " + filters.address?.description}
+                  </Typography>
+                )}
+                <Typography sx={{ fontSize: { xs: "20px", lg: "24px" } }}>
+                  {events.length === 1
+                    ? events.length + " event found"
+                    : events.length + " events found "}
                 </Typography>
-              )}
-              <Typography sx={{ fontSize: { xs: "20px", lg: "24px" } }}>
-                {events.length === 1
-                  ? events.length + " event found"
-                  : events.length + " events found "}
-              </Typography>
-            </Stack>
+              </Stack>
+            )}
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}

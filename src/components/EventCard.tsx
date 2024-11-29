@@ -108,32 +108,36 @@ const EventCard: React.FC<CustomInputProps> = ({ event }) => {
                   {event.address}
                 </Typography>
               </Stack>
-              <Stack
-                spacing={0.5}
-                direction="row"
-                sx={{ display: { xs: "none", sm: "flex" } }}
-              >
-                <Tooltip title="Distance">
-                  <Place color="secondary" sx={{ fontSize: "21px" }} />
-                </Tooltip>
-                <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                  {event.distance_formatted}
-                </Typography>
-              </Stack>
+              {event.distance_value != -1 && (
+                <Stack
+                  spacing={0.5}
+                  direction="row"
+                  sx={{ display: { xs: "none", sm: "flex" } }}
+                >
+                  <Tooltip title="Distance">
+                    <Place color="secondary" sx={{ fontSize: "21px" }} />
+                  </Tooltip>
+                  <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                    {event.distance_formatted}
+                  </Typography>
+                </Stack>
+              )}
             </Stack>
             <Stack
               spacing={2}
               direction="row"
               sx={{ display: { xs: "flex", sm: "none" } }}
             >
-              <Stack spacing={0.5} direction="row">
-                <Tooltip title="Distance">
-                  <Place color="secondary" sx={{ fontSize: "21px" }} />
-                </Tooltip>
-                <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
-                  {event.distance_formatted}
-                </Typography>
-              </Stack>
+              {event.distance_value != -1 && (
+                <Stack spacing={0.5} direction="row">
+                  <Tooltip title="Distance">
+                    <Place color="secondary" sx={{ fontSize: "21px" }} />
+                  </Tooltip>
+                  <Typography color="textPrimary" sx={{ fontSize: "16px" }}>
+                    {event.distance_formatted}
+                  </Typography>
+                </Stack>
+              )}
               <Stack spacing={0.5} direction="row">
                 <Tooltip title="Cover Charge">
                   <MonetizationOn color="secondary" sx={{ fontSize: "21px" }} />
