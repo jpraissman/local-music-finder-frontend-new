@@ -8,6 +8,7 @@ import {
 import Event from "@/types/Event";
 import { cookies } from "next/headers";
 import { Metadata } from "next";
+import PageVisitTracker from "@/components/PageVisitTracker";
 
 interface PageProps {
   params: {
@@ -50,19 +51,22 @@ export default async function Page({ params: { address } }: PageProps) {
   } catch (error) {}
 
   return (
-    <EventSearchScreen
-      filters={{
-        dateRange: "Next 30 Days",
-        address: {
-          description: TOWNS[address][0],
-          structured_formatting: blankStructuredFormatting,
-        },
-        maxDistance: "35 mi",
-        genres: ["All Genres"],
-        bandTypes: ["All Types"],
-      }}
-      eventsInit={events}
-      noFilters={false}
-    />
+    <>
+      <PageVisitTracker page="Clicked from Google" />
+      <EventSearchScreen
+        filters={{
+          dateRange: "Next 30 Days",
+          address: {
+            description: TOWNS[address][0],
+            structured_formatting: blankStructuredFormatting,
+          },
+          maxDistance: "35 mi",
+          genres: ["All Genres"],
+          bandTypes: ["All Types"],
+        }}
+        eventsInit={events}
+        noFilters={false}
+      />
+    </>
   );
 }

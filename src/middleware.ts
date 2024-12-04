@@ -24,7 +24,24 @@ export function middleware(req: NextRequest) {
     response.cookies.set('from', fromCookieValue, { path: '/', maxAge: 60 * 60 * 24 });
   }
 
+  // Generate random id for the user if they don't have one already
+  if (req.cookies.get('user') === undefined) {
+    response.cookies.set('user', generateRandomId(), { path: '/', maxAge: 10 * 365 * 24 * 60 * 60 });
+  }
+
   return response;
+}
+
+function generateRandomId(length: number = 10): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+  
+  return result;
 }
 
 // Apply middleware to all routes

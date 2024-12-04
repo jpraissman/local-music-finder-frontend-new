@@ -1,4 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
+import PageVisitTracker from "@/components/PageVisitTracker";
 import {
   blankStructuredFormatting,
   GENRES,
@@ -71,19 +72,22 @@ export default async function Page({
   } catch (error) {}
 
   return (
-    <EventSearchScreen
-      filters={{
-        dateRange: date.replaceAll("%20", " "),
-        address: {
-          description: address.replaceAll("%20", " ").replaceAll("%2C", ","),
-          structured_formatting: blankStructuredFormatting,
-        },
-        maxDistance: dist.replaceAll("%20", " "),
-        genres: genres.replaceAll("%20", " ").split("%2C"),
-        bandTypes: types.replaceAll("%20", " ").split("%2C"),
-      }}
-      eventsInit={events}
-      noFilters={false}
-    />
+    <>
+      <PageVisitTracker page="Custom Search" />
+      <EventSearchScreen
+        filters={{
+          dateRange: date.replaceAll("%20", " "),
+          address: {
+            description: address.replaceAll("%20", " ").replaceAll("%2C", ","),
+            structured_formatting: blankStructuredFormatting,
+          },
+          maxDistance: dist.replaceAll("%20", " "),
+          genres: genres.replaceAll("%20", " ").split("%2C"),
+          bandTypes: types.replaceAll("%20", " ").split("%2C"),
+        }}
+        eventsInit={events}
+        noFilters={false}
+      />
+    </>
   );
 }

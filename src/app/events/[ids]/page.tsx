@@ -1,4 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
+import PageVisitTracker from "@/components/PageVisitTracker";
 import {
   blankStructuredFormatting,
   GENRES,
@@ -35,19 +36,22 @@ export default async function Page({ params: { ids } }: PageProps) {
   } catch (error) {}
 
   return (
-    <EventSearchScreen
-      filters={{
-        dateRange: "",
-        address: {
-          description: "",
-          structured_formatting: blankStructuredFormatting,
-        },
-        maxDistance: "",
-        genres: [],
-        bandTypes: [],
-      }}
-      eventsInit={events}
-      noFilters={false}
-    />
+    <>
+      <PageVisitTracker page="Specific Events" />
+      <EventSearchScreen
+        filters={{
+          dateRange: "",
+          address: {
+            description: "",
+            structured_formatting: blankStructuredFormatting,
+          },
+          maxDistance: "",
+          genres: [],
+          bandTypes: [],
+        }}
+        eventsInit={events}
+        noFilters={false}
+      />
+    </>
   );
 }

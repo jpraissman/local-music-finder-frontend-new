@@ -1,4 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
+import PageVisitTracker from "@/components/PageVisitTracker";
 import { blankFilters } from "@/types/constants";
 import { Metadata } from "next";
 
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <EventSearchScreen
-      filters={blankFilters}
-      eventsInit={[]}
-      noFilters={true}
-    />
+    <>
+      <PageVisitTracker page="About to Search" />
+      <EventSearchScreen
+        filters={blankFilters}
+        eventsInit={[]}
+        noFilters={true}
+      />
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import CreateEventForm from "@/components/CreateEventForm";
+import PageVisitTracker from "@/components/PageVisitTracker";
 import { blankEventDetails } from "@/types/constants";
 import { Metadata } from "next";
 
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <CreateEventForm
-      event={blankEventDetails}
-      createOrEdit="Create"
-      eventId=""
-    />
+    <>
+      <PageVisitTracker page="Post" />
+      <CreateEventForm
+        event={blankEventDetails}
+        createOrEdit="Create"
+        eventId=""
+      />
+    </>
   );
 }

@@ -4,6 +4,7 @@ import NavBar from "../components/NavBar";
 import WebsiteFooter from "../components/WebsiteFooter";
 import { Box } from "@mui/material";
 import Script from "next/script";
+import PageVisitTracker from "@/components/PageVisitTracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
