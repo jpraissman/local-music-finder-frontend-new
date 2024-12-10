@@ -71,13 +71,20 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
   const handleSubmit = () => {
     setSubmitted(true);
 
-    if (
-      filters.bandTypes.length > 0 &&
-      filters.maxDistance !== "" &&
-      filters.dateRange !== "" &&
-      filters.genres.length > 0 &&
-      filters.address !== null
-    ) {
+    if (filters.address !== null) {
+      if (filters.bandTypes.length <= 0) {
+        handleBandTypesChange(["All Types"]);
+      }
+      if (filters.genres.length <= 0) {
+        handleGenresChange(["All Genres"]);
+      }
+      if (filters.maxDistance === "") {
+        handleMaxDistanceChange("35 mi");
+      }
+      if (filters.dateRange === "") {
+        handleDateRangeChange("This Week (Mon-Sun)");
+      }
+
       const url = `/find/${filters.address.description}/${
         filters.maxDistance
       }/${filters.dateRange}/${filters.genres.join(
@@ -112,7 +119,8 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
         <Picklist
           id="date-range-filter"
           label="When?"
-          error={filters.dateRange === "" && submitted}
+          error={false}
+          required={false}
           value={filters.dateRange}
           setValue={handleDateRangeChange}
           helperText=""
@@ -161,7 +169,8 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
         <Picklist
           id="max-distance-filter"
           label="Distance you'd travel?"
-          error={filters.maxDistance === "" && submitted}
+          error={false}
+          required={false}
           value={filters.maxDistance}
           setValue={handleMaxDistanceChange}
           helperText=""
@@ -185,7 +194,8 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           allValues={["All Genres", ...GENRES]}
           selectedValues={filters.genres}
           setValues={handleGenresChange}
-          error={filters.genres.length === 0 && submitted}
+          error={false}
+          required={false}
         />
       </Stack>
       <Stack
@@ -205,7 +215,8 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           allValues={["All Types", ...BAND_TYPES]}
           selectedValues={filters.bandTypes}
           setValues={handleBandTypesChange}
-          error={filters.bandTypes.length === 0 && submitted}
+          error={false}
+          required={false}
         />
       </Stack>
       {!fetching && (

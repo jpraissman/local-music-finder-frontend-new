@@ -29,6 +29,7 @@ interface CustomInputProps {
   selectedValues: string[];
   setValues: (newValues: string[]) => void;
   error: boolean;
+  required: boolean;
 }
 
 const MultiselectPicklist: React.FC<CustomInputProps> = ({
@@ -38,6 +39,7 @@ const MultiselectPicklist: React.FC<CustomInputProps> = ({
   selectedValues,
   setValues,
   error,
+  required,
 }) => {
   const handleChange = (values: string[] | string) => {
     if (Array.isArray(values)) {
@@ -55,7 +57,7 @@ const MultiselectPicklist: React.FC<CustomInputProps> = ({
   };
 
   return (
-    <FormControl fullWidth required error={error}>
+    <FormControl fullWidth required={required} error={error}>
       <InputLabel id="filter-label">{label}</InputLabel>
       <Select
         labelId="filter-label"

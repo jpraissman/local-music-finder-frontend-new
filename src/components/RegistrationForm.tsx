@@ -144,6 +144,7 @@ const RegistrationForm: React.FC = () => {
               id="max-distance-filter"
               label="Distance you'd travel"
               error={filters.maxDistance === "" && submitted}
+              required={true}
               value={filters.maxDistance}
               setValue={handleMaxDistanceChange}
               helperText=""
@@ -168,6 +169,7 @@ const RegistrationForm: React.FC = () => {
               selectedValues={filters.genres}
               setValues={handleGenresChange}
               error={filters.genres.length === 0 && submitted}
+              required={true}
             />
           </Stack>
           <Stack
@@ -188,6 +190,7 @@ const RegistrationForm: React.FC = () => {
               selectedValues={filters.bandTypes}
               setValues={handleBandTypesChange}
               error={filters.bandTypes.length === 0 && submitted}
+              required={true}
             />
           </Stack>
           <Stack

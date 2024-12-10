@@ -489,6 +489,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   id="band-type"
                   label="Band Type"
                   error={eventDetails.bandType === "" && submitted}
+                  required={true}
                   value={eventDetails.bandType}
                   setValue={(newBandType: string) =>
                     setEventDetails((prevDetails) => ({
@@ -534,6 +535,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                     }))
                   }
                   error={eventDetails.genres.length === 0 && submitted}
+                  required={true}
                 />
               </Stack>
               <Stack
@@ -640,6 +642,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   id="has-cover-charge"
                   label="Is there a cover charge?"
                   error={eventDetails.hasCoverCharge === "" && submitted}
+                  required={true}
                   value={eventDetails.hasCoverCharge}
                   setValue={(newHasCoverCharge: string) =>
                     setEventDetails((prevDetails) => ({
@@ -835,6 +838,7 @@ const CreateEventForm: React.FC<CustomInputProps> = ({
                   id="band-or-venue"
                   label="Are you a venue or band/performer?"
                   error={eventDetails.bandOrVenue === "" && submitted}
+                  required={true}
                   value={eventDetails.bandOrVenue}
                   setValue={(newBandOrVenue: string) =>
                     setEventDetails((prevDetails) => ({

@@ -81,6 +81,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               variant="outlined"
               value={filters.dateRange}
               multiline
+              onClick={showFilters}
+              onChange={showFilters}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -101,6 +103,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               label="Your Location (town, city, or zip)"
               variant="outlined"
               value={filters.address?.description}
+              onClick={showFilters}
+              onChange={showFilters}
               multiline
               InputProps={{
                 startAdornment: (
@@ -123,6 +127,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               variant="outlined"
               value={filters.maxDistance}
               multiline
+              onClick={showFilters}
+              onChange={showFilters}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -144,6 +150,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               variant="outlined"
               value={filters.genres.join(", ")}
               multiline
+              onClick={showFilters}
+              onChange={showFilters}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -165,6 +173,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               variant="outlined"
               value={filters.bandTypes.join(", ")}
               multiline
+              onClick={showFilters}
+              onChange={showFilters}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

@@ -28,6 +28,7 @@ interface CustomInputProps {
   setValue: (newValue: string) => void;
   helperText: string;
   allValues: string[];
+  required: boolean;
 }
 
 const Picklist: React.FC<CustomInputProps> = ({
@@ -38,9 +39,10 @@ const Picklist: React.FC<CustomInputProps> = ({
   setValue,
   helperText,
   allValues,
+  required,
 }) => {
   return (
-    <FormControl fullWidth required error={error}>
+    <FormControl fullWidth required={required} error={error}>
       <InputLabel id={id + "-label"}>{label}</InputLabel>
       <Select
         labelId={id + "-label"}
