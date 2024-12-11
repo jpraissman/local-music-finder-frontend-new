@@ -70,26 +70,34 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
 
   const handleSubmit = () => {
     setSubmitted(true);
+    let bandTypes = filters.bandTypes.join(",");
+    let genres = filters.genres.join(",");
+    let maxDistance = filters.maxDistance;
+    let dateRange = filters.dateRange;
 
     if (filters.address !== null) {
       if (filters.bandTypes.length <= 0) {
         handleBandTypesChange(["All Types"]);
+        bandTypes = "All Types";
       }
       if (filters.genres.length <= 0) {
         handleGenresChange(["All Genres"]);
+        genres = "All Genres";
       }
       if (filters.maxDistance === "") {
         handleMaxDistanceChange("35 mi");
+        maxDistance = "35 mi";
       }
       if (filters.dateRange === "") {
         handleDateRangeChange("This Week (Mon-Sun)");
+        dateRange = "This Week (Mon-Sun)";
       }
 
-      const url = `/find/${filters.address.description}/${
-        filters.maxDistance
-      }/${filters.dateRange}/${filters.genres.join(
-        ","
-      )}/${filters.bandTypes.join(",")}`.replaceAll(" ", "%20");
+      const url =
+        `/find/${filters.address.description}/${maxDistance}/${dateRange}/${genres}/${bandTypes}`.replaceAll(
+          " ",
+          "%20"
+        );
 
       if (url === pathname) {
         hideFiltersForm();
