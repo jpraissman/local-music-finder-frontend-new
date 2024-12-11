@@ -2,6 +2,12 @@ import { NextResponse, NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
   
+  const response = NextResponse.next();
+  // Generate random id for the user if they don't have one already
+  if (req.cookies.get('user') === undefined) {
+    response.cookies.set('user', generateRandomId(), { path: '/', maxAge: 10 * 365 * 24 * 60 * 60 });
+  }
+  
   // Return if there is no search params in the url
   if (req.nextUrl.pathname.startsWith('/_next') || req.nextUrl.search.length < 1) {
     return NextResponse.next();
@@ -19,14 +25,8 @@ export function middleware(req: NextRequest) {
   }
 
   // Set a cookie based on the query parameter
-  const response = NextResponse.next();
   if (fromCookieValue !== null) {
     response.cookies.set('from', fromCookieValue, { path: '/', maxAge: 60 * 60 * 24 });
-  }
-
-  // Generate random id for the user if they don't have one already
-  if (req.cookies.get('user') === undefined) {
-    response.cookies.set('user', generateRandomId(), { path: '/', maxAge: 10 * 365 * 24 * 60 * 60 });
   }
 
   return response;
