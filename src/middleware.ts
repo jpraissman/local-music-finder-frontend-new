@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
   
   // Return if there is no search params in the url
   if (req.nextUrl.pathname.startsWith('/_next') || req.nextUrl.search.length < 1) {
-    return NextResponse.next();
+    return response;
   }
 
   // Get the "from" search param
