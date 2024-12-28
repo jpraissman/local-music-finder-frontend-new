@@ -66,6 +66,7 @@ export default async function Page({ params: { address } }: PageProps) {
         }}
         eventsInit={events}
         noFilters={false}
+        landingPage={false}
       />
     </>
   );

@@ -87,6 +87,7 @@ export default async function Page({
         }}
         eventsInit={events}
         noFilters={false}
+        landingPage={false}
       />
     </>
   );

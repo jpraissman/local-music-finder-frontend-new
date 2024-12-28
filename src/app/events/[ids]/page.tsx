@@ -51,6 +51,7 @@ export default async function Page({ params: { ids } }: PageProps) {
         }}
         eventsInit={events}
         noFilters={false}
+        landingPage={false}
       />
     </>
   );

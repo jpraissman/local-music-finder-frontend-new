@@ -17,6 +17,7 @@ export default function Page() {
         filters={blankFilters}
         eventsInit={[]}
         noFilters={true}
+        landingPage={false}
       />
     </>
   );
