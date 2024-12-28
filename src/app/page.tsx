@@ -105,29 +105,29 @@ export default function Home() {
               </Typography>
             </Box>
             <Typography sx={{ fontSize: "18px", paddingTop: "20px" }}>
-              We’re big music fans and enjoy nothing more than seeing a live
-              band near where we live. But finding whose playing can be not only
-              challenging and frustrating but also takes way too much time out
-              of everyone’s busy life. We can spend hours looking online but
-              more often than not, don’t find anywhere to go and see live music
-              which doesn’t help venues, musicians, or fans. <br />
-              <br />
-              And then it hit us – why not create a website that solves this
-              problem by offering a convenient way to find live music near us
-              which is how “TheLocalMusicFinder.com.” was born. <br /> <br />
-              We are building an online community where venue owners/managers,
-              musicians, and music fans can easily connect to promote and find
-              local music. Posting events and finding them is not only simple,
-              it is always up to date and will save everyone a great deal of
-              time (See <Link href="/faqs">FAQs</Link> for instructions on both
-              posting and finding events). <br />
-              <br />
-              As we grow this community, the TheLocalMusicFinder.com is entirely
-              free for everyone. All we ask is that you post events, look for
-              events, and tell everyone you know about TheLocalMusicFinder.com.{" "}
+              We’re passionate music fans who love nothing more than catching a
+              live band close to home. But finding out who’s playing nearby can
+              often be frustrating, time-consuming, and more effort than it’s
+              worth. After spending hours searching online, we often come up
+              empty-handed—leaving fans, venues, and musicians disconnected.{" "}
               <br />
               <br />
-              Thanks for your support, <br />
+              That’s when we had an idea: why not create a website to solve this
+              problem? And that’s how TheLocalMusicFinder.com was born. <br />{" "}
+              <br />
+              Our mission is to build an online community where venue owners,
+              managers, musicians, and music fans can connect seamlessly to
+              promote and discover local music. Posting and finding events is
+              not only easy, but it’s also always up-to-date, saving everyone
+              valuable time. (Check out our <Link href={"/faqs"}>FAQs</Link> for
+              step-by-step instructions on posting and finding events). <br />
+              <br />
+              As our community grows, TheLocalMusicFinder.com remains completely
+              free for everyone to use. All we ask is that you post events,
+              search for events, and help spread the word about
+              TheLocalMusicFinder.com. <br />
+              <br />
+              Thanks for your support! <br />
               Your friends at “TheLocalMusicFinder.com”
             </Typography>
           </Box>
