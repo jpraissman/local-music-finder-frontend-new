@@ -389,8 +389,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               >
                 <Typography sx={{ fontSize: { xs: "20px", lg: "25px" } }}>
                   {events.length === 1
-                    ? events.length + " event in New Jersey"
-                    : events.length + " events in New Jersey"}
+                    ? events.length + " event in New Jersey this week"
+                    : events.length + " events in New Jersey this week"}
                 </Typography>
                 <Typography
                   sx={{
