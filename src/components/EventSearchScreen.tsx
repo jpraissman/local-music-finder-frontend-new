@@ -35,12 +35,14 @@ interface CustomInputProps {
   filters: Filters;
   eventsInit: Event[];
   noFilters: boolean;
+  landingPage: boolean;
 }
 
 const EventSearchScreen: React.FC<CustomInputProps> = ({
   filters,
   eventsInit,
   noFilters,
+  landingPage,
 }) => {
   const [displayFiltersForm, setDisplayFiltersForm] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>(eventsInit);
@@ -376,6 +378,27 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                   {events.length === 1
                     ? events.length + " event found"
                     : events.length + " events found "}
+                </Typography>
+              </Stack>
+            )}
+            {landingPage && (
+              <Stack
+                direction="column"
+                spacing={1}
+                sx={{ width: "100%", textAlign: "center" }}
+              >
+                <Typography sx={{ fontSize: { xs: "20px", lg: "25px" } }}>
+                  {events.length === 1
+                    ? events.length + " event in New Jersey"
+                    : events.length + " events in New Jersey"}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: { xs: "20px", lg: "24px" },
+                    paddingBottom: "10px",
+                  }}
+                >
+                  Click <b>Edit</b> to narrow search
                 </Typography>
               </Stack>
             )}

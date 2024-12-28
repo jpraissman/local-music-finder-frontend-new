@@ -75,7 +75,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
     let maxDistance = filters.maxDistance;
     let dateRange = filters.dateRange;
 
-    if (filters.address !== null) {
+    if (filters.address !== null && filters.address.description !== "") {
       if (filters.bandTypes.length <= 0) {
         handleBandTypesChange(["All Types"]);
         bandTypes = "All Types";
@@ -159,7 +159,10 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           id="address-filter"
           label="Your Location (town, city, or zip) *"
           address={filters.address}
-          error={filters.address === null && submitted}
+          error={
+            (filters.address === null || filters.address.description === "") &&
+            submitted
+          }
           onAddressChange={handleAddressChange}
         />
       </Stack>
