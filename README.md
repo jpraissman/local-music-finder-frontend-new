@@ -11,3 +11,4 @@ This repo contains the frontend code for the web application. It is built in Typ
 - Easy to use search interface.
 - Includes input validation.
 - Lots of pages found throughout website.
+- And more!
