@@ -6,23 +6,25 @@ import { Metadata } from "next";
 
 interface PageProps {
   params: {
-    ids: string;
+    countyName: string;
   };
 }
 
-export function generateMetadata(): Metadata {
+export function generateMetadata({
+  params: { countyName },
+}: PageProps): Metadata {
   return {
-    title: "Live Music Events - The Local Music Finder",
+    title: `Live Music Events In ${countyName} - The Local Music Finder`,
   };
 }
 
 export const revalidate = 0;
 
-export default async function Page({ params: { ids } }: PageProps) {
+export default async function Page({ params: { countyName } }: PageProps) {
   let events: Event[] = [];
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_API_BASE_URL + `/events/all-events-this-week`
+      process.env.NEXT_PUBLIC_API_BASE_URL + `/events/county/${countyName}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -32,23 +34,23 @@ export default async function Page({ params: { ids } }: PageProps) {
 
   return (
     <>
-      <PageVisitTracker page="Landing Page With Events" />
+      <PageVisitTracker page="Events County Page" />
       <EventSearchScreen
         filters={{
-          dateRange: "This Week (Mon-Sun)",
+          dateRange: "Next 30 Days",
           address: {
             description: "",
             structured_formatting: blankStructuredFormatting,
           },
           maxDistance: "",
           genres: ["All Genres"],
-          bandTypes: ["All Types"],
+          bandTypes: ["All Genres"],
         }}
         eventsInit={events}
         noFilters={false}
         landingPage={true}
-        searchLocation="New Jersey"
-        searchDateRange="this week"
+        searchLocation={countyName.replace("%20", " ")}
+        searchDateRange="in the next month"
       />
     </>
   );
