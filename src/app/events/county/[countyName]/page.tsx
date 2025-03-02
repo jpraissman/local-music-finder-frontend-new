@@ -44,7 +44,7 @@ export default async function Page({ params: { countyName } }: PageProps) {
           },
           maxDistance: "",
           genres: ["All Genres"],
-          bandTypes: ["All Genres"],
+          bandTypes: ["All Types"],
         }}
         eventsInit={events}
         noFilters={false}
