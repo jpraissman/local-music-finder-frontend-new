@@ -26,16 +26,13 @@ export const revalidate = 0;
 export default async function Page({ params: { countyNames } }: PageProps) {
   let events: Event[] = [];
   try {
-    const countyNamesSplit = countyNames.split("%3A%3A");
-    countyNamesSplit.forEach(async (county) => {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_BASE_URL + `/events/county/${county}`
-      );
-      if (response.ok) {
-        const eventsRaw = await response.json();
-        events.push(eventsRaw.events);
-      }
-    });
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_BASE_URL + `/events/county/${countyNames}`
+    );
+    if (response.ok) {
+      const eventsRaw = await response.json();
+      events = eventsRaw.events;
+    }
   } catch (error) {}
 
   return (
