@@ -1,16 +1,20 @@
-interface MainTextMatchedSubstrings {
-  offset: number;
-  length: number;
-}
+import { z } from "zod";
 
-interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-  main_text_matched_substrings?: readonly MainTextMatchedSubstrings[];
-}
+const mainTextMatchedSubstringsSchema = z.object({
+  offset: z.number(),
+  length: z.number(),
+});
 
-interface PlaceType {
-  description: string;
-  structured_formatting: StructuredFormatting;
-}
-export default PlaceType;
+const structuredFormattingSchema = z.object({
+  main_text: z.string(),
+  secondary_text: z.string().optional(),
+  main_text_matched_substrings: z.array(mainTextMatchedSubstringsSchema),
+});
+
+export const placeTypeSchema = z.object({
+  description: z.string(),
+  structured_formatting: structuredFormattingSchema,
+  place_id: z.string(),
+});
+
+export type PlaceType = z.infer<typeof placeTypeSchema>;

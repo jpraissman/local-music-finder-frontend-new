@@ -59,6 +59,7 @@ export default async function Page({ params: { address } }: PageProps) {
           address: {
             description: TOWNS[address][0],
             structured_formatting: blankStructuredFormatting,
+            place_id: "",
           },
           maxDistance: "35 mi",
           genres: ["All Genres"],

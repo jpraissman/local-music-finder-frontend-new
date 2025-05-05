@@ -44,6 +44,7 @@ export default async function Page({ params: { countyNames } }: PageProps) {
           address: {
             description: "",
             structured_formatting: blankStructuredFormatting,
+            place_id: "",
           },
           maxDistance: "",
           genres: ["All Genres"],

@@ -44,6 +44,7 @@ export default async function Page({ params: { ids } }: PageProps) {
           address: {
             description: "",
             structured_formatting: blankStructuredFormatting,
+            place_id: "",
           },
           maxDistance: "",
           genres: [],
