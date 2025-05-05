@@ -1,10 +1,9 @@
-import { Stack, Button, Typography, CircularProgress } from "@mui/material";
-import { useState } from "react";
+"use client";
+
+import { Stack, Button, Typography } from "@mui/material";
 import MultiselectPicklist from "@/components/inputs/MultiselectPicklist";
 import Picklist from "@/components/inputs/Picklist";
 import Filters from "@/types/Filters";
-import AddressAutocomplete from "@/components/AddressAutocomplete";
-import PlaceType from "@/types/PlaceType";
 import {
   CalendarMonth,
   Group,
@@ -15,101 +14,59 @@ import {
 } from "@mui/icons-material";
 import { BAND_TYPES, GENRES } from "@/types/constants";
 import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import {
+  SearchFormFields,
+  searchFormSchema,
+} from "@/types/schemas/searchFormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import NewAddressAutocomplete from "./inputs/NewAddressAutocomplete";
 
 interface CustomInputProps {
   initialFilters: Filters;
-  hideFiltersForm: () => void;
 }
 
-const GetFiltersForm: React.FC<CustomInputProps> = ({
-  initialFilters,
-  hideFiltersForm,
-}) => {
+const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
   const router = useRouter();
-  const pathname = usePathname();
 
-  const [filters, setFilters] = useState<Filters>(initialFilters);
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  const [fetching, setFetching] = useState<boolean>(false);
-
-  const handleGenresChange = (newGenres: string[]) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      genres: newGenres,
-    }));
-  };
-
-  const handleBandTypesChange = (newBandTypes: string[]) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      bandTypes: newBandTypes,
-    }));
-  };
-
-  const handleDateRangeChange = (newDateRange: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      dateRange: newDateRange,
-    }));
-  };
-
-  const handleAddressChange = (newAddress: PlaceType | null) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      address: newAddress,
-    }));
-  };
-
-  const handleMaxDistanceChange = (newMaxDistance: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      maxDistance: newMaxDistance,
-    }));
-  };
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-    let bandTypes = filters.bandTypes.join(",");
-    let genres = filters.genres.join(",");
-    let maxDistance = filters.maxDistance;
-    let dateRange = filters.dateRange;
-
-    if (filters.address !== null && filters.address.description !== "") {
-      if (filters.bandTypes.length <= 0) {
-        handleBandTypesChange(["All Types"]);
-        bandTypes = "All Types";
-      }
-      if (filters.genres.length <= 0) {
-        handleGenresChange(["All Genres"]);
-        genres = "All Genres";
-      }
-      if (filters.maxDistance === "") {
-        handleMaxDistanceChange("35 mi");
-        maxDistance = "35 mi";
-      }
-      if (filters.dateRange === "") {
-        handleDateRangeChange("This Week (Mon-Sun)");
-        dateRange = "This Week (Mon-Sun)";
-      }
-
-      const url =
-        `/find/${filters.address.description}/${maxDistance}/${dateRange}/${genres}/${bandTypes}`.replaceAll(
-          " ",
-          "%20"
-        );
-
-      if (url === pathname) {
-        hideFiltersForm();
-      } else {
-        setFetching(true);
-        router.push(url);
-      }
-    }
-  };
+  const { register, handleSubmit, control, formState, watch } =
+    useForm<SearchFormFields>({
+      resolver: zodResolver(searchFormSchema),
+      defaultValues: {
+        genres:
+          initialFilters.genres.length > 0
+            ? initialFilters.genres
+            : ["All Genres"],
+        bandTypes:
+          initialFilters.bandTypes.length > 0
+            ? initialFilters.bandTypes
+            : ["All Types"],
+        maxDistance:
+          initialFilters.maxDistance === ""
+            ? "35 mi"
+            : initialFilters.maxDistance,
+        dateRange:
+          initialFilters.dateRange === ""
+            ? "Next 30 Days"
+            : initialFilters.dateRange,
+      },
+    });
 
   return (
-    <Stack direction="column" spacing={2.2} alignItems="center">
+    <Stack
+      direction="column"
+      spacing={2.2}
+      alignItems="center"
+      component="form"
+      onSubmit={handleSubmit((data) => {
+        const url =
+          `/find/${data.location.description}/${data.maxDistance}/${data.dateRange}/${data.genres}/${data.bandTypes}`.replaceAll(
+            " ",
+            "%20"
+          );
+        router.push(url);
+      })}
+    >
       <Typography variant="h5" sx={{ paddingBottom: 2, fontWeight: "bold" }}>
         Search For An Event
       </Typography>
@@ -128,10 +85,6 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           id="date-range-filter"
           label="When?"
           error={false}
-          required={false}
-          value={filters.dateRange}
-          setValue={handleDateRangeChange}
-          helperText=""
           allValues={[
             "Today",
             "Tomorrow",
@@ -142,6 +95,8 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
             "Next 30 Days",
             "Next 60 Days",
           ]}
+          control={control}
+          rhfName="dateRange"
         />
       </Stack>
       <Stack
@@ -155,15 +110,18 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
         }}
       >
         <House color="secondary" />
-        <AddressAutocomplete
-          id="address-filter"
-          label="Your Location (town, city, or zip) *"
-          address={filters.address}
-          error={
-            (filters.address === null || filters.address.description === "") &&
-            submitted
-          }
-          onAddressChange={handleAddressChange}
+        <Controller
+          name="location"
+          control={control}
+          render={({ field: { onChange, value, ref } }) => (
+            <NewAddressAutocomplete
+              id="address-filter"
+              label="Your Location (town, city, or zip)"
+              value={value ? value : null}
+              setValue={onChange}
+              error={!!formState.errors.location}
+            />
+          )}
         />
       </Stack>
       <Stack
@@ -181,11 +139,9 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           id="max-distance-filter"
           label="Distance you'd travel?"
           error={false}
-          required={false}
-          value={filters.maxDistance}
-          setValue={handleMaxDistanceChange}
-          helperText=""
           allValues={["5 mi", "10 mi", "20 mi", "35 mi", "50 mi", "100 mi"]}
+          control={control}
+          rhfName="maxDistance"
         />
       </Stack>
       <Stack
@@ -203,10 +159,9 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           label="Genre(s)"
           allLabel="All Genres"
           allValues={["All Genres", ...GENRES]}
-          selectedValues={filters.genres}
-          setValues={handleGenresChange}
           error={false}
-          required={false}
+          control={control}
+          rhfName="genres"
         />
       </Stack>
       <Stack
@@ -224,18 +179,14 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({
           label="Band Type(s)"
           allLabel="All Types"
           allValues={["All Types", ...BAND_TYPES]}
-          selectedValues={filters.bandTypes}
-          setValues={handleBandTypesChange}
           error={false}
-          required={false}
+          control={control}
+          rhfName="bandTypes"
         />
       </Stack>
-      {!fetching && (
-        <Button variant="contained" endIcon={<Search />} onClick={handleSubmit}>
-          Find Events
-        </Button>
-      )}
-      {fetching && <CircularProgress />}
+      <Button variant="contained" endIcon={<Search />} type="submit">
+        Find Events
+      </Button>
     </Stack>
   );
 };

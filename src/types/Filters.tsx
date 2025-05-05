@@ -1,8 +1,8 @@
-import PlaceType from "@/types/PlaceType";
+import { PlaceType } from "./PlaceType";
 
 interface Filters {
   dateRange: string;
-  address: PlaceType | null;
+  address: PlaceType | undefined;
   maxDistance: string;
   genres: string[];
   bandTypes: string[];
