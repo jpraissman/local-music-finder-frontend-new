@@ -75,7 +75,7 @@ export const blankEvent: Event = {
 
 export const blankFilters: Filters = {
   dateRange: "",
-  address: null,
+  address: undefined,
   maxDistance: "",
   genres: [],
   bandTypes: [],

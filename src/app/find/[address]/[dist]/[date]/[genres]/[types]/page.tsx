@@ -80,6 +80,7 @@ export default async function Page({
           address: {
             description: address.replaceAll("%20", " ").replaceAll("%2C", ","),
             structured_formatting: blankStructuredFormatting,
+            place_id: "",
           },
           maxDistance: dist.replaceAll("%20", " "),
           genres: genres.replaceAll("%20", " ").split("%2C"),
