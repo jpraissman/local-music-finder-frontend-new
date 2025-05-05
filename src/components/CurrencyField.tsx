@@ -2,23 +2,27 @@
 
 import { TextField } from "@mui/material";
 import React from "react";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-interface CustomInputProps {
+interface CurrencyFieldProps<TFieldValues extends FieldValues> {
   id: string;
   label: string;
   error: boolean;
-  value: string;
-  setValue: (newValue: string) => void;
+  control: Control<TFieldValues>;
+  rhfName: Path<TFieldValues>;
 }
 
-const CurrencyField: React.FC<CustomInputProps> = ({
+export default function CurrencyField<TFieldValues extends FieldValues>({
   id,
   label,
   error,
-  value,
-  setValue,
-}) => {
-  const handleChange = (newValue: string) => {
+  control,
+  rhfName,
+}: CurrencyFieldProps<TFieldValues>) {
+  const handleChange = (
+    newValue: string,
+    setValue: (newValue: string) => void
+  ) => {
     const firstChar = newValue.substring(0, 1);
     if (!Number.isNaN(Number(firstChar))) {
       setValue(firstChar);
@@ -36,18 +40,22 @@ const CurrencyField: React.FC<CustomInputProps> = ({
   };
 
   return (
-    <TextField
-      id={id}
-      label={label}
-      fullWidth
-      required
-      error={error}
-      variant="outlined"
-      value={value === "" ? "" : "$" + value}
-      onChange={(event) => handleChange(event.target.value)}
-      helperText={error ? "This field is required." : ""}
+    <Controller
+      name={rhfName}
+      control={control}
+      render={({ field: { onChange, value, ref } }) => (
+        <TextField
+          id={id}
+          label={label}
+          fullWidth
+          error={error}
+          variant="outlined"
+          value={value === "" ? "" : "$" + value}
+          onChange={(event) => handleChange(event.target.value, onChange)}
+          helperText={error ? "This field is required." : ""}
+          inputRef={ref}
+        />
+      )}
     />
   );
-};
-
-export default CurrencyField;
+}

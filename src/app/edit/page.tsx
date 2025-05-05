@@ -1,4 +1,4 @@
-import EditEvent from "@/components/EditEvent";
+import EventIdInput from "@/components/eventForm/EventIdInput";
 import PageVisitTracker from "@/components/PageVisitTracker";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <>
       <PageVisitTracker page="Edit" />
-      <EditEvent />
+      <EventIdInput />
     </>
   );
 }

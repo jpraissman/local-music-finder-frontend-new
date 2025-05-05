@@ -1,5 +1,6 @@
-import CreateEventForm from "@/components/eventForm/CreateEventForm";
+import EditEventForm from "@/components/eventForm/EditEventForm";
 import PageVisitTracker from "@/components/PageVisitTracker";
+import { getEventById } from "@/lib/get-event-by-id";
 import { loadBands } from "@/lib/load-bands";
 import { loadVenues } from "@/lib/load-venues";
 import {
@@ -9,28 +10,30 @@ import {
 } from "@tanstack/react-query";
 import { Metadata } from "next";
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Post An Event - The Local Music Finder",
-  description:
-    "Post your live music event to have it easily reach many live music fans in North Jersey. Posting live music events is super simple with The Local Music Finder.",
+  title: "Edit Your Event - The Local Music Finder",
 };
 
-export default async function Page() {
+export default async function Page({ params }: { params: { id: string } }) {
   const queryClient = new QueryClient();
 
   await Promise.all([
     queryClient.prefetchQuery({ queryKey: ["venues"], queryFn: loadVenues }),
     queryClient.prefetchQuery({ queryKey: ["bands"], queryFn: loadBands }),
+    queryClient.prefetchQuery({
+      queryKey: ["event-by-id"],
+      queryFn: () => getEventById(params.id),
+    }),
   ]);
 
   const dehydratedState = dehydrate(queryClient);
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PageVisitTracker page="Post" />
-      <CreateEventForm />
+      <PageVisitTracker page="Edit" />
+      <EditEventForm eventId={params.id} />
     </HydrationBoundary>
   );
 }

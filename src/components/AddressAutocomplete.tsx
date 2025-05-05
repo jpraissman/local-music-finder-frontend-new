@@ -9,8 +9,9 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
-import PlaceType from "@/types/PlaceType";
+import { PlaceType } from "@/types/PlaceType";
 import { FormControl, FormHelperText } from "@mui/material";
+import { blankStructuredFormatting } from "@/types/constants";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -130,7 +131,11 @@ const AddressAutocomplete: React.FC<CustomInputProps> = ({
         noOptionsText="Start typing location ..."
         onChange={(_event: any, newValue: PlaceType | null) => {
           setOptions(newValue ? [newValue, ...options] : options);
-          let newValueFinal: PlaceType | null = newValue;
+          let newValueFinal: PlaceType | null = {
+            description: newValue?.description || "",
+            structured_formatting:
+              newValue?.structured_formatting || blankStructuredFormatting,
+          };
           if (newValue !== null && newValue.description.includes("&")) {
             newValueFinal = {
               description: newValue.description.replaceAll("&", ""),

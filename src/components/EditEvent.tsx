@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import CreateEventForm from "./CreateEventForm";
+import CreateEventForm from "./OLDCreateEventForm";
 import { blankEvent, blankStructuredFormatting } from "@/types/constants";
 import Event from "@/types/Event";
 import dayjs from "dayjs";

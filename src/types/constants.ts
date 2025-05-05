@@ -1,5 +1,6 @@
 import Event from "@/types/Event"
 import Filters from "@/types/Filters"
+import { PlaceType } from "./PlaceType"
 
 export const GENRES = [
   "Alternative", "Blues", "Classic Rock", "Country", "Dance", "DJ", "EDM", "Folk", 
@@ -35,7 +36,13 @@ export const blankEventDetails = {
 export const blankStructuredFormatting = {
   main_text: "",
   secondary_text: "",
-  main_text_matched_substrings: undefined,
+  main_text_matched_substrings: [],
+}
+
+export const blankPlaceType: PlaceType = {
+  description: "",
+  structured_formatting: blankStructuredFormatting,
+  place_id: "",
 }
 
 export const blankEvent: Event = {

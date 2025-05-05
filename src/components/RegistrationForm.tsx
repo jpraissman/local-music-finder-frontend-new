@@ -8,8 +8,8 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import MultiselectPicklist from "@/components/MultiselectPicklist";
-import Picklist from "@/components/Picklist";
+import MultiselectPicklist from "@/components/inputs/MultiselectPicklist";
+import Picklist from "@/components/inputs/Picklist";
 import Filters from "@/types/Filters";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import PlaceType from "@/types/PlaceType";
