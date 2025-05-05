@@ -63,8 +63,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   return (
     <Grid container spacing={5} sx={{ paddingTop: "20px" }}>
       <Grid
-        item
-        xs={3}
+        size={3}
         sx={{
           display: { xs: "none", lg: "block" },
         }}
@@ -273,7 +272,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
           </Stack>
         </Stack>
       </Grid>
-      <Grid item xs={12} lg={9}>
+      <Grid size={{ xs: 12, lg: 9 }}>
         <>
           <Stack
             direction="column"
