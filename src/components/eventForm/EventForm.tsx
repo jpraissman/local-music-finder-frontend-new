@@ -30,7 +30,7 @@ import RHFDatePicker from "../inputs/RHFDatePicker";
 import RHFTimePicker from "../inputs/RHFTimePicker";
 import PhoneNumber from "../inputs/PhoneNumber";
 import Picklist from "../inputs/Picklist";
-import CurrencyField from "../CurrencyField";
+import CurrencyField from "../inputs/CurrencyField";
 import { Facebook, Instagram, Language } from "@mui/icons-material";
 import { EventFormFields } from "@/types/schemas/eventFormSchema";
 import FreeSoloAutocomplete from "../inputs/FreeSoloAutocomplete";
