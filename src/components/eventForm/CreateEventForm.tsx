@@ -19,9 +19,15 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const postEvent = async (data: EventFormFields) => {
+  const formattedData = {
+    ...data,
+    eventDate: data.eventDate.format("YYYY-MM-DD"),
+    eventStartTime: data.eventStartTime.format("HH:mm"),
+    eventEndTime: data.eventEndTime ? data.eventEndTime.format("HH:mm") : null,
+  };
   const response = await axios.post(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
-    data
+    formattedData
   );
   return response.data;
 };
@@ -51,7 +57,6 @@ export default function CreateEventForm() {
     <Box
       component="form"
       onSubmit={handleSubmit((data) => {
-        console.log(data);
         mutate(data);
       })}
       sx={{

@@ -32,9 +32,15 @@ const editEvent = async ({
   data: EventFormFields;
   eventId: string;
 }) => {
+  const formattedData = {
+    ...data,
+    eventDate: data.eventDate.format("YYYY-MM-DD"),
+    eventStartTime: data.eventStartTime.format("HH:mm"),
+    eventEndTime: data.eventEndTime ? data.eventEndTime.format("HH:mm") : null,
+  };
   const response = await axios.put(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}`,
-    data
+    formattedData
   );
   return response.data;
 };
@@ -121,7 +127,6 @@ export default function EditEventForm({ eventId }: EditEventFormProps) {
       <Box
         component="form"
         onSubmit={handleSubmit((data) => {
-          console.log(data);
           editEventMutation({ data, eventId });
         })}
         sx={{
