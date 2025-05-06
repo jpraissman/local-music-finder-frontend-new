@@ -6,6 +6,7 @@ import {
   BAND_TYPES,
 } from "@/types/constants";
 import Event from "@/types/Event";
+import dayjs from "dayjs";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -13,7 +14,8 @@ interface PageProps {
   params: {
     address: string;
     dist: string;
-    date: string;
+    fromDate: string;
+    toDate: string;
     genres: string;
     types: string;
   };
@@ -36,7 +38,7 @@ export function generateMetadata({ params: { address } }: PageProps): Metadata {
 export const revalidate = 0;
 
 export default async function Page({
-  params: { address, dist, date, genres, types },
+  params: { address, dist, fromDate, toDate, genres, types },
 }: PageProps) {
   const allCookies = cookies();
   let fromCookie = allCookies.get("from")?.value;
@@ -44,13 +46,10 @@ export default async function Page({
     fromCookie = "Unknown";
   }
 
-  const addressFormatted = address
-    .replaceAll("%20", "+")
-    .replaceAll("%2C", ",");
-  const distFormatted = dist.replaceAll("%20", "+");
-  const dateFormatted = date.replaceAll("%20", "+");
-  let genresFormatted = genres.replaceAll("%20", "+").split("%2C").join("::");
-  let typesFormatted = types.replaceAll("%20", "+").split("%2C").join("::");
+  const addressFormatted = address.replaceAll("-", "+").replaceAll("%2C", ",");
+  const distFormatted = dist.replaceAll("-", "+");
+  let genresFormatted = genres.replaceAll("-", "+").split("%2C").join("::");
+  let typesFormatted = types.replaceAll("-", "+").split("%2C").join("::");
 
   if (genresFormatted === "All+Genres") {
     genresFormatted = GENRES.join("::").replaceAll(" ", "+");
@@ -63,7 +62,7 @@ export default async function Page({
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?date_range=${dateFormatted}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}`
+        `/events?from_date=${fromDate}&to_date=${toDate}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -76,15 +75,18 @@ export default async function Page({
       <PageVisitTracker page="Custom Search" />
       <EventSearchScreen
         filters={{
-          dateRange: date.replaceAll("%20", " "),
+          dateRange: {
+            from: dayjs(fromDate).toDate(),
+            to: dayjs(toDate).toDate(),
+          },
           address: {
-            description: address.replaceAll("%20", " ").replaceAll("%2C", ","),
+            description: address.replaceAll("-", " ").replaceAll("%2C", ","),
             structured_formatting: blankStructuredFormatting,
             place_id: "",
           },
-          maxDistance: dist.replaceAll("%20", " "),
-          genres: genres.replaceAll("%20", " ").split("%2C"),
-          bandTypes: types.replaceAll("%20", " ").split("%2C"),
+          maxDistance: dist.replaceAll("-", " "),
+          genres: genres.replaceAll("-", " ").split("%2C"),
+          bandTypes: types.replaceAll("-", " ").split("%2C"),
         }}
         eventsInit={events}
         noFilters={false}

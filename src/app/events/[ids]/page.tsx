@@ -40,12 +40,8 @@ export default async function Page({ params: { ids } }: PageProps) {
       <PageVisitTracker page="Specific Events" />
       <EventSearchScreen
         filters={{
-          dateRange: "",
-          address: {
-            description: "",
-            structured_formatting: blankStructuredFormatting,
-            place_id: "",
-          },
+          dateRange: undefined,
+          address: undefined,
           maxDistance: "",
           genres: [],
           bandTypes: [],

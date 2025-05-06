@@ -30,6 +30,7 @@ import {
   Place,
 } from "@mui/icons-material";
 import dayjs from "dayjs";
+import { formatDateRange } from "@/lib/date-helpers";
 
 interface CustomInputProps {
   filters: Filters;
@@ -82,9 +83,9 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             </Typography>
             <TextField
               id="date-filter-value"
-              label="When?"
+              label="Date Range"
               variant="outlined"
-              value={filters.dateRange}
+              value={formatDateRange(filters.dateRange)}
               multiline
               onClick={showFilters}
               onChange={showFilters}
