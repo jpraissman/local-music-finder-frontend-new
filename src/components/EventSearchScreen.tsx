@@ -30,7 +30,7 @@ import {
   Place,
 } from "@mui/icons-material";
 import dayjs from "dayjs";
-import formatDateRange from "@/lib/format-date-range";
+import { formatDateRange } from "@/lib/date-helpers";
 
 interface CustomInputProps {
   filters: Filters;

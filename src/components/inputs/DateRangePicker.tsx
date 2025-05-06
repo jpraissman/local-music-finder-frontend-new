@@ -1,4 +1,4 @@
-import formatDateRange from "@/lib/format-date-range";
+import { formatDateRange } from "@/lib/date-helpers";
 import { Button, Modal, Stack, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -11,6 +11,7 @@ interface DateRangePickerProps<TFieldValues extends FieldValues> {
   label: string;
   error: boolean;
   errorMsg: string | undefined;
+  initialValue: DateRange | undefined;
 }
 
 export default function DateRangePicker<TFieldValues extends FieldValues>({
@@ -19,9 +20,12 @@ export default function DateRangePicker<TFieldValues extends FieldValues>({
   label,
   error,
   errorMsg,
+  initialValue,
 }: DateRangePickerProps<TFieldValues>) {
   const [selected, setSelected] = useState(false);
-  const [dateRangeFormatted, setDateRangeFormatted] = useState<string>("");
+  const [dateRangeFormatted, setDateRangeFormatted] = useState<string>(
+    initialValue ? formatDateRange(initialValue) : ""
+  );
 
   return (
     <>
@@ -58,9 +62,9 @@ export default function DateRangePicker<TFieldValues extends FieldValues>({
             control={control}
             render={({ field: { value, onChange } }) => (
               <DayPicker
-                timeZone="America/New_York"
                 mode="range"
                 selected={value}
+                disabled={{ before: new Date() }}
                 onSelect={(newDateRange) => {
                   if (newDateRange && newDateRange.from && newDateRange.to) {
                     onChange(newDateRange);

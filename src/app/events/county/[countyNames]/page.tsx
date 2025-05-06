@@ -40,12 +40,8 @@ export default async function Page({ params: { countyNames } }: PageProps) {
       <PageVisitTracker page="Events County Page" />
       <EventSearchScreen
         filters={{
-          dateRange: "Next 30 Days",
-          address: {
-            description: "",
-            structured_formatting: blankStructuredFormatting,
-            place_id: "",
-          },
+          dateRange: undefined,
+          address: undefined,
           maxDistance: "",
           genres: ["All Genres"],
           bandTypes: ["All Types"],

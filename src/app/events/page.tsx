@@ -35,12 +35,8 @@ export default async function Page({ params: { ids } }: PageProps) {
       <PageVisitTracker page="Landing Page With Events" />
       <EventSearchScreen
         filters={{
-          dateRange: "This Week (Mon-Sun)",
-          address: {
-            description: "",
-            structured_formatting: blankStructuredFormatting,
-            place_id: "",
-          },
+          dateRange: undefined,
+          address: undefined,
           maxDistance: "",
           genres: ["All Genres"],
           bandTypes: ["All Types"],

@@ -22,6 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import NewAddressAutocomplete from "./inputs/NewAddressAutocomplete";
 import DateRangePicker from "./inputs/DateRangePicker";
+import dayjs from "dayjs";
 
 interface CustomInputProps {
   initialFilters: Filters;
@@ -30,23 +31,18 @@ interface CustomInputProps {
 const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
   const router = useRouter();
 
-  const { handleSubmit, control, formState } = useForm<SearchFormFields>({
-    resolver: zodResolver(searchFormSchema),
-    defaultValues: {
-      genres:
-        initialFilters.genres.length > 0
-          ? initialFilters.genres
-          : ["All Genres"],
-      bandTypes:
-        initialFilters.bandTypes.length > 0
-          ? initialFilters.bandTypes
-          : ["All Types"],
-      maxDistance:
-        initialFilters.maxDistance === ""
-          ? "35 mi"
-          : initialFilters.maxDistance,
-    },
-  });
+  const { handleSubmit, control, formState, watch } = useForm<SearchFormFields>(
+    {
+      resolver: zodResolver(searchFormSchema),
+      defaultValues: {
+        genres: initialFilters.genres,
+        bandTypes: initialFilters.bandTypes,
+        maxDistance: initialFilters.maxDistance,
+        location: initialFilters.address,
+        dateRange: initialFilters.dateRange,
+      },
+    }
+  );
 
   return (
     <Stack
@@ -55,11 +51,16 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
       alignItems="center"
       component="form"
       onSubmit={handleSubmit((data) => {
-        const url =
-          `/find/${data.location.description}/${data.maxDistance}/${data.dateRange}/${data.genres}/${data.bandTypes}`.replaceAll(
-            " ",
-            "%20"
-          );
+        const fromDate = dayjs(data.dateRange.from).format("YYYY-MM-DD");
+        const toDate = dayjs(data.dateRange.to).format("YYYY-MM-DD");
+        const maxDistance =
+          data.maxDistance === "" ? "35 mi" : data.maxDistance;
+        const genres = data.genres.length === 0 ? ["All Genres"] : data.genres;
+        const bandTypes =
+          data.bandTypes.length === 0 ? ["All Types"] : data.bandTypes;
+
+        // prettier-ignore
+        const url = `/find/${data.location.description}/${maxDistance}/${fromDate}/${toDate}/${genres.join(",")}/${bandTypes.join(",")}`.replaceAll(" ", "-");
         router.push(url);
       })}
     >
@@ -83,6 +84,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
           rhfName="dateRange"
           error={!!formState.errors.dateRange}
           errorMsg={formState.errors.dateRange?.message}
+          initialValue={watch("dateRange")}
         />
       </Stack>
       <Stack
