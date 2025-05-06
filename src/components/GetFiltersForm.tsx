@@ -21,6 +21,7 @@ import {
 } from "@/types/schemas/searchFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import NewAddressAutocomplete from "./inputs/NewAddressAutocomplete";
+import DateRangePicker from "./inputs/DateRangePicker";
 
 interface CustomInputProps {
   initialFilters: Filters;
@@ -29,28 +30,23 @@ interface CustomInputProps {
 const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
   const router = useRouter();
 
-  const { register, handleSubmit, control, formState, watch } =
-    useForm<SearchFormFields>({
-      resolver: zodResolver(searchFormSchema),
-      defaultValues: {
-        genres:
-          initialFilters.genres.length > 0
-            ? initialFilters.genres
-            : ["All Genres"],
-        bandTypes:
-          initialFilters.bandTypes.length > 0
-            ? initialFilters.bandTypes
-            : ["All Types"],
-        maxDistance:
-          initialFilters.maxDistance === ""
-            ? "35 mi"
-            : initialFilters.maxDistance,
-        dateRange:
-          initialFilters.dateRange === ""
-            ? "Next 30 Days"
-            : initialFilters.dateRange,
-      },
-    });
+  const { handleSubmit, control, formState } = useForm<SearchFormFields>({
+    resolver: zodResolver(searchFormSchema),
+    defaultValues: {
+      genres:
+        initialFilters.genres.length > 0
+          ? initialFilters.genres
+          : ["All Genres"],
+      bandTypes:
+        initialFilters.bandTypes.length > 0
+          ? initialFilters.bandTypes
+          : ["All Types"],
+      maxDistance:
+        initialFilters.maxDistance === ""
+          ? "35 mi"
+          : initialFilters.maxDistance,
+    },
+  });
 
   return (
     <Stack
@@ -81,22 +77,12 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
         }}
       >
         <CalendarMonth color="primary" />
-        <Picklist
-          id="date-range-filter"
-          label="When?"
-          error={false}
-          allValues={[
-            "Today",
-            "Tomorrow",
-            "This Weekend (Fri-Sun)",
-            "Next Weekend (Fri-Sun)",
-            "This Week (Mon-Sun)",
-            "Next Week (Mon-Sun)",
-            "Next 30 Days",
-            "Next 60 Days",
-          ]}
+        <DateRangePicker
+          label="Select a Date Range *"
           control={control}
           rhfName="dateRange"
+          error={!!formState.errors.dateRange}
+          errorMsg={formState.errors.dateRange?.message}
         />
       </Stack>
       <Stack
@@ -116,7 +102,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
           render={({ field: { onChange, value, ref } }) => (
             <NewAddressAutocomplete
               id="address-filter"
-              label="Your Location (town, city, or zip)"
+              label="Your Location (town, city, or zip) *"
               value={value ? value : null}
               setValue={onChange}
               error={!!formState.errors.location}

@@ -5,6 +5,7 @@ import WebsiteFooter from "../components/WebsiteFooter";
 import { Box } from "@mui/material";
 import Script from "next/script";
 import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
+import "react-day-picker/style.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
