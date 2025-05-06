@@ -1,6 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
 import PageVisitTracker from "@/components/PageVisitTracker";
-import { blankStructuredFormatting } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
 

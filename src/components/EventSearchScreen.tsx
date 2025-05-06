@@ -108,7 +108,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               id="address-filter-value"
               label="Your Location (town, city, or zip)"
               variant="outlined"
-              value={filters.address?.description}
+              value={filters.address ? filters.address.description : ""}
               onClick={showFilters}
               onChange={showFilters}
               multiline
@@ -364,7 +364,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                 </Button>
               </Box>
             </Stack>
-            {filters.address?.description !== "" && (
+            {filters.address && (
               <Stack
                 direction="column"
                 spacing={1}
@@ -375,7 +375,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                     fontWeight={"bold"}
                     sx={{ fontSize: { xs: "20px", lg: "25px" } }}
                   >
-                    {"Live Music near " + filters.address?.description}
+                    {"Live Music near " + filters.address.description}
                   </Typography>
                 )}
                 <Typography sx={{ fontSize: { xs: "20px", lg: "24px" } }}>
