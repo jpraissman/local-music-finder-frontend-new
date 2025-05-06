@@ -1,6 +1,7 @@
+"use client";
+
 import { formatDateRange } from "@/lib/date-helpers";
 import { Button, Modal, Stack, TextField } from "@mui/material";
-import dayjs from "dayjs";
 import { useState } from "react";
 import { DayPicker, DateRange } from "react-day-picker";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
@@ -66,10 +67,10 @@ export default function DateRangePicker<TFieldValues extends FieldValues>({
                 selected={value}
                 disabled={{ before: new Date() }}
                 onSelect={(newDateRange) => {
-                  if (newDateRange && newDateRange.from && newDateRange.to) {
-                    onChange(newDateRange);
-                    setDateRangeFormatted(formatDateRange(newDateRange));
-                  }
+                  onChange(newDateRange ? newDateRange : null);
+                  setDateRangeFormatted(
+                    newDateRange ? formatDateRange(newDateRange) : ""
+                  );
                 }}
               />
             )}

@@ -1,4 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
+import EventSearchScreenWrapper from "@/components/EventSearchScreenWrapper";
 import PageVisitTracker from "@/components/PageVisitTracker";
 import {
   blankStructuredFormatting,
@@ -73,12 +74,9 @@ export default async function Page({
   return (
     <>
       <PageVisitTracker page="Custom Search" />
-      <EventSearchScreen
+      <EventSearchScreenWrapper
         filters={{
-          dateRange: {
-            from: dayjs(fromDate).toDate(),
-            to: dayjs(toDate).toDate(),
-          },
+          dateRange: undefined,
           address: {
             description: address.replaceAll("-", " ").replaceAll("%2C", ","),
             structured_formatting: blankStructuredFormatting,
@@ -91,6 +89,8 @@ export default async function Page({
         eventsInit={events}
         noFilters={false}
         landingPage={false}
+        fromDate={fromDate}
+        toDate={toDate}
       />
     </>
   );

@@ -20,15 +20,15 @@ export const phoneSchema = z.union([z.literal(""), z.string().regex(/^\d{3}-\d{3
 export const facebookUrlSchema = z
   .string()
   .regex(
-    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*facebook\.com\/[A-Za-z0-9\.]+\/?$/,
+    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*facebook\.com\/.+$/,
     { message: "Must be a valid Facebook link" }
   );
 
 export const instagramUrlSchema = z
   .string()
   .regex(
-    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*instagram\.com\/[A-Za-z0-9\.]+\/?$/,
-    { message: "Must be a valid Facebook link" }
+    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)*instagram\.com\/.+$/,
+    { message: "Must be a valid Instagram link" }
   );
 
 export const urlSchema = z
