@@ -108,6 +108,7 @@ const GetFiltersForm: React.FC<CustomInputProps> = ({ initialFilters }) => {
               value={value ? value : null}
               setValue={onChange}
               error={!!formState.errors.location}
+              landingPage={false}
             />
           )}
         />

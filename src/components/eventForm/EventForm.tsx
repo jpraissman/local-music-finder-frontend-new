@@ -254,6 +254,7 @@ export default function EventForm({
                   value={value ? value : null}
                   setValue={onChange}
                   error={!!errors.venueAddress}
+                  landingPage={false}
                 />
               )}
             />
