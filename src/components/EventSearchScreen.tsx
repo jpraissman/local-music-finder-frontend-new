@@ -276,8 +276,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
         <>
           <Stack
             direction="column"
-            spacing={2}
-            sx={{ display: "flex", alignItems: "center" }}
+            spacing={2.5}
+            sx={{ display: "flex", alignItems: "center", paddingX: "25px" }}
           >
             <Stack
               direction="row"
