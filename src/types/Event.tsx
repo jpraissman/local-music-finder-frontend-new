@@ -24,5 +24,8 @@ interface Event {
   event_id: string;
   email_address: string;
   event_datetime: string;
+  youtube_id: string;
+  ranking_position: number;
+  town: string;
 }
 export default Event;

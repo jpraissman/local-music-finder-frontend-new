@@ -13,13 +13,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import GetFiltersForm from "@/components/GetFiltersForm";
 import Filters from "@/types/Filters";
 import Event from "@/types/Event";
-import EventCard from "@/components/EventCard";
 import {
   CalendarMonth,
   Clear,
@@ -31,6 +29,7 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { formatDateRange } from "@/lib/date-helpers";
+import NewEventCard from "./eventCard/NewEventCard";
 
 interface CustomInputProps {
   filters: Filters;
@@ -409,7 +408,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
               </Stack>
             )}
             {events.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <NewEventCard key={event.id} event={event} />
             ))}
             <Box
               sx={{

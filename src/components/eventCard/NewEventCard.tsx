@@ -1,0 +1,56 @@
+"use client";
+
+import Event from "@/types/Event";
+import { Box, Stack } from "@mui/material";
+import dynamic from "next/dynamic";
+import NamesAndGenres from "./NamesAndGenres";
+import OtherEventDetails from "./OtherEventDetails";
+import Image from "next/image";
+import get_random_image from "@/lib/get-random-image";
+
+export interface NewEventCardProps {
+  event: Event;
+}
+
+export default function NewEventCard({ event }: NewEventCardProps) {
+  const YouTubeVideo = dynamic(() => import("./YouTubeVideo"), { ssr: false });
+
+  return (
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      sx={{
+        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: "0 12px 20px rgba(0,0,0,0.12)",
+        },
+        backgroundColor: "rgba(244, 241, 241, 0.98)",
+        borderRadius: "25px",
+        width: "100%",
+      }}
+    >
+      <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+        {event.youtube_id === "" && (
+          <Image
+            src={get_random_image(event.ranking_position)}
+            width={1000}
+            height={1000}
+            alt="Image"
+            style={{
+              width: "100%",
+              height: "auto",
+            }}
+          ></Image>
+        )}
+        {event.youtube_id !== "" && <YouTubeVideo videoId={event.youtube_id} />}
+      </Box>
+      <Box sx={{ width: { xs: "90%", md: "50%" }, padding: "20px" }}>
+        <Stack direction="row">
+          <NamesAndGenres event={event} />
+          <OtherEventDetails event={event} />
+        </Stack>
+      </Box>
+    </Stack>
+  );
+}

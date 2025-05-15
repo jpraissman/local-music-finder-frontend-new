@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import NavBar from "../components/NavBar";
-import WebsiteFooter from "../components/WebsiteFooter";
 import { Box } from "@mui/material";
 import Script from "next/script";
 import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
 import "react-day-picker/style.css";
+import NavBar from "@/components/navBar/NavBar";
+import ThemeWrapper from "@/components/ThemeWrapper";
+import Footer from "@/components/footer/Footer";
+import WebsiteFooter from "@/components/WebsiteFooter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,14 +38,18 @@ export default function RootLayout({
             gtag('config', 'G-20R9LPJNBJ');`}
           </Script>
         </head>
-        <body className={inter.className}>
-          <Box sx={{ minHeight: "100vh" }}>
-            <NavBar />
-            <div>{children}</div>
-          </Box>
-          <Box sx={{ paddingTop: "100px" }}>
-            <WebsiteFooter />
-          </Box>
+        <body className={inter.className} style={{ margin: 0 }}>
+          <ThemeWrapper>
+            <Box sx={{ minHeight: "100vh" }}>
+              <NavBar />
+              <Box sx={{ paddingTop: "75px" }}>
+                <div>{children}</div>
+              </Box>
+            </Box>
+            <Box sx={{ paddingTop: "100px" }}>
+              <WebsiteFooter />
+            </Box>
+          </ThemeWrapper>
         </body>
       </html>
     </ReactQueryClientProvider>

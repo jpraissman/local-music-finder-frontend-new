@@ -15,6 +15,7 @@ import parse from "autosuggest-highlight/parse";
 // import throttle from 'lodash/throttle';
 import { debounce } from "@mui/material/utils";
 import { PlaceType } from "@/types/PlaceType";
+import { InputAdornment } from "@mui/material";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -111,6 +112,7 @@ interface NewAddressAutocompleteProps {
   error: boolean;
   value: PlaceType | null;
   setValue: (newValue: PlaceType | null) => void;
+  landingPage: boolean;
 }
 
 export default function NewAddressAutocomplete({
@@ -119,6 +121,7 @@ export default function NewAddressAutocomplete({
   error,
   value,
   setValue,
+  landingPage,
 }: NewAddressAutocompleteProps) {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] =
@@ -226,15 +229,25 @@ export default function NewAddressAutocomplete({
       renderInput={(params) => (
         <TextField
           {...params}
-          label={label}
+          label={landingPage ? undefined : label}
+          placeholder={landingPage ? label : undefined}
           fullWidth
           error={error}
           helperText={error ? "This field is required." : undefined}
           slotProps={{
             inputLabel: { shrink: value !== null || isFocused },
+            input: {
+              ...params.InputProps,
+              startAdornment: landingPage ? (
+                <InputAdornment position="start">
+                  <LocationOnIcon />
+                </InputAdornment>
+              ) : undefined,
+            },
           }}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          sx={{ backgroundColor: "white" }}
         />
       )}
       renderOption={(props, option) => {
