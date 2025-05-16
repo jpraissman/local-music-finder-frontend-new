@@ -71,6 +71,9 @@ export const blankEvent: Event = {
   event_id: "",
   email_address: "",
   event_datetime: "",
+  town: "",
+  youtube_id: "",
+  ranking_position: -1,
 }
 
 export const blankFilters: Filters = {
