@@ -15,6 +15,9 @@ import {
   Radio,
   useTheme,
   useMediaQuery,
+  useScrollTrigger,
+  Fade,
+  Fab,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import GetFiltersForm from "@/components/GetFiltersForm";
@@ -24,8 +27,11 @@ import {
   CalendarMonth,
   Clear,
   Edit,
+  Filter,
+  FilterList,
   Group,
   House,
+  KeyboardArrowUp,
   MusicNote,
   Place,
 } from "@mui/icons-material";
@@ -58,6 +64,11 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
 
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 200,
+  });
 
   useEffect(() => {
     if (noFilters) {
@@ -480,6 +491,18 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             </Box>
           </Box>
         </Modal>
+        <Fade in={trigger}>
+          <Box sx={{ position: "fixed", bottom: 16, right: 16 }}>
+            <Fab
+              size={isMdUp ? "large" : "small"}
+              aria-label="edit filters"
+              onClick={showFilters}
+              color="primary"
+            >
+              <FilterList />
+            </Fab>
+          </Box>
+        </Fade>
       </Grid>
     </Grid>
   );
