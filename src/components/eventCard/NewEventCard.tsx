@@ -41,10 +41,15 @@ export default function NewEventCard({ event, size }: NewEventCardProps) {
             style={{
               width: "100%",
               height: "auto",
+              borderTopLeftRadius: "25px",
+              borderTopRightRadius: size === "Small" ? "25px" : "0px",
+              borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
             }}
           ></Image>
         )}
-        {event.youtube_id !== "" && <YouTubeVideo videoId={event.youtube_id} />}
+        {event.youtube_id !== "" && (
+          <YouTubeVideo videoId={event.youtube_id} size={size} />
+        )}
       </Box>
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
         <Stack direction="row">

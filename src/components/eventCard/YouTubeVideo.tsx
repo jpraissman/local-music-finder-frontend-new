@@ -21,8 +21,18 @@ declare global {
 
 interface YouTubeVideoProps {
   videoId: string;
+  size: "Small" | "Large";
 }
 
-export default function YouTubeVideo({ videoId }: YouTubeVideoProps) {
-  return <lite-youtube videoid={videoId} />;
+export default function YouTubeVideo({ videoId, size }: YouTubeVideoProps) {
+  return (
+    <lite-youtube
+      videoid={videoId}
+      style={{
+        borderTopLeftRadius: "25px",
+        borderTopRightRadius: size === "Small" ? "25px" : "0px",
+        borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
+      }}
+    />
+  );
 }
