@@ -42,7 +42,7 @@ export default function RootLayout({
           <ThemeWrapper>
             <Box sx={{ minHeight: "100vh" }}>
               <NavBar />
-              <Box sx={{ paddingTop: "75px" }}>
+              <Box sx={{ paddingTop: "100px" }}>
                 <div>{children}</div>
               </Box>
             </Box>
