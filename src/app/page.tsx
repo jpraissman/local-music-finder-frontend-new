@@ -1,4 +1,5 @@
 import LandingPage from "@/components/landingPage/LandingPage";
+import axios from "axios";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,6 +8,12 @@ export const metadata: Metadata = {
     "Find live music events in North Jersey. Easily post your live music events to reach many people.",
 };
 
-export default function Home() {
-  return <LandingPage />;
+export const revalidate = 60;
+
+export default async function Page() {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/upcoming`
+  );
+
+  return <LandingPage upcomingEvents={response.data.events} />;
 }

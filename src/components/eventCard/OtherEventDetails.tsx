@@ -1,14 +1,13 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { NewEventCardProps } from "./NewEventCard";
 import {
   AttachMoney,
   CalendarMonth,
   LocationOn,
   MusicNote,
 } from "@mui/icons-material";
-import Link from "next/link";
+import Event from "@/types/Event";
 
-export default function OtherEventDetails({ event }: NewEventCardProps) {
+export default function OtherEventDetails({ event }: { event: Event }) {
   return (
     <Stack direction="column" spacing={1.2} sx={{ width: "50%" }}>
       <Stack direction="row" spacing={0.7}>
@@ -20,7 +19,9 @@ export default function OtherEventDetails({ event }: NewEventCardProps) {
       <Stack direction="row" spacing={0.7}>
         <LocationOn sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
         <Typography variant="body1">
-          {event.town + " (" + event.distance_formatted + ")"}
+          {event.distance_formatted === ""
+            ? event.town
+            : event.town + " (" + event.distance_formatted + ")"}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={0.7}>

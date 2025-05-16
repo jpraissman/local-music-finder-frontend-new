@@ -10,14 +10,15 @@ import get_random_image from "@/lib/get-random-image";
 
 export interface NewEventCardProps {
   event: Event;
+  size: "Small" | "Large";
 }
 
-export default function NewEventCard({ event }: NewEventCardProps) {
+export default function NewEventCard({ event, size }: NewEventCardProps) {
   const YouTubeVideo = dynamic(() => import("./YouTubeVideo"), { ssr: false });
 
   return (
     <Stack
-      direction={{ xs: "column", md: "row" }}
+      direction={size === "Small" ? "column" : "row"}
       sx={{
         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
         transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
@@ -30,7 +31,7 @@ export default function NewEventCard({ event }: NewEventCardProps) {
         width: "100%",
       }}
     >
-      <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+      <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
         {event.youtube_id === "" && (
           <Image
             src={get_random_image(event.ranking_position)}
@@ -45,7 +46,7 @@ export default function NewEventCard({ event }: NewEventCardProps) {
         )}
         {event.youtube_id !== "" && <YouTubeVideo videoId={event.youtube_id} />}
       </Box>
-      <Box sx={{ width: { xs: "90%", md: "50%" }, padding: "20px" }}>
+      <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
         <Stack direction="row">
           <NamesAndGenres event={event} />
           <OtherEventDetails event={event} />

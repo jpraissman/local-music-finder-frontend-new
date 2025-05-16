@@ -1,8 +1,8 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
-import { NewEventCardProps } from "./NewEventCard";
 import SocialMediaIcons from "./SocialMediaIcons";
+import Event from "@/types/Event";
 
-export default function NamesAndGenres({ event }: NewEventCardProps) {
+export default function NamesAndGenres({ event }: { event: Event }) {
   return (
     <Stack direction="column" sx={{ width: "50%" }}>
       <Typography variant="h5">{event.venue_name}</Typography>

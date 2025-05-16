@@ -3,7 +3,7 @@ import LandingPageCard from "./LandingPageCard";
 
 export default function SectionSection() {
   return (
-    <Box sx={{ paddingTop: "40px" }}>
+    <Box sx={{ paddingTop: "40px", paddingBottom: "60px" }}>
       <Stack
         direction="column"
         spacing={2}
