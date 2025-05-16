@@ -4,9 +4,27 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { PlaceType } from "@/types/PlaceType";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 export default function FirstSection() {
   const [location, setLocation] = useState<PlaceType | null>(null);
+  const router = useRouter();
+
+  const findEvents = () => {
+    if (location) {
+      const today = dayjs().format("YYYY-MM-DD");
+      const twoWeeksFromToday = dayjs().add(14, "day").format("YYYY-MM-DD");
+      router.push(
+        `/find/${location.description.replaceAll(
+          " ",
+          "-"
+        )}/35-mi/${today}/${twoWeeksFromToday}/All-Genres/All-Types`
+      );
+    } else {
+      router.push("/find");
+    }
+  };
 
   return (
     <Box
@@ -76,6 +94,7 @@ export default function FirstSection() {
               color="secondary"
               size="large"
               sx={{ minWidth: "250px" }}
+              onClick={findEvents}
             >
               Find Music Events
             </Button>

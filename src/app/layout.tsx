@@ -4,10 +4,10 @@ import { Box } from "@mui/material";
 import Script from "next/script";
 import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
 import "react-day-picker/style.css";
-import NavBar from "@/components/navBar/NavBar";
 import ThemeWrapper from "@/components/ThemeWrapper";
 import Footer from "@/components/footer/Footer";
 import WebsiteFooter from "@/components/WebsiteFooter";
+import NavBar from "@/components/navBar/NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,7 +42,7 @@ export default function RootLayout({
           <ThemeWrapper>
             <Box sx={{ minHeight: "100vh" }}>
               <NavBar />
-              <Box sx={{ paddingTop: "100px" }}>
+              <Box sx={{ paddingTop: "75px" }}>
                 <div>{children}</div>
               </Box>
             </Box>
