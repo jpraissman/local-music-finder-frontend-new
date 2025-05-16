@@ -13,6 +13,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import GetFiltersForm from "@/components/GetFiltersForm";
@@ -53,6 +55,9 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   const [sort, setSort] = useState<string>("date");
 
   const showFilters = () => setDisplayFiltersForm(true);
+
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
     if (noFilters) {
@@ -407,9 +412,13 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
                 </Typography>
               </Stack>
             )}
-            {events.map((event) => (
-              <NewEventCard key={event.id} event={event} />
-            ))}
+            {events.map((event) => {
+              return isMdUp ? (
+                <NewEventCard key={event.id} event={event} size="Large" />
+              ) : (
+                <NewEventCard key={event.id} event={event} size="Small" />
+              );
+            })}
             <Box
               sx={{
                 paddingTop: "10px",

@@ -1,13 +1,13 @@
 import { IconButton, Stack } from "@mui/material";
-import { NewEventCardProps } from "./NewEventCard";
 import { Facebook, Instagram, Language } from "@mui/icons-material";
+import Event from "@/types/Event";
 
 function toAbsoluteUrl(url: string) {
   if (/^https?:\/\//i.test(url)) return url;
   return `https://${url}`;
 }
 
-export default function SocialMediaIcons({ event }: NewEventCardProps) {
+export default function SocialMediaIcons({ event }: { event: Event }) {
   return (
     <Stack direction="row">
       {event.facebook_handle !== "" && (

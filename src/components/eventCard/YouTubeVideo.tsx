@@ -24,5 +24,5 @@ interface YouTubeVideoProps {
 }
 
 export default function YouTubeVideo({ videoId }: YouTubeVideoProps) {
-  return <lite-youtube videoid={videoId} title="Test Title" />;
+  return <lite-youtube videoid={videoId} />;
 }
