@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 
 export default function FirstSection() {
   const [location, setLocation] = useState<PlaceType | null>(null);
+  const [locationError, setLocationError] = useState(false);
   const router = useRouter();
 
   const findEvents = () => {
@@ -22,7 +23,7 @@ export default function FirstSection() {
         )}/35-mi/${today}/${twoWeeksFromToday}/All-Genres/All-Types`
       );
     } else {
-      router.push("/find");
+      setLocationError(true);
     }
   };
 
@@ -83,10 +84,13 @@ export default function FirstSection() {
               value={location}
               setValue={(newLocation: PlaceType | null) => {
                 setLocation(newLocation);
+                if (newLocation) {
+                  setLocationError(false);
+                }
               }}
               id="location-input"
               label="Enter your location"
-              error={false}
+              error={locationError}
               landingPage={true}
             />
             <Button

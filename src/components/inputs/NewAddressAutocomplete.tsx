@@ -233,7 +233,9 @@ export default function NewAddressAutocomplete({
           placeholder={landingPage ? label : undefined}
           fullWidth
           error={error}
-          helperText={error ? "This field is required." : undefined}
+          helperText={
+            error && !landingPage ? "This field is required." : undefined
+          }
           slotProps={{
             inputLabel: { shrink: value !== null || isFocused },
             input: {
@@ -247,7 +249,13 @@ export default function NewAddressAutocomplete({
           }}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          sx={{ backgroundColor: "white" }}
+          sx={{
+            backgroundColor: "white",
+            "& .MuiInputBase-input::placeholder": {
+              color: error ? "red" : "gray",
+              opacity: error ? 1 : 0.42,
+            },
+          }}
         />
       )}
       renderOption={(props, option) => {
