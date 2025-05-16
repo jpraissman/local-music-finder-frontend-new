@@ -1,7 +1,7 @@
 "use client";
 
 import { formatDateRange } from "@/lib/date-helpers";
-import { Button, Modal, Stack, TextField } from "@mui/material";
+import { Button, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { DayPicker, DateRange } from "react-day-picker";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
@@ -49,7 +49,7 @@ export default function DateRangePicker<TFieldValues extends FieldValues>({
       >
         <Stack
           direction={"column"}
-          spacing={2}
+          spacing={3}
           sx={{
             backgroundColor: "white",
             padding: "10px",
@@ -75,6 +75,13 @@ export default function DateRangePicker<TFieldValues extends FieldValues>({
               />
             )}
           />
+          <Typography variant="body1" color="red">
+            {initialValue
+              ? initialValue.from === initialValue.to
+                ? "Pick the second date or click select"
+                : ""
+              : "Pick the first date"}
+          </Typography>
           <Button
             sx={{ maxWidth: "70%" }}
             variant="contained"
