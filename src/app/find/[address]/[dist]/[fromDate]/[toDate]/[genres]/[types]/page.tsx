@@ -1,4 +1,3 @@
-import EventSearchScreen from "@/components/EventSearchScreen";
 import EventSearchScreenWrapper from "@/components/EventSearchScreenWrapper";
 import PageVisitTracker from "@/components/PageVisitTracker";
 import {
@@ -7,7 +6,6 @@ import {
   BAND_TYPES,
 } from "@/types/constants";
 import Event from "@/types/Event";
-import dayjs from "dayjs";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 

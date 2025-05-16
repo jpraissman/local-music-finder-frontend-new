@@ -65,11 +65,6 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 200,
-  });
-
   useEffect(() => {
     if (noFilters) {
       setDisplayFiltersForm(true);
@@ -491,7 +486,7 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             </Box>
           </Box>
         </Modal>
-        <Fade in={trigger}>
+        <Fade in={true}>
           <Box sx={{ position: "fixed", bottom: 16, right: 16 }}>
             <Fab
               size={isMdUp ? "large" : "small"}
