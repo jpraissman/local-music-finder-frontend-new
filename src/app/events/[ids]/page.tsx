@@ -7,7 +7,7 @@ import {
 } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 interface PageProps {
   params: {
@@ -24,10 +24,16 @@ export function generateMetadata(): Metadata {
 export const revalidate = 0;
 
 export default async function Page({ params: { ids } }: PageProps) {
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const referer = requestHeaders.get("referer");
+  const ip = requestHeaders.get("x-forwarded-for");
+
   let events: Event[] = [];
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_API_BASE_URL + `/events/ids?ids=${ids}`
+      process.env.NEXT_PUBLIC_API_BASE_URL +
+        `/events/ids?ids=${ids}&user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();

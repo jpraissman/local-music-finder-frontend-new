@@ -20,7 +20,7 @@ export default function getDateByRange(range: "today"
     return [dateFormatted, dateFormatted];
   } else if (range === "this-weekend") {
     let startDate;
-    if (nyTimeRightNow.day() >= 5) {
+    if (nyTimeRightNow.day() === 0 || nyTimeRightNow.day() === 6) {
       startDate = nyTimeRightNow.format("YYYY-MM-DD");
     } else {
       startDate = nyTimeRightNow.isoWeekday(5).format("YYYY-MM-DD");

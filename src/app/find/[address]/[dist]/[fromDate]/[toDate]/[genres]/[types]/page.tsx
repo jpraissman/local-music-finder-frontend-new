@@ -7,7 +7,7 @@ import {
 } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 interface PageProps {
   params: {
@@ -39,6 +39,11 @@ export const revalidate = 0;
 export default async function Page({
   params: { address, dist, fromDate, toDate, genres, types },
 }: PageProps) {
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const referer = requestHeaders.get("referer");
+  const ip = requestHeaders.get("x-forwarded-for");
+
   const allCookies = cookies();
   let fromCookie = allCookies.get("from")?.value;
   if (fromCookie == undefined) {
@@ -61,7 +66,7 @@ export default async function Page({
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?from_date=${fromDate}&to_date=${toDate}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}`
+        `/events?from_date=${fromDate}&to_date=${toDate}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}&user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
