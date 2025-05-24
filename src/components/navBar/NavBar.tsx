@@ -13,8 +13,32 @@ import Link from "next/link";
 import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
+import NewSearchBar from "./NewSearchBar";
 
-export default function NavBar() {
+const bands = [
+  { name: "Arctic Monkeys", genres: ["Indie Rock", "Alternative"], id: "1" },
+  { name: "Billie Eilish", genres: ["Pop", "Alternative"], id: "2" },
+  { name: "Tame Impala", genres: ["Psychedelic Rock", "Electronic"], id: "3" },
+  { name: "The Weeknd", genres: ["R&B", "Pop"], id: "4" },
+  { name: "Radiohead", genres: ["Alternative Rock", "Electronic"], id: "5" },
+];
+
+const towns = [
+  "New York",
+  "Los Angeles",
+  "Chicago",
+  "San Francisco",
+  "Austin",
+  "Nashville",
+  "Seattle",
+  "Boston",
+];
+
+interface NavBarProps {
+  venues: { name: string; town: string; id: string }[];
+}
+
+export default function NavBar({ venues }: NavBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -136,6 +160,7 @@ export default function NavBar() {
               </Typography>
             </Link>
           </Box>
+          <NewSearchBar venues={venues} bands={bands} towns={towns} />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{
