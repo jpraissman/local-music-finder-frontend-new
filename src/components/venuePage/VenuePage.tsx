@@ -1,13 +1,13 @@
 "use client";
 
-import { loadVenueEvents } from "@/app/venue/[venueName]/page";
-import { Badge, Box, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import NewEventCard from "../eventCard/NewEventCard";
 import { useEffect, useState } from "react";
 import Event from "@/types/Event";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import EventCalendarPicker from "./EventCalendarPicker";
+import { loadVenueEvents } from "@/lib/load-venue-events";
 
 interface VenuePageProps {
   venueName: string;
