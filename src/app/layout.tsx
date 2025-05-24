@@ -7,7 +7,10 @@ import "react-day-picker/style.css";
 import ThemeWrapper from "@/components/ThemeWrapper";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import NavBar from "@/components/navBar/NavBar";
-import { getVenuesForSearchBar } from "@/lib/search-bar-data";
+import {
+  getBandsForSearchBar,
+  getVenuesForSearchBar,
+} from "@/lib/search-bar-data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +25,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const venues = await getVenuesForSearchBar();
+  const [venues, bands] = await Promise.all([
+    getVenuesForSearchBar(),
+    getBandsForSearchBar(),
+  ]);
 
   return (
     <ReactQueryClientProvider>
@@ -43,7 +49,7 @@ export default async function RootLayout({
         <body className={inter.className} style={{ margin: 0 }}>
           <ThemeWrapper>
             <Box sx={{ minHeight: "100vh" }}>
-              <NavBar venues={venues} />
+              <NavBar venues={venues} bands={bands} />
               <Box sx={{ paddingTop: "75px" }}>
                 <div>{children}</div>
               </Box>

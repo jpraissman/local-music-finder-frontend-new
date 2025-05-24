@@ -6,17 +6,17 @@ import NewEventCard from "../eventCard/NewEventCard";
 import { useEffect, useState } from "react";
 import Event from "@/types/Event";
 import dayjs from "dayjs";
-import EventCalendarPicker from "./EventCalendarPicker";
 import { loadVenueEvents } from "@/lib/load-venue-events";
+import EventCalendarPicker from "../venuePage/EventCalendarPicker";
 
-interface VenuePageProps {
-  venueName: string;
+interface BandPageProps {
+  bandId: string;
 }
 
-export default function VenuePage({ venueName }: VenuePageProps) {
+export default function BandPage({ bandId }: BandPageProps) {
   const { data: allEvents } = useSuspenseQuery({
-    queryKey: [venueName],
-    queryFn: () => loadVenueEvents(venueName),
+    queryKey: [bandId + "band"],
+    queryFn: () => loadVenueEvents(bandId),
   });
 
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);

@@ -15,14 +15,6 @@ import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
 
-const bands = [
-  { name: "Arctic Monkeys", genres: ["Indie Rock", "Alternative"], id: "1" },
-  { name: "Billie Eilish", genres: ["Pop", "Alternative"], id: "2" },
-  { name: "Tame Impala", genres: ["Psychedelic Rock", "Electronic"], id: "3" },
-  { name: "The Weeknd", genres: ["R&B", "Pop"], id: "4" },
-  { name: "Radiohead", genres: ["Alternative Rock", "Electronic"], id: "5" },
-];
-
 const towns = [
   "New York",
   "Los Angeles",
@@ -36,9 +28,10 @@ const towns = [
 
 interface NavBarProps {
   venues: { name: string; town: string; id: string }[];
+  bands: { name: string; genres: string[]; id: string }[];
 }
 
-export default function NavBar({ venues }: NavBarProps) {
+export default function NavBar({ venues, bands }: NavBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
