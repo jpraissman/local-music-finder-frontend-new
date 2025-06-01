@@ -15,7 +15,6 @@ import {
   Radio,
   useTheme,
   useMediaQuery,
-  useScrollTrigger,
   Fade,
   Fab,
 } from "@mui/material";
@@ -27,11 +26,9 @@ import {
   CalendarMonth,
   Clear,
   Edit,
-  Filter,
   FilterList,
   Group,
   House,
-  KeyboardArrowUp,
   MusicNote,
   Place,
 } from "@mui/icons-material";
@@ -46,6 +43,8 @@ interface CustomInputProps {
   landingPage: boolean;
   searchLocation?: string;
   searchDateRange?: string;
+  userAgent: string;
+  userId: string;
 }
 
 const EventSearchScreen: React.FC<CustomInputProps> = ({
@@ -55,6 +54,8 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
   landingPage,
   searchLocation = "",
   searchDateRange = "",
+  userAgent,
+  userId,
 }) => {
   const [displayFiltersForm, setDisplayFiltersForm] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>(eventsInit);
@@ -420,9 +421,21 @@ const EventSearchScreen: React.FC<CustomInputProps> = ({
             )}
             {events.map((event) => {
               return isMdUp ? (
-                <NewEventCard key={event.id} event={event} size="Large" />
+                <NewEventCard
+                  key={event.id}
+                  event={event}
+                  size="Large"
+                  userId={userId}
+                  userAgent={userAgent}
+                />
               ) : (
-                <NewEventCard key={event.id} event={event} size="Small" />
+                <NewEventCard
+                  key={event.id}
+                  event={event}
+                  size="Small"
+                  userId={userId}
+                  userAgent={userAgent}
+                />
               );
             })}
             <Box

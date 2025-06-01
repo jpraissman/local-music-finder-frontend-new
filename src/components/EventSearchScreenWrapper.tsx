@@ -14,6 +14,8 @@ interface EventSearchScreenWrapperProps {
   searchDateRange?: string;
   fromDate: string;
   toDate: string;
+  userId: string;
+  userAgent: string;
 }
 
 export default function EventSearchScreenWrapper(
@@ -33,6 +35,8 @@ export default function EventSearchScreenWrapper(
       landingPage={props.landingPage}
       searchLocation={props.searchLocation}
       searchDateRange={props.searchDateRange}
+      userId={props.userId}
+      userAgent={props.userAgent}
     />
   );
 }

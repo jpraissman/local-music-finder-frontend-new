@@ -1,9 +1,7 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
-import PageVisitTracker from "@/components/PageVisitTracker";
-import { blankStructuredFormatting } from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 interface PageProps {
   params: {
@@ -20,16 +18,16 @@ export function generateMetadata(): Metadata {
 export const revalidate = 0;
 
 export default async function Page({ params: { ids } }: PageProps) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
   const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent");
-  const referer = requestHeaders.get("referer");
-  const ip = requestHeaders.get("x-forwarded-for");
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   let events: Event[] = [];
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events/all-events-this-week?user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
+        `/events/all-events-this-week?user_agent=${userAgent}&user_id=${userId}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -39,7 +37,6 @@ export default async function Page({ params: { ids } }: PageProps) {
 
   return (
     <>
-      <PageVisitTracker page="Landing Page With Events" />
       <EventSearchScreen
         filters={{
           dateRange: undefined,
@@ -53,6 +50,8 @@ export default async function Page({ params: { ids } }: PageProps) {
         landingPage={true}
         searchLocation="New Jersey"
         searchDateRange="this week"
+        userId={userId}
+        userAgent={userAgent}
       />
     </>
   );

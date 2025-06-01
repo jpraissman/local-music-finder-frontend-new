@@ -1,6 +1,7 @@
 import LandingPage from "@/components/landingPage/LandingPage";
 import axios from "axios";
 import { Metadata } from "next";
+import { cookies, headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "The Local Music Finder",
@@ -15,5 +16,16 @@ export default async function Page() {
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/upcoming`
   );
 
-  return <LandingPage upcomingEvents={response.data.events} />;
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
+
+  return (
+    <LandingPage
+      upcomingEvents={response.data.events}
+      userId={userId}
+      userAgent={userAgent}
+    />
+  );
 }

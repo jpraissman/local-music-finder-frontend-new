@@ -5,9 +5,10 @@ import Script from "next/script";
 import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
 import "react-day-picker/style.css";
 import ThemeWrapper from "@/components/ThemeWrapper";
-import Footer from "@/components/footer/Footer";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import NavBar from "@/components/navBar/NavBar";
+import { cookies, headers } from "next/headers";
+import ActivityTracker from "@/components/ActivityTracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,11 +18,18 @@ export const metadata: Metadata = {
   description: "Find live music near you!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId");
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const referer = requestHeaders.get("referer");
+  const ip = requestHeaders.get("x-forwarded-for");
+
   return (
     <ReactQueryClientProvider>
       <html lang="en">
@@ -42,6 +50,12 @@ export default function RootLayout({
           <ThemeWrapper>
             <Box sx={{ minHeight: "100vh" }}>
               <NavBar />
+              <ActivityTracker
+                userId={userId?.value || "Undefined"}
+                userAgent={userAgent}
+                ip={ip}
+                referer={referer}
+              />
               <Box sx={{ paddingTop: "75px" }}>
                 <div>{children}</div>
               </Box>
