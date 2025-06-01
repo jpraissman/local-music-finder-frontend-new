@@ -1,5 +1,7 @@
 "use client";
 
+import { Box } from "@mui/material";
+
 import("@justinribeiro/lite-youtube");
 
 declare global {
@@ -26,13 +28,20 @@ interface YouTubeVideoProps {
 
 export default function YouTubeVideo({ videoId, size }: YouTubeVideoProps) {
   return (
-    <lite-youtube
-      videoid={videoId}
-      style={{
-        borderTopLeftRadius: "25px",
-        borderTopRightRadius: size === "Small" ? "25px" : "0px",
-        borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
+    <Box
+      onClick={() => {
+        // Send log to backend
+        console.log("Video Clicked");
       }}
-    />
+    >
+      <lite-youtube
+        videoid={videoId}
+        style={{
+          borderTopLeftRadius: "25px",
+          borderTopRightRadius: size === "Small" ? "25px" : "0px",
+          borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
+        }}
+      />
+    </Box>
   );
 }
