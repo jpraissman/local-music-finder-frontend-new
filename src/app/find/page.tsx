@@ -1,7 +1,7 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
-import PageVisitTracker from "@/components/PageVisitTracker";
 import { blankFilters } from "@/types/constants";
 import { Metadata } from "next";
+import { cookies, headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Find Live Music Events Near You",
@@ -9,15 +9,21 @@ export const metadata: Metadata = {
     "Search for live music events near you using our super simple search page. We have live music events all over North Jersey for you to enjoy!",
 };
 
-export default function Page() {
+export default async function Page() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
+
   return (
     <>
-      <PageVisitTracker page="About to Search" />
       <EventSearchScreen
         filters={blankFilters}
         eventsInit={[]}
         noFilters={true}
         landingPage={false}
+        userId={userId}
+        userAgent={userAgent}
       />
     </>
   );

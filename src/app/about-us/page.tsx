@@ -1,4 +1,3 @@
-import PageVisitTracker from "@/components/PageVisitTracker";
 import { Box, Stack, Typography } from "@mui/material";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <PageVisitTracker page="About Us" />
       <Stack
         direction="column"
         spacing={4}

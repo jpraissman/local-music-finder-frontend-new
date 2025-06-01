@@ -1,5 +1,4 @@
 import CreateEventForm from "@/components/eventForm/CreateEventForm";
-import PageVisitTracker from "@/components/PageVisitTracker";
 import { loadBands } from "@/lib/load-bands";
 import { loadVenues } from "@/lib/load-venues";
 import {
@@ -29,7 +28,6 @@ export default async function Page() {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PageVisitTracker page="Post" />
       <CreateEventForm />
     </HydrationBoundary>
   );

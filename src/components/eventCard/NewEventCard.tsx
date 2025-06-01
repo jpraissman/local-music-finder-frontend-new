@@ -11,9 +11,16 @@ import get_random_image from "@/lib/get-random-image";
 export interface NewEventCardProps {
   event: Event;
   size: "Small" | "Large";
+  userAgent: string;
+  userId: string;
 }
 
-export default function NewEventCard({ event, size }: NewEventCardProps) {
+export default function NewEventCard({
+  event,
+  size,
+  userAgent,
+  userId,
+}: NewEventCardProps) {
   const YouTubeVideo = dynamic(() => import("./YouTubeVideo"), { ssr: false });
 
   return (
@@ -48,7 +55,13 @@ export default function NewEventCard({ event, size }: NewEventCardProps) {
           ></Image>
         )}
         {event.youtube_id !== "" && (
-          <YouTubeVideo videoId={event.youtube_id} size={size} />
+          <YouTubeVideo
+            videoId={event.youtube_id}
+            size={size}
+            eventId={event.id}
+            userAgent={userAgent}
+            userId={userId}
+          />
         )}
       </Box>
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>

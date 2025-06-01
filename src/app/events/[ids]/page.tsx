@@ -1,10 +1,4 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
-import PageVisitTracker from "@/components/PageVisitTracker";
-import {
-  blankStructuredFormatting,
-  GENRES,
-  BAND_TYPES,
-} from "@/types/constants";
 import Event from "@/types/Event";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
@@ -24,16 +18,16 @@ export function generateMetadata(): Metadata {
 export const revalidate = 0;
 
 export default async function Page({ params: { ids } }: PageProps) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
   const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent");
-  const referer = requestHeaders.get("referer");
-  const ip = requestHeaders.get("x-forwarded-for");
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   let events: Event[] = [];
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events/ids?ids=${ids}&user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
+        `/events/ids?ids=${ids}&user_agent=${userAgent}&user_id=${userId}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -43,7 +37,6 @@ export default async function Page({ params: { ids } }: PageProps) {
 
   return (
     <>
-      <PageVisitTracker page="Specific Events" />
       <EventSearchScreen
         filters={{
           dateRange: undefined,
@@ -55,6 +48,8 @@ export default async function Page({ params: { ids } }: PageProps) {
         eventsInit={events}
         noFilters={false}
         landingPage={false}
+        userId={userId}
+        userAgent={userAgent}
       />
     </>
   );

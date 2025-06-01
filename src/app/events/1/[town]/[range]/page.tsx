@@ -1,5 +1,4 @@
 import EventSearchScreenWrapper from "@/components/EventSearchScreenWrapper";
-import PageVisitTracker from "@/components/PageVisitTracker";
 import getDateByRange from "@/lib/get-date-by-range";
 import {
   blankStructuredFormatting,
@@ -48,16 +47,10 @@ export function generateMetadata({
 export const revalidate = 0;
 
 export default async function Page({ params: { town, range } }: PageProps) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
   const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent");
-  const referer = requestHeaders.get("referer");
-  const ip = requestHeaders.get("x-forwarded-for");
-
-  const allCookies = cookies();
-  let fromCookie = allCookies.get("from")?.value;
-  if (fromCookie == undefined) {
-    fromCookie = "Unknown";
-  }
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   const townFormatted = TOWNS[town.replaceAll("%2C", ",")][0];
   const genresFormatted = GENRES.join("::").replaceAll(" ", "+");
@@ -68,7 +61,7 @@ export default async function Page({ params: { town, range } }: PageProps) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?from_date=${dates[0]}&to_date=${dates[1]}&address=${townFormatted}&max_distance=20+mi&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}&user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
+        `/events?from_date=${dates[0]}&to_date=${dates[1]}&address=${townFormatted}&max_distance=20+mi&genres=${genresFormatted}&band_types=${typesFormatted}&user_agent=${userAgent}&user_id=${userId}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -78,7 +71,6 @@ export default async function Page({ params: { town, range } }: PageProps) {
 
   return (
     <>
-      <PageVisitTracker page="SEO Page From Google" />
       <EventSearchScreenWrapper
         filters={{
           dateRange: undefined,
@@ -96,6 +88,8 @@ export default async function Page({ params: { town, range } }: PageProps) {
         landingPage={false}
         fromDate={dates[0]}
         toDate={dates[1]}
+        userId={userId}
+        userAgent={userAgent}
       />
     </>
   );
