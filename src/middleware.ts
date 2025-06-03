@@ -12,19 +12,7 @@ export function middleware(req: NextRequest) {
       sameSite: 'lax',
     })
   }
-
-  if (!req.cookies.has('referer')) {
-    const referer = req.headers.get('referer');
-    if (referer && referer.indexOf("thelocalmusicfinder") == -1) {
-      response.cookies.set('referer', referer, {
-      maxAge: 60 * 60 * 24 * 365 * 10,
-      path: '/',
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax'})
-    }
-  }
-
+  
   return response;
 }
 
