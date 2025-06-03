@@ -15,13 +15,14 @@ export function middleware(req: NextRequest) {
 
   if (!req.cookies.has('referer')) {
     const referer = req.headers.get('referer');
-    response.cookies.set('referer', referer || "NULL", {
+    if (referer) {
+      response.cookies.set('referer', referer, {
       maxAge: 60 * 60 * 24 * 365 * 10,
       path: '/',
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
-    })
+      sameSite: 'lax'})
+    }
   }
 
   return response;
