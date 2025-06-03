@@ -15,7 +15,7 @@ export function middleware(req: NextRequest) {
 
   if (!req.cookies.has('referer')) {
     const referer = req.headers.get('referer');
-    if (referer) {
+    if (referer && referer.indexOf("thelocalmusicfinder") == -1) {
       response.cookies.set('referer', referer, {
       maxAge: 60 * 60 * 24 * 365 * 10,
       path: '/',
