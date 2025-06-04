@@ -1,6 +1,19 @@
 "use client";
 
-import { Box, Checkbox, Skeleton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Paper,
+  Skeleton,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -221,6 +234,47 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                 value={data.totals.total_videos_clicked}
               />
             </Stack>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>User Id</TableCell>
+                    <TableCell align="right">Duration</TableCell>
+                    <TableCell align="right">Device</TableCell>
+                    <TableCell align="right">Referer</TableCell>
+                    <TableCell align="right">Type</TableCell>
+                    <TableCell align="right">Videos Clicked</TableCell>
+                    <TableCell align="right">Events Viewed</TableCell>
+                    <TableCell align="right">Pages Visited</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {Object.entries(data.users).map((user) => (
+                    <TableRow
+                      key={user[1].user_id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {user[1].user_id}
+                      </TableCell>
+                      <TableCell align="right">{user[1].duration}</TableCell>
+                      <TableCell align="right">{user[1].device}</TableCell>
+                      <TableCell align="right">{user[1].referer}</TableCell>
+                      <TableCell align="right">{user[1].type}</TableCell>
+                      <TableCell align="right">
+                        {user[1].videos_clicked}
+                      </TableCell>
+                      <TableCell align="right">
+                        {user[1].events_viewed}
+                      </TableCell>
+                      <TableCell align="right">
+                        {user[1].pages_visited}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Stack>
         )}
         {isFetching && <Skeleton sx={{ height: "500px", width: "500px" }} />}
