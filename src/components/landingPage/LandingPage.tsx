@@ -9,8 +9,12 @@ import Link from "next/link";
 
 export default function LandingPage({
   upcomingEvents,
+  userAgent,
+  userId,
 }: {
   upcomingEvents: Event[];
+  userAgent: string;
+  userId: string;
 }) {
   return (
     <Stack direction="column" spacing={2}>
@@ -38,7 +42,15 @@ export default function LandingPage({
             sx={{ width: "100%" }}
           >
             {upcomingEvents.map((event) => {
-              return <NewEventCard event={event} size="Small" key={event.id} />;
+              return (
+                <NewEventCard
+                  event={event}
+                  size="Small"
+                  key={event.id}
+                  userId={userId}
+                  userAgent={userAgent}
+                />
+              );
             })}
           </Stack>
           <Link href="/events">

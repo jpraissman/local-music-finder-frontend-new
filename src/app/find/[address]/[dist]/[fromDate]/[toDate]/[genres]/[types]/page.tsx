@@ -1,5 +1,4 @@
 import EventSearchScreenWrapper from "@/components/EventSearchScreenWrapper";
-import PageVisitTracker from "@/components/PageVisitTracker";
 import {
   blankStructuredFormatting,
   GENRES,
@@ -39,16 +38,10 @@ export const revalidate = 0;
 export default async function Page({
   params: { address, dist, fromDate, toDate, genres, types },
 }: PageProps) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value || "Undefined";
   const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent");
-  const referer = requestHeaders.get("referer");
-  const ip = requestHeaders.get("x-forwarded-for");
-
-  const allCookies = cookies();
-  let fromCookie = allCookies.get("from")?.value;
-  if (fromCookie == undefined) {
-    fromCookie = "Unknown";
-  }
+  const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   const addressFormatted = address.replaceAll("-", "+").replaceAll("%2C", ",");
   const distFormatted = dist.replaceAll("-", "+");
@@ -66,7 +59,7 @@ export default async function Page({
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?from_date=${fromDate}&to_date=${toDate}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&from_where=${fromCookie}&user_agent=${userAgent}&ip_address=${ip}&referer=${referer}`
+        `/events?from_date=${fromDate}&to_date=${toDate}&address=${addressFormatted}&max_distance=${distFormatted}&genres=${genresFormatted}&band_types=${typesFormatted}&user_agent=${userAgent}&user_id=${userId}`
     );
     if (response.ok) {
       const eventsRaw = await response.json();
@@ -76,7 +69,6 @@ export default async function Page({
 
   return (
     <>
-      <PageVisitTracker page="Custom Search" />
       <EventSearchScreenWrapper
         filters={{
           dateRange: undefined,
@@ -94,6 +86,8 @@ export default async function Page({
         landingPage={false}
         fromDate={fromDate}
         toDate={toDate}
+        userId={userId}
+        userAgent={userAgent}
       />
     </>
   );

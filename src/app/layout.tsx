@@ -11,6 +11,8 @@ import {
   getBandsForSearchBar,
   getVenuesForSearchBar,
 } from "@/lib/search-bar-data";
+import { cookies, headers } from "next/headers";
+import ActivityTracker from "@/components/ActivityTracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +31,12 @@ export default async function RootLayout({
     getVenuesForSearchBar(),
     getBandsForSearchBar(),
   ]);
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId");
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const referer = requestHeaders.get("referer");
+  const ip = requestHeaders.get("x-forwarded-for");
 
   return (
     <ReactQueryClientProvider>
@@ -50,6 +58,12 @@ export default async function RootLayout({
           <ThemeWrapper>
             <Box sx={{ minHeight: "100vh" }}>
               <NavBar venues={venues} bands={bands} />
+              <ActivityTracker
+                userId={userId?.value || "Undefined"}
+                userAgent={userAgent}
+                ip={ip}
+                referer={referer}
+              />
               <Box sx={{ paddingTop: "75px" }}>
                 <div>{children}</div>
               </Box>

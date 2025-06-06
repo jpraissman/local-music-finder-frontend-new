@@ -1,5 +1,4 @@
 import EditEventForm from "@/components/eventForm/EditEventForm";
-import PageVisitTracker from "@/components/PageVisitTracker";
 import { getEventById } from "@/lib/get-event-by-id";
 import { loadBands } from "@/lib/load-bands";
 import { loadVenues } from "@/lib/load-venues";
@@ -32,7 +31,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PageVisitTracker page="Edit" />
       <EditEventForm eventId={params.id} />
     </HydrationBoundary>
   );
