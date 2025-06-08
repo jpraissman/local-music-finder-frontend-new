@@ -55,7 +55,13 @@ export default function BandPage({ bandId }: BandPageProps) {
       />
       <Stack direction="column" spacing={5}>
         {displayedEvents.map((event) => (
-          <NewEventCard key={event.id} event={event} size="Large" />
+          <NewEventCard
+            key={event.id}
+            event={event}
+            size="Large"
+            userAgent="Test"
+            userId="Test"
+          />
         ))}
       </Stack>
     </Box>
