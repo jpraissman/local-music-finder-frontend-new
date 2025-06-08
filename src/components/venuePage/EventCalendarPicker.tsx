@@ -22,9 +22,9 @@ function Day(props: PickersDayProps & { highlightedDays?: string[] }) {
       {...other}
       day={day}
       sx={{
-        backgroundColor: isSelected ? "lightgreen" : undefined,
+        backgroundColor: isSelected ? "secondary.main" : undefined,
         "&:hover": {
-          backgroundColor: isSelected ? "green" : undefined,
+          backgroundColor: isSelected ? "#cf8861" : undefined,
         },
       }}
     />

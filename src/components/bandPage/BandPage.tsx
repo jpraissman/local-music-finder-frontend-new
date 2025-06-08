@@ -6,7 +6,7 @@ import NewEventCard from "../eventCard/NewEventCard";
 import { useEffect, useState } from "react";
 import Event from "@/types/Event";
 import dayjs from "dayjs";
-import { loadVenueEvents } from "@/lib/load-venue-events";
+import { loadVenueEvents } from "@/lib/load-venue-info";
 import EventCalendarPicker from "../venuePage/EventCalendarPicker";
 
 interface BandPageProps {
