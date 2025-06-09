@@ -56,6 +56,9 @@ async function fetchUserData({
       total_users: number;
       total_new_users: number;
       total_returning_users: number;
+      total_sessions: number;
+      total_new_sessions: number;
+      total_returning_sessions: number;
       total_mobile_users: number;
       total_tablet_users: number;
       total_computer_users: number;
@@ -157,11 +160,31 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
         {data && (
           <Stack direction={"column"} spacing={3}>
             <Stack direction={"row"} spacing={4}>
-              <StatCard title="Total Users" value={data.totals.total_users} />
-              <StatCard title="New Users" value={data.totals.total_new_users} />
               <StatCard
-                title="Returning Users"
+                title="Total Unique Users"
+                value={data.totals.total_users}
+              />
+              <StatCard
+                title="New Unique Users"
+                value={data.totals.total_new_users}
+              />
+              <StatCard
+                title="Returning Unique Users"
                 value={data.totals.total_returning_users}
+              />
+            </Stack>
+            <Stack direction={"row"} spacing={4}>
+              <StatCard
+                title="Total Sessions"
+                value={data.totals.total_sessions}
+              />
+              <StatCard
+                title="New Sessions"
+                value={data.totals.total_new_sessions}
+              />
+              <StatCard
+                title="Returning Sessions"
+                value={data.totals.total_returning_sessions}
               />
             </Stack>
             <Stack direction={"row"} spacing={4}>
