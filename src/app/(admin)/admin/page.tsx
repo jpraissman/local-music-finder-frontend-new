@@ -3,23 +3,11 @@ import { Box } from "@mui/material";
 import { cookies } from "next/headers";
 
 export default async function Page() {
-  const adminKey = process.env.ADMIN_KEY;
-
   const cookieStore = await cookies();
   const adminKeyCookie = cookieStore.get("adminKey");
 
-  if (!adminKeyCookie || adminKeyCookie.value !== adminKey) {
-    return (
-      <Box
-        sx={{
-          paddingTop: "200px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        This is restricted to admins.
-      </Box>
-    );
+  if (!adminKeyCookie) {
+    return <Box>There was an error.</Box>;
   }
 
   return <AdminDashboard adminKey={adminKeyCookie.value} />;
