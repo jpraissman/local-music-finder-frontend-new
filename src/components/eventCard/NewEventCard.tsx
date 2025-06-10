@@ -1,7 +1,7 @@
 "use client";
 
 import Event from "@/types/Event";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import NamesAndGenres from "./NamesAndGenres";
 import OtherEventDetails from "./OtherEventDetails";
@@ -40,19 +40,38 @@ export default function NewEventCard({
     >
       <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
         {event.youtube_id === "" && (
-          <Image
-            src={get_random_image(event.ranking_position)}
-            width={1000}
-            height={1000}
-            alt="Image"
-            style={{
-              width: "100%",
-              height: "auto",
-              borderTopLeftRadius: "25px",
-              borderTopRightRadius: size === "Small" ? "25px" : "0px",
-              borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
-            }}
-          ></Image>
+          <Box sx={{ position: "relative" }}>
+            <Typography
+              sx={{
+                position: "absolute",
+                top: 16,
+                left: 16,
+                zIndex: 2,
+                color: "white",
+                backgroundColor: "secondary.main",
+                padding: "4px 20px",
+                borderRadius: "25px",
+                whiteSpace: "nowrap",
+              }}
+              variant="body1"
+              fontWeight={"bold"}
+            >
+              Video of Band Coming Soon
+            </Typography>
+            <Image
+              src={get_random_image(event.ranking_position)}
+              width={1000}
+              height={1000}
+              alt="Image"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderTopLeftRadius: "25px",
+                borderTopRightRadius: size === "Small" ? "25px" : "0px",
+                borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
+              }}
+            />
+          </Box>
         )}
         {event.youtube_id !== "" && (
           <YouTubeVideo
@@ -65,7 +84,7 @@ export default function NewEventCard({
         )}
       </Box>
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
-        <Stack direction="row">
+        <Stack direction="row" spacing={1}>
           <NamesAndGenres event={event} />
           <OtherEventDetails event={event} />
         </Stack>
