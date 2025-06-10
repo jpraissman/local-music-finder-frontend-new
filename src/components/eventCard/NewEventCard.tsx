@@ -1,7 +1,7 @@
 "use client";
 
 import Event from "@/types/Event";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import NamesAndGenres from "./NamesAndGenres";
 import OtherEventDetails from "./OtherEventDetails";
@@ -38,9 +38,26 @@ export default function NewEventCard({
         width: "100%",
       }}
     >
-      {(size === "Large" || event.youtube_id !== "") && (
-        <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
-          {event.youtube_id === "" && (
+      <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
+        {event.youtube_id === "" && (
+          <Box sx={{ position: "relative" }}>
+            <Typography
+              sx={{
+                position: "absolute",
+                top: 16,
+                left: 16,
+                zIndex: 2,
+                color: "white",
+                backgroundColor: "secondary.main",
+                padding: "4px 20px",
+                borderRadius: "25px",
+                whiteSpace: "nowrap",
+              }}
+              variant="body1"
+              fontWeight={"bold"}
+            >
+              Video of Band Coming Soon
+            </Typography>
             <Image
               src={get_random_image(event.ranking_position)}
               width={1000}
@@ -53,19 +70,19 @@ export default function NewEventCard({
                 borderTopRightRadius: size === "Small" ? "25px" : "0px",
                 borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
               }}
-            ></Image>
-          )}
-          {event.youtube_id !== "" && (
-            <YouTubeVideo
-              videoId={event.youtube_id}
-              size={size}
-              eventId={event.id}
-              userAgent={userAgent}
-              userId={userId}
             />
-          )}
-        </Box>
-      )}
+          </Box>
+        )}
+        {event.youtube_id !== "" && (
+          <YouTubeVideo
+            videoId={event.youtube_id}
+            size={size}
+            eventId={event.id}
+            userAgent={userAgent}
+            userId={userId}
+          />
+        )}
+      </Box>
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
         <Stack direction="row" spacing={1}>
           <NamesAndGenres event={event} />

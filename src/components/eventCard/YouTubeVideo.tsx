@@ -57,16 +57,17 @@ export default function YouTubeVideo({
           sx={{
             position: "absolute",
             top: 16,
-            left: "50%",
-            transform: "translateX(-50%)",
+            left: 16,
+            // transform: "translateX(-50%)",
             zIndex: 2,
             color: "white",
             backgroundColor: "rgba(0, 0, 0, 0.7)",
             padding: "4px 20px",
             borderRadius: "25px",
             whiteSpace: "nowrap",
+            pointerEvents: "none",
           }}
-          variant="h5"
+          variant="body1"
           fontWeight={"bold"}
         >
           Watch Video of Band
