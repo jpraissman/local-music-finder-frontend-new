@@ -38,34 +38,36 @@ export default function NewEventCard({
         width: "100%",
       }}
     >
-      <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
-        {event.youtube_id === "" && (
-          <Image
-            src={get_random_image(event.ranking_position)}
-            width={1000}
-            height={1000}
-            alt="Image"
-            style={{
-              width: "100%",
-              height: "auto",
-              borderTopLeftRadius: "25px",
-              borderTopRightRadius: size === "Small" ? "25px" : "0px",
-              borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
-            }}
-          ></Image>
-        )}
-        {event.youtube_id !== "" && (
-          <YouTubeVideo
-            videoId={event.youtube_id}
-            size={size}
-            eventId={event.id}
-            userAgent={userAgent}
-            userId={userId}
-          />
-        )}
-      </Box>
+      {(size === "Large" || event.youtube_id !== "") && (
+        <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
+          {event.youtube_id === "" && (
+            <Image
+              src={get_random_image(event.ranking_position)}
+              width={1000}
+              height={1000}
+              alt="Image"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderTopLeftRadius: "25px",
+                borderTopRightRadius: size === "Small" ? "25px" : "0px",
+                borderBottomLeftRadius: size === "Small" ? "0px" : "25px",
+              }}
+            ></Image>
+          )}
+          {event.youtube_id !== "" && (
+            <YouTubeVideo
+              videoId={event.youtube_id}
+              size={size}
+              eventId={event.id}
+              userAgent={userAgent}
+              userId={userId}
+            />
+          )}
+        </Box>
+      )}
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
-        <Stack direction="row">
+        <Stack direction="row" spacing={1}>
           <NamesAndGenres event={event} />
           <OtherEventDetails event={event} />
         </Stack>

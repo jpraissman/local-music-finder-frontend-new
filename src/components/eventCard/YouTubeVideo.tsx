@@ -1,7 +1,8 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import axios from "axios";
+import { useState } from "react";
 
 import("@justinribeiro/lite-youtube");
 
@@ -37,6 +38,8 @@ export default function YouTubeVideo({
   userId,
   userAgent,
 }: YouTubeVideoProps) {
+  const [videoClicked, setVideoClicked] = useState(false);
+
   return (
     <Box
       onClick={() => {
@@ -45,8 +48,30 @@ export default function YouTubeVideo({
           user_agent: userAgent,
           event_id: eventId,
         });
+        setVideoClicked(true);
       }}
+      sx={{ position: "relative" }}
     >
+      {!videoClicked && (
+        <Typography
+          sx={{
+            position: "absolute",
+            top: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 2,
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            padding: "4px 20px",
+            borderRadius: "25px",
+            whiteSpace: "nowrap",
+          }}
+          variant="h5"
+          fontWeight={"bold"}
+        >
+          Watch Video of Band
+        </Typography>
+      )}
       <lite-youtube
         videoid={videoId}
         style={{
