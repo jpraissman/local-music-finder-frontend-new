@@ -84,8 +84,19 @@ export default function NewSearchBar({
         variant="outlined"
         placeholder="Search venues, bands, tributes, towns, etc."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onFocus={() => setIsOpen(true)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          if (e.target.value.length > 0) {
+            setIsOpen(true);
+          } else {
+            setIsOpen(false);
+          }
+        }}
+        onFocus={() => {
+          if (searchTerm.length > 0) {
+            setIsOpen(true);
+          }
+        }}
         onBlur={() => setTimeout(() => setIsOpen(false), 200)}
         slotProps={{
           input: {
