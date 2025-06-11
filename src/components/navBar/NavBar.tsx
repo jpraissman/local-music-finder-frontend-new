@@ -14,21 +14,17 @@ import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
-
-const towns = [
-  "New York",
-  "Los Angeles",
-  "Chicago",
-  "San Francisco",
-  "Austin",
-  "Nashville",
-  "Seattle",
-  "Boston",
-];
+import { TOWNS_2 } from "@/types/constants";
 
 interface NavBarProps {
   venues: { name: string; town: string; id: string }[];
-  bands: { name: string; genres: string[]; id: string }[];
+  bands: {
+    name: string;
+    genres: string[];
+    id: string;
+    band_type: string;
+    tribute_band_name: string;
+  }[];
 }
 
 export default function NavBar({ venues, bands }: NavBarProps) {
@@ -138,28 +134,13 @@ export default function NavBar({ venues, bands }: NavBarProps) {
               />
             </Link>
           </Box>
-          <Box sx={{ pr: 4, display: { xs: "none", lg: "flex" } }}>
-            <Link href="/" style={{ textDecoration: "none", color: "white" }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  transition: "color 0.2s ease",
-                  "&:hover": {
-                    color: "#dfdfdf",
-                  },
-                }}
-              >
-                The Local Music Finder
-              </Typography>
-            </Link>
-          </Box>
-          <NewSearchBar venues={venues} bands={bands} towns={towns} />
+          <NewSearchBar venues={venues} bands={bands} towns={TOWNS_2} />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{
               display: {
                 xs: "none",
-                lg: "flex",
+                xl: "flex",
               },
               paddingRight: { xs: "", xl: "50px" },
             }}
@@ -215,7 +196,7 @@ export default function NavBar({ venues, bands }: NavBarProps) {
               </Link>
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: "flex", lg: "none" } }}>
+          <Box sx={{ display: { xs: "flex", xl: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"

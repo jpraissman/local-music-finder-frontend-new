@@ -20,7 +20,7 @@ export default function FirstSection() {
         `/find/${location.description.replaceAll(
           " ",
           "-"
-        )}/35-mi/${today}/${twoWeeksFromToday}/All-Genres/All-Types`
+        )}/20-mi/${today}/${twoWeeksFromToday}/All-Genres/All-Types`
       );
     } else {
       setLocationError(true);

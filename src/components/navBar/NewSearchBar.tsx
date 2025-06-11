@@ -15,10 +15,21 @@ import {
 } from "@mui/material";
 import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 interface NewSearchBarProps {
-  venues: { name: string; town: string; id: string }[];
-  bands: { name: string; genres: string[]; id: string }[];
+  venues: {
+    name: string;
+    town: string;
+    id: string;
+  }[];
+  bands: {
+    name: string;
+    genres: string[];
+    id: string;
+    band_type: string;
+    tribute_band_name: string;
+  }[];
   towns: string[];
 }
 
@@ -43,7 +54,9 @@ export default function NewSearchBar({
       band.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       band.genres.some((genre) =>
         genre.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      ) ||
+      band.tribute_band_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      band.band_type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredTowns = towns.filter((town) =>
@@ -59,16 +72,17 @@ export default function NewSearchBar({
     <Box
       sx={{
         width: "100%",
-        maxWidth: 700,
+        maxWidth: 800,
         mx: "auto",
         position: "relative",
         zIndex: 1,
+        paddingLeft: { xs: "0px", sm: "10px" },
       }}
     >
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search venues, bands, or towns..."
+        placeholder="Search venues, bands, tributes, towns, etc."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setIsOpen(true)}
@@ -147,11 +161,12 @@ export default function NewSearchBar({
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {filteredVenues.slice(0, 4).map((venue, index) => (
+                  {filteredVenues.slice(0, 9).map((venue, index) => (
                     <Link
                       href={`/venue/${venue.id}`}
                       style={{ textDecoration: "none", color: "black" }}
                       key={index}
+                      onClick={() => setSearchTerm("")}
                     >
                       <ListItem
                         sx={{
@@ -159,7 +174,7 @@ export default function NewSearchBar({
                           "&:hover": {
                             bgcolor: "grey.50",
                           },
-                          borderBottom: index < 3 ? "1px solid" : "none",
+                          borderBottom: index < 9 ? "1px solid" : "none",
                           borderColor: "divider",
                         }}
                       >
@@ -197,11 +212,12 @@ export default function NewSearchBar({
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {filteredBands.slice(0, 4).map((band, index) => (
+                  {filteredBands.slice(0, 9).map((band, index) => (
                     <Link
                       href={`/band/${band.id}`}
                       style={{ textDecoration: "none", color: "black" }}
                       key={index}
+                      onClick={() => setSearchTerm("")}
                     >
                       <ListItem
                         sx={{
@@ -209,13 +225,17 @@ export default function NewSearchBar({
                           "&:hover": {
                             bgcolor: "grey.50",
                           },
-                          borderBottom: index < 3 ? "1px solid" : "none",
+                          borderBottom: index < 9 ? "1px solid" : "none",
                           borderColor: "divider",
                         }}
                       >
                         <ListItemText
                           primary={band.name}
-                          secondary={band.genres.join(" • ")}
+                          secondary={
+                            band.band_type === "Tribute Band"
+                              ? `${band.band_type} - ${band.tribute_band_name}`
+                              : band.genres.join(" • ")
+                          }
                         />
                       </ListItem>
                     </Link>
@@ -247,26 +267,38 @@ export default function NewSearchBar({
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {filteredTowns.slice(0, 4).map((town, index) => (
-                    <ListItem
+                  {filteredTowns.slice(0, 9).map((town, index) => (
+                    <Link
+                      href={`/find/${town.replaceAll(
+                        " ",
+                        "-"
+                      )}/20-mi/${dayjs().format("YYYY-MM-DD")}/${dayjs()
+                        .add(14, "day")
+                        .format("YYYY-MM-DD")}/All-Genres/All-Types`}
+                      style={{ textDecoration: "none", color: "black" }}
                       key={index}
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": {
-                          bgcolor: "grey.50",
-                        },
-                        borderBottom: index < 3 ? "1px solid" : "none",
-                        borderColor: "divider",
-                      }}
+                      onClick={() => setSearchTerm("")}
                     >
-                      <ListItemText
-                        primary={
-                          <Typography variant="body1" fontWeight="500">
-                            {town}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
+                      <ListItem
+                        key={index}
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": {
+                            bgcolor: "grey.50",
+                          },
+                          borderBottom: index < 9 ? "1px solid" : "none",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography variant="body1" fontWeight="500">
+                              {town}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </Link>
                   ))}
                 </List>
               </Box>

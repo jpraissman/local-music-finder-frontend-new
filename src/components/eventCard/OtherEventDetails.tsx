@@ -62,6 +62,32 @@ export default function OtherEventDetails({ event }: { event: Event }) {
           Get Directions
         </Button>
       </Box>
+      <Box sx={{ paddingTop: { xs: "5px", md: "10px" }, width: "100%" }}>
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          component="a"
+          href={`/venue/${event.venue_id}`}
+          sx={{ borderRadius: "10px", fontWeight: "bold" }}
+          fullWidth
+        >
+          View Venue
+        </Button>
+      </Box>
+      <Box sx={{ width: "100%" }}>
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          component="a"
+          href={`/band/${event.band_id}`}
+          sx={{ borderRadius: "10px", fontWeight: "bold" }}
+          fullWidth
+        >
+          View Band
+        </Button>
+      </Box>
     </Stack>
   );
 }

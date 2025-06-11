@@ -12,6 +12,7 @@ export default function ClientDateCalendar(props: DateCalendarProps) {
         slots={props.slots}
         slotProps={props.slotProps}
         onChange={props.onChange}
+        value={props.value}
       />
     </LocalizationProvider>
   );

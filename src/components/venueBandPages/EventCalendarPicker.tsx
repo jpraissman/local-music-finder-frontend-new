@@ -1,6 +1,7 @@
 import Event from "@/types/Event";
 import { Box, Skeleton } from "@mui/material";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -57,6 +58,7 @@ export default function EventCalendarPicker({
         onChange={(newDate) => {
           handleDateChange(newDate?.format("YYYY-MM-DD"));
         }}
+        value={null}
       />
     </Box>
   );

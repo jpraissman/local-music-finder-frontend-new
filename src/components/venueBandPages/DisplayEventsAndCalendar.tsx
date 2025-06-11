@@ -49,7 +49,7 @@ export default function DisplayEventsAndCalendar({
       setDisplayedEvents(
         allEvents.filter((event) => event.date_string === newDate)
       );
-      setDate(dayjs(newDate).format("MMMM D"));
+      setDate(dayjs(newDate).format("MMMM D, YYYY"));
     } else {
       setDisplayedEvents(allEvents);
     }
@@ -106,8 +106,8 @@ export default function DisplayEventsAndCalendar({
         >
           <Typography sx={{ fontSize: { xs: "20px", md: "25px" } }}>
             {date === "all"
-              ? `Upcoming Events (${displayedEvents.length})`
-              : `Events on ${date} (${displayedEvents.length})`}
+              ? `All Upcoming Events (${displayedEvents.length})`
+              : `All Events on ${date} (${displayedEvents.length})`}
           </Typography>
           <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
             {displayedEvents.map((event) => (
