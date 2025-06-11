@@ -148,6 +148,66 @@ export default function NewSearchBar({
             </Box>
           ) : (
             <Box>
+              {/* Towns Section */}
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    px: 2,
+                    py: 1,
+                    bgcolor: "rgba(244, 241, 241, 0.98)",
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <LocationOn sx={{ fontSize: 25, color: "text.secondary" }} />
+                  <Typography
+                    variant="h6"
+                    fontWeight="600"
+                    color="text.secondary"
+                  >
+                    Towns
+                  </Typography>
+                </Box>
+                <List disablePadding>
+                  {filteredTowns.slice(0, 9).map((town, index) => (
+                    <Link
+                      href={`/find/${town.replaceAll(
+                        " ",
+                        "-"
+                      )}/20-mi/${dayjs().format("YYYY-MM-DD")}/${dayjs()
+                        .add(14, "day")
+                        .format("YYYY-MM-DD")}/All-Genres/All-Types`}
+                      style={{ textDecoration: "none", color: "black" }}
+                      key={index}
+                      onClick={() => setSearchTerm("")}
+                    >
+                      <ListItem
+                        key={index}
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": {
+                            bgcolor: "grey.50",
+                          },
+                          borderBottom: index < 9 ? "1px solid" : "none",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography variant="body1" fontWeight="500">
+                              {town}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </Link>
+                  ))}
+                </List>
+              </Box>
+
               {/* Venues Section */}
               <Box>
                 <Box
@@ -246,66 +306,6 @@ export default function NewSearchBar({
                             band.band_type === "Tribute Band"
                               ? `${band.band_type} - ${band.tribute_band_name}`
                               : band.genres.join(" • ")
-                          }
-                        />
-                      </ListItem>
-                    </Link>
-                  ))}
-                </List>
-              </Box>
-
-              {/* Towns Section */}
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    px: 2,
-                    py: 1,
-                    bgcolor: "rgba(244, 241, 241, 0.98)",
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <LocationOn sx={{ fontSize: 25, color: "text.secondary" }} />
-                  <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    color="text.secondary"
-                  >
-                    Towns
-                  </Typography>
-                </Box>
-                <List disablePadding>
-                  {filteredTowns.slice(0, 9).map((town, index) => (
-                    <Link
-                      href={`/find/${town.replaceAll(
-                        " ",
-                        "-"
-                      )}/20-mi/${dayjs().format("YYYY-MM-DD")}/${dayjs()
-                        .add(14, "day")
-                        .format("YYYY-MM-DD")}/All-Genres/All-Types`}
-                      style={{ textDecoration: "none", color: "black" }}
-                      key={index}
-                      onClick={() => setSearchTerm("")}
-                    >
-                      <ListItem
-                        key={index}
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": {
-                            bgcolor: "grey.50",
-                          },
-                          borderBottom: index < 9 ? "1px solid" : "none",
-                          borderColor: "divider",
-                        }}
-                      >
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1" fontWeight="500">
-                              {town}
-                            </Typography>
                           }
                         />
                       </ListItem>
