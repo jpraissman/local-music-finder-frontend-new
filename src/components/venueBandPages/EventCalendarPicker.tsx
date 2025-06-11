@@ -1,5 +1,5 @@
 import Event from "@/types/Event";
-import { Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -8,7 +8,7 @@ const ClientDateCalendar = dynamic(
   () => import("../inputs/ClientDateCalendar"),
   {
     ssr: false,
-    loading: () => <Skeleton height={400} width={400} />,
+    loading: () => <Skeleton height={350} width={350} />,
   }
 );
 
@@ -45,12 +45,19 @@ export default function EventCalendarPicker({
   );
 
   return (
-    <ClientDateCalendar
-      slots={{ day: Day }}
-      slotProps={{ day: { highlightedDays } as any }}
-      onChange={(newDate) => {
-        handleDateChange(newDate?.format("YYYY-MM-DD"));
+    <Box
+      sx={{
+        backgroundColor: "rgba(244, 241, 241, 0.98)",
+        borderRadius: "25px",
       }}
-    />
+    >
+      <ClientDateCalendar
+        slots={{ day: Day }}
+        slotProps={{ day: { highlightedDays } as any }}
+        onChange={(newDate) => {
+          handleDateChange(newDate?.format("YYYY-MM-DD"));
+        }}
+      />
+    </Box>
   );
 }

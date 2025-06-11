@@ -138,7 +138,7 @@ export default function NavBar({ venues, bands }: NavBarProps) {
               />
             </Link>
           </Box>
-          <Box sx={{ pr: 4 }}>
+          <Box sx={{ pr: 4, display: { xs: "none", lg: "flex" } }}>
             <Link href="/" style={{ textDecoration: "none", color: "white" }}>
               <Typography
                 variant="h5"
@@ -159,7 +159,7 @@ export default function NavBar({ venues, bands }: NavBarProps) {
             sx={{
               display: {
                 xs: "none",
-                md: "flex",
+                lg: "flex",
               },
               paddingRight: { xs: "", xl: "50px" },
             }}
@@ -215,7 +215,7 @@ export default function NavBar({ venues, bands }: NavBarProps) {
               </Link>
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", lg: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"

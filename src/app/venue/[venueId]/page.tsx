@@ -1,4 +1,4 @@
-import VenuePage from "@/components/venuePage/VenuePage";
+import VenuePage from "@/components/venueBandPages/VenuePage";
 import { loadVenueEvents, loadVenueInfo } from "@/lib/load-venue-info";
 import {
   dehydrate,
