@@ -27,5 +27,7 @@ interface Event {
   youtube_id: string;
   ranking_position: number;
   town: string;
+  venue_id: string;
+  band_id: string;
 }
 export default Event;

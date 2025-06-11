@@ -13,8 +13,21 @@ import Link from "next/link";
 import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
+import NewSearchBar from "./NewSearchBar";
+import { TOWNS_2 } from "@/types/constants";
 
-export default function NavBar() {
+interface NavBarProps {
+  venues: { name: string; town: string; id: string }[];
+  bands: {
+    name: string;
+    genres: string[];
+    id: string;
+    band_type: string;
+    tribute_band_name: string;
+  }[];
+}
+
+export default function NavBar({ venues, bands }: NavBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -121,27 +134,13 @@ export default function NavBar() {
               />
             </Link>
           </Box>
-          <Box sx={{ pr: 4 }}>
-            <Link href="/" style={{ textDecoration: "none", color: "white" }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  transition: "color 0.2s ease",
-                  "&:hover": {
-                    color: "#dfdfdf",
-                  },
-                }}
-              >
-                The Local Music Finder
-              </Typography>
-            </Link>
-          </Box>
+          <NewSearchBar venues={venues} bands={bands} towns={TOWNS_2} />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{
               display: {
                 xs: "none",
-                md: "flex",
+                xl: "flex",
               },
               paddingRight: { xs: "", xl: "50px" },
             }}
@@ -197,7 +196,7 @@ export default function NavBar() {
               </Link>
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", xl: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"
