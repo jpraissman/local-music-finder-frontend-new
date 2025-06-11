@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import EventCalendarPicker from "./EventCalendarPicker";
 import NewEventCard from "../eventCard/NewEventCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 interface DisplayEventsAndCalendarProps {
@@ -30,6 +30,14 @@ export default function DisplayEventsAndCalendar({
 
   const theme = useTheme();
   const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
+  const scrollToSection = () => {
+    window.scrollTo({
+      top: 500,
+      behavior: "smooth",
+    });
+  };
 
   const setUpcomingEvents = () => {
     const today = dayjs();
@@ -52,6 +60,9 @@ export default function DisplayEventsAndCalendar({
       setDate(dayjs(newDate).format("MMMM D, YYYY"));
     } else {
       setDisplayedEvents(allEvents);
+    }
+    if (!isMdUp) {
+      scrollToSection();
     }
   };
 
@@ -77,9 +88,27 @@ export default function DisplayEventsAndCalendar({
           }}
         >
           {
-            <Typography sx={{ fontSize: { xs: "20px", md: "25px" } }}>
-              Event Calendar
-            </Typography>
+            <Stack
+              direction={"row"}
+              spacing={3}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Typography sx={{ fontSize: { xs: "20px", md: "25px" } }}>
+                Event Calendar
+              </Typography>
+              {!isMdUp && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    setUpcomingEvents();
+                    scrollToSection();
+                  }}
+                >
+                  See All Events
+                </Button>
+              )}
+            </Stack>
           }
           <EventCalendarPicker
             allEvents={allEvents}
