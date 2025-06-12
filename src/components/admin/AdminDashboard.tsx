@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { DateRange, DayPicker } from "react-day-picker";
 import StatCard from "./StatCard";
+import Link from "next/link";
 
 interface FetchUserDataProps {
   fromDate: string;
@@ -293,9 +294,11 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                       key={user[1].user_id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell component="th" scope="row">
-                        {user[1].user_id}
-                      </TableCell>
+                      <Link href={`/admin/user/${user[1].user_id}`}>
+                        <TableCell component="th" scope="row">
+                          {user[1].user_id}
+                        </TableCell>
+                      </Link>
                       <TableCell align="right">{user[1].duration}</TableCell>
                       <TableCell align="right">{user[1].device}</TableCell>
                       <TableCell align="right">{user[1].referer}</TableCell>
