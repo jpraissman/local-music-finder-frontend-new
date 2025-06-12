@@ -53,6 +53,7 @@ async function fetchUserData({
         pages_visited: number;
         venues_viewed: number;
         bands_viewed: number;
+        start_time: string;
       };
     };
     totals: {
@@ -104,7 +105,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
   const [filterZeroSecondDurations, setFilterZeroSecondDurations] =
     useState(true);
 
-  const { isFetching, data, isError } = useQuery({
+  const { isFetching, data } = useQuery({
     queryKey: [
       "admin",
       formatDate(dateRange.from),
@@ -278,6 +279,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                   <TableRow>
                     <TableCell>User Id</TableCell>
                     <TableCell align="right">Duration</TableCell>
+                    <TableCell align="right">Start Time</TableCell>
                     <TableCell align="right">Device</TableCell>
                     <TableCell align="right">Referer</TableCell>
                     <TableCell align="right">Type</TableCell>
@@ -300,6 +302,11 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                         </TableCell>
                       </Link>
                       <TableCell align="right">{user[1].duration}</TableCell>
+                      <TableCell align="right">
+                        {dayjs(user[1].start_time.replace("GMT", "")).format(
+                          "MMMM D, YYYY h:mm A"
+                        )}
+                      </TableCell>
                       <TableCell align="right">{user[1].device}</TableCell>
                       <TableCell align="right">{user[1].referer}</TableCell>
                       <TableCell align="right">{user[1].type}</TableCell>

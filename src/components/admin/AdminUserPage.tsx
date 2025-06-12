@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Button,
   Paper,
   Skeleton,
   Stack,
@@ -17,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { useState } from "react";
 
 async function fetchUserData(userId: string, adminKey: string) {
   const res = await axios.get(
@@ -56,8 +58,17 @@ export default function AdminUserPage({
     queryFn: () => fetchUserData(userId, adminKey),
   });
 
+  const [showAllData, setShowAllData] = useState(false);
+
   return (
-    <Box sx={{ padding: "100px", display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        padding: "100px",
+        display: "flex",
+        justifyContent: "center",
+        maxWidth: "90vw",
+      }}
+    >
       <Stack
         direction={"column"}
         spacing={5}
@@ -66,6 +77,12 @@ export default function AdminUserPage({
         <Typography variant="h3" fontWeight={"bold"}>
           User: {userId}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => setShowAllData(!showAllData)}
+        >
+          Toggle Data
+        </Button>
         {data && (
           <Stack direction={"column"} spacing={3}>
             <TableContainer component={Paper}>
@@ -80,8 +97,12 @@ export default function AdminUserPage({
                     <TableCell align="center">Videos Clicked</TableCell>
                     <TableCell align="center">Venues Viewed</TableCell>
                     <TableCell align="center">Bands Viewed</TableCell>
-                    <TableCell align="center">User Agent</TableCell>
-                    <TableCell align="center">Referer</TableCell>
+                    {showAllData && (
+                      <>
+                        <TableCell align="center">User Agent</TableCell>
+                        <TableCell align="center">Referer</TableCell>
+                      </>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -118,10 +139,16 @@ export default function AdminUserPage({
                       <TableCell align="center">
                         {session[1].bands_viewed}
                       </TableCell>
-                      <TableCell align="center">
-                        {session[1].user_agent}
-                      </TableCell>
-                      <TableCell align="center">{session[1].referer}</TableCell>
+                      {showAllData && (
+                        <>
+                          <TableCell align="center">
+                            {session[1].user_agent}
+                          </TableCell>
+                          <TableCell align="center">
+                            {session[1].referer}
+                          </TableCell>
+                        </>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>

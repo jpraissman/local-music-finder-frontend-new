@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Button,
   Paper,
   Skeleton,
   Stack,
@@ -16,6 +17,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 async function fetchSessionData(sessionId: string, adminKey: string) {
   const res = await axios.get(
@@ -51,8 +53,17 @@ export default function AdminSessionPage({
     queryFn: () => fetchSessionData(sessionId, adminKey),
   });
 
+  const [showAllData, setShowAllData] = useState(false);
+
   return (
-    <Box sx={{ padding: "100px", display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        padding: "100px",
+        display: "flex",
+        justifyContent: "center",
+        maxWidth: "90vw",
+      }}
+    >
       <Stack
         direction={"column"}
         spacing={5}
@@ -61,6 +72,12 @@ export default function AdminSessionPage({
         <Typography variant="h3" fontWeight={"bold"}>
           Session: {sessionId}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => setShowAllData(!showAllData)}
+        >
+          Toggle Data
+        </Button>
         {data && (
           <Stack direction={"column"} spacing={3}>
             <TableContainer component={Paper}>
@@ -70,9 +87,13 @@ export default function AdminSessionPage({
                     <TableCell>Id</TableCell>
                     <TableCell align="center">Page</TableCell>
                     <TableCell align="center">Created At</TableCell>
-                    <TableCell align="center">User Agent</TableCell>
                     <TableCell align="center">IP Address</TableCell>
-                    <TableCell align="center">Referer</TableCell>
+                    {showAllData && (
+                      <>
+                        <TableCell align="center">User Agent</TableCell>
+                        <TableCell align="center">Referer</TableCell>
+                      </>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -91,14 +112,18 @@ export default function AdminSessionPage({
                         ).format("MMMM D, YYYY h:mm A")}
                       </TableCell>
                       <TableCell align="center">
-                        {activity[1].user_agent}
-                      </TableCell>
-                      <TableCell align="center">
                         {activity[1].ip_address}
                       </TableCell>
-                      <TableCell align="center">
-                        {activity[1].referer}
-                      </TableCell>
+                      {showAllData && (
+                        <>
+                          <TableCell align="center">
+                            {activity[1].user_agent}
+                          </TableCell>
+                          <TableCell align="center">
+                            {activity[1].referer}
+                          </TableCell>
+                        </>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
