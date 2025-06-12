@@ -17,6 +17,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useState } from "react";
 
 async function fetchSessionData(sessionId: string, adminKey: string) {
@@ -105,7 +106,11 @@ export default function AdminSessionPage({
                       <TableCell component="th" scope="row">
                         {activity[1].id}
                       </TableCell>
-                      <TableCell align="center">{activity[1].page}</TableCell>
+                      <TableCell align="center">
+                        <Link href={`${activity[1].page}`}>
+                          {activity[1].page}
+                        </Link>
+                      </TableCell>
                       <TableCell align="center">
                         {dayjs(
                           activity[1].created_at.replace("GMT", "")
