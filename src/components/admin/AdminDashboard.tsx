@@ -50,6 +50,8 @@ async function fetchUserData({
         events_viewed: number;
         type: number;
         pages_visited: number;
+        venues_viewed: number;
+        bands_viewed: number;
       };
     };
     totals: {
@@ -71,6 +73,8 @@ async function fetchUserData({
       total_events_viewed: number;
       total_pages_visited: number;
       total_duration: number;
+      total_venues_viewed: number;
+      total_bands_viewed: number;
     };
   } = res.data;
 
@@ -257,6 +261,16 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                 value={data.totals.total_videos_clicked}
               />
             </Stack>
+            <Stack direction={"row"} spacing={4}>
+              <StatCard
+                title="Total Venues Viewed"
+                value={data.totals.total_venues_viewed}
+              />
+              <StatCard
+                title="Total Bands Viewed"
+                value={data.totals.total_bands_viewed}
+              />
+            </Stack>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -269,6 +283,8 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                     <TableCell align="right">Videos Clicked</TableCell>
                     <TableCell align="right">Events Viewed</TableCell>
                     <TableCell align="right">Pages Visited</TableCell>
+                    <TableCell align="right">Venues Viewed</TableCell>
+                    <TableCell align="right">Bands Viewed</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -292,6 +308,12 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                       </TableCell>
                       <TableCell align="right">
                         {user[1].pages_visited}
+                      </TableCell>
+                      <TableCell align="right">
+                        {user[1].venues_viewed}
+                      </TableCell>
+                      <TableCell align="right">
+                        {user[1].bands_viewed}
                       </TableCell>
                     </TableRow>
                   ))}

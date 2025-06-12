@@ -39,7 +39,7 @@ export default function AddVideo({ bands }: AddVideoProps) {
   const { mutate, isPending, isError } = useMutation({
     mutationFn: addVideo,
     onSuccess: (data) => {
-      router.push(`/post/video/success`);
+      router.push(`/video/success`);
     },
   });
 
