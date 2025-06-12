@@ -23,12 +23,18 @@ export default function BandPage({ bandId, userId, userAgent }: BandPageProps) {
   });
 
   return (
-    <Stack direction={"column"} spacing={{ xs: 2, md: 5 }}>
+    <Stack
+      direction={"column"}
+      spacing={{ xs: 2, md: 5 }}
+      sx={{ backgroundColor: "#c8c9cc", paddingBottom: "200px" }}
+    >
       <BandHeaderInfo bandInfo={bandInfo} />
       <DisplayEventsAndCalendar
         allEvents={allEvents}
         userId={userId}
         userAgent={userAgent}
+        name={bandInfo.name}
+        page="Band"
       />
     </Stack>
   );

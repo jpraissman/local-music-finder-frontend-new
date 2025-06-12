@@ -11,19 +11,23 @@ import {
 } from "@mui/material";
 import EventCalendarPicker from "./EventCalendarPicker";
 import NewEventCard from "../eventCard/NewEventCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 interface DisplayEventsAndCalendarProps {
   allEvents: Event[];
   userId: string;
   userAgent: string;
+  name: string;
+  page: "Venue" | "Band";
 }
 
 export default function DisplayEventsAndCalendar({
   allEvents,
   userId,
   userAgent,
+  name,
+  page,
 }: DisplayEventsAndCalendarProps) {
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
   const [date, setDate] = useState<string>("all");
@@ -57,7 +61,7 @@ export default function DisplayEventsAndCalendar({
       setDisplayedEvents(
         allEvents.filter((event) => event.date_string === newDate)
       );
-      setDate(dayjs(newDate).format("MMMM D, YYYY"));
+      setDate(dayjs(newDate).format("MMMM D"));
     } else {
       setDisplayedEvents(allEvents);
     }
@@ -89,25 +93,21 @@ export default function DisplayEventsAndCalendar({
         >
           {
             <Stack
-              direction={"row"}
-              spacing={3}
-              sx={{ display: "flex", alignItems: "center" }}
+              direction={"column"}
+              spacing={0.5}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingX: "40px",
+                textAlign: "center",
+              }}
             >
               <Typography sx={{ fontSize: { xs: "20px", md: "25px" } }}>
-                Event Calendar
+                {isMdUp ? "Event Calendar" : `${name}'s Upcoming Events`}
               </Typography>
-              {!isMdUp && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    setUpcomingEvents();
-                    scrollToSection();
-                  }}
-                >
-                  See All Events
-                </Button>
-              )}
+              <Typography variant="body1" color="gray">
+                Click on calendar to see events
+              </Typography>
             </Stack>
           }
           <EventCalendarPicker
@@ -117,7 +117,7 @@ export default function DisplayEventsAndCalendar({
           {date !== "all" && (
             <Box sx={{ paddingTop: "10px" }}>
               <Button variant="contained" onClick={() => setUpcomingEvents()}>
-                Show All Events
+                {`Show ${page}'s Upcoming Events (all)`}
               </Button>
             </Box>
           )}
@@ -135,8 +135,8 @@ export default function DisplayEventsAndCalendar({
         >
           <Typography sx={{ fontSize: { xs: "20px", md: "25px" } }}>
             {date === "all"
-              ? `All Upcoming Events (${displayedEvents.length})`
-              : `All Events on ${date} (${displayedEvents.length})`}
+              ? `All Upcoming Events for ${page} (${displayedEvents.length})`
+              : `${page}'s events on ${date} (${displayedEvents.length})`}
           </Typography>
           <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
             {displayedEvents.map((event) => (

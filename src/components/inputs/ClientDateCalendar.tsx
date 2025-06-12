@@ -13,6 +13,7 @@ export default function ClientDateCalendar(props: DateCalendarProps) {
         slotProps={props.slotProps}
         onChange={props.onChange}
         value={props.value}
+        disablePast={true}
       />
     </LocalizationProvider>
   );

@@ -27,12 +27,18 @@ export default function VenuePage({
   });
 
   return (
-    <Stack direction={"column"} spacing={{ xs: 2, md: 5 }}>
+    <Stack
+      direction={"column"}
+      spacing={{ xs: 2, md: 5 }}
+      sx={{ backgroundColor: "#c8c9cc", paddingBottom: "200px" }}
+    >
       <VenueHeaderInfo venueInfo={venueInfo} />
       <DisplayEventsAndCalendar
         allEvents={allEvents}
         userId={userId}
         userAgent={userAgent}
+        name={venueInfo.name}
+        page="Venue"
       />
     </Stack>
   );

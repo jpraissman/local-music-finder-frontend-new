@@ -1,15 +1,6 @@
-"use client";
-
 import Band from "@/types/Band";
-import { Facebook, Instagram, Language, MusicNote } from "@mui/icons-material";
-import {
-  Box,
-  Chip,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Directions, Facebook, Instagram, Language } from "@mui/icons-material";
+import { Box, Chip, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
 interface BandHeaderInfoProps {
@@ -25,99 +16,44 @@ const formatLink = (link: string) => {
 };
 
 export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-
   return (
     <Box
       sx={{
+        position: "relative",
         width: "100%",
-        background:
-          "linear-gradient(135deg,rgba(255, 252, 252, 0.98), rgba(230, 226, 226, 0.98), rgba(199, 199, 199, 0.98))",
       }}
     >
-      {isMdUp && (
-        <Stack
-          direction="column"
-          spacing={3}
-          sx={{
-            textAlign: "center",
-            alignItems: "center",
-            padding: "50px",
-          }}
-        >
-          <Typography variant="h2" color="black" fontWeight="bold">
-            {bandInfo.name}
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={3}
-            flexWrap="wrap"
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Stack direction="row" spacing={1} alignItems={"center"}>
-              <MusicNote color="secondary" />
-              <Typography variant="h6" color="black">
-                {bandInfo.band_type === "Tribute Band"
-                  ? `${bandInfo.band_type} - ${bandInfo.tribute_band_name}`
-                  : `${bandInfo.band_type}`}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 1,
-                  paddingLeft: "5px",
-                }}
-              >
-                {bandInfo.genres.map((genre) => (
-                  <Chip
-                    key={genre}
-                    label={genre}
-                    size="small"
-                    sx={{
-                      backgroundColor: "secondary.light",
-                      color: "black",
-                    }}
-                  />
-                ))}
-              </Box>
-            </Stack>
-            {bandInfo.facebook_url && (
-              <Link
-                href={formatLink(bandInfo.facebook_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <Facebook sx={{ color: "rgb(24, 119, 242)" }} />
-              </Link>
-            )}
-            {bandInfo.instagram_url && (
-              <Link
-                href={formatLink(bandInfo.instagram_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <Instagram sx={{ color: "purple" }} />
-              </Link>
-            )}
-            {bandInfo.website_url && (
-              <Link
-                href={formatLink(bandInfo.website_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <Language sx={{ color: "black" }} />
-              </Link>
-            )}
-          </Stack>
-        </Stack>
-      )}
-      {!isMdUp && (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "url(/saxophone.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: 1,
+          zIndex: 1,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          zIndex: 2,
+        }}
+      />
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 3,
+        }}
+      >
         <Stack
           direction={"column"}
           spacing={3}
@@ -132,19 +68,33 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
           <Stack
             direction={"column"}
             sx={{ display: "flex", alignItems: "center" }}
-            spacing={1}
           >
-            <Typography variant="h4" color="black" fontWeight="bold">
+            <Typography
+              color="white"
+              fontWeight="bold"
+              sx={{ fontSize: { xs: "35px", md: "55px" } }}
+            >
               {bandInfo.name}
             </Typography>
-            <Stack direction="row" spacing={0.2} alignItems={"center"}>
-              <MusicNote color="secondary" />
-              <Typography variant="body1" color="black">
-                {bandInfo.band_type === "Tribute Band"
-                  ? `${bandInfo.band_type} - ${bandInfo.tribute_band_name}`
-                  : `${bandInfo.band_type}`}
-              </Typography>
-            </Stack>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              {bandInfo.genres.map((genre) => (
+                <Chip
+                  key={genre}
+                  label={genre}
+                  size="small"
+                  sx={{
+                    backgroundColor: "secondary.light",
+                    color: "black",
+                  }}
+                />
+              ))}
+            </Box>
           </Stack>
           <Stack
             direction={"row"}
@@ -155,41 +105,12 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
             }}
             spacing={4}
           >
-            <Stack
-              direction={"column"}
-              spacing={1}
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 1,
-                  paddingLeft: "5px",
-                }}
-              >
-                {bandInfo.genres.map((genre) => (
-                  <Chip
-                    key={genre}
-                    label={genre}
-                    size="small"
-                    sx={{
-                      backgroundColor: "secondary.light",
-                      color: "black",
-                    }}
-                  />
-                ))}
-              </Box>
-              <Typography variant="body1" fontWeight={"bold"}>
-                Genres
-              </Typography>
-            </Stack>
             {bandInfo.facebook_url && (
               <Link
                 href={formatLink(bandInfo.facebook_url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <Stack
                   direction={"column"}
@@ -197,9 +118,15 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <Facebook
-                    sx={{ fontSize: "50px", color: "rgb(24, 119, 242)" }}
+                    sx={{
+                      fontSize: { xs: "50px", md: "70px" },
+                      color: "rgb(24, 119, 242)",
+                    }}
                   />
-                  <Typography variant="body1" fontWeight={"bold"}>
+                  <Typography
+                    sx={{ fontSize: { xs: "18px", md: "20px" } }}
+                    fontWeight={"bold"}
+                  >
                     Facebook
                   </Typography>
                 </Stack>
@@ -210,15 +137,23 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
                 href={formatLink(bandInfo.instagram_url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <Stack
                   direction={"column"}
                   spacing={1}
                   sx={{ display: "flex", alignItems: "center" }}
                 >
-                  <Instagram sx={{ fontSize: "50px", color: "purple" }} />
-                  <Typography variant="body1" fontWeight={"bold"}>
+                  <Instagram
+                    sx={{
+                      fontSize: { xs: "50px", md: "70px" },
+                      color: "#b9a0e8",
+                    }}
+                  />
+                  <Typography
+                    sx={{ fontSize: { xs: "18px", md: "20px" } }}
+                    fontWeight={"bold"}
+                  >
                     Instagram
                   </Typography>
                 </Stack>
@@ -229,15 +164,23 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
                 href={formatLink(bandInfo.website_url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ textDecoration: "none", color: "black" }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <Stack
                   direction={"column"}
                   spacing={1}
                   sx={{ display: "flex", alignItems: "center" }}
                 >
-                  <Language sx={{ fontSize: "50px", color: "black" }} />
-                  <Typography variant="body1" fontWeight={"bold"}>
+                  <Language
+                    sx={{
+                      fontSize: { xs: "50px", md: "70px" },
+                      color: "white",
+                    }}
+                  />
+                  <Typography
+                    sx={{ fontSize: { xs: "18px", md: "20px" } }}
+                    fontWeight={"bold"}
+                  >
                     Website
                   </Typography>
                 </Stack>
@@ -245,7 +188,7 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
             )}
           </Stack>
         </Stack>
-      )}
+      </Box>
     </Box>
   );
 }
