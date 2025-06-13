@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Autocomplete,
   Box,
   Checkbox,
   Paper,
@@ -12,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +28,7 @@ interface FetchUserDataProps {
   fromDate: string;
   toDate: string;
   includeAdmins: boolean;
-  filterOutZeroSecondDurations: boolean;
+  minDurationSeconds: string;
   adminKey: string;
 }
 
@@ -74,11 +76,11 @@ async function fetchUserData({
   fromDate,
   toDate,
   includeAdmins,
-  filterOutZeroSecondDurations,
+  minDurationSeconds,
   adminKey,
 }: FetchUserDataProps) {
   const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users?admin_key=${adminKey}&from_date=${fromDate}&to_date=${toDate}&include_admins=${includeAdmins}&filter_out_zero_duration=${filterOutZeroSecondDurations}`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/users?admin_key=${adminKey}&from_date=${fromDate}&to_date=${toDate}&include_admins=${includeAdmins}&min_duration_seconds=${minDurationSeconds}`
   );
   const data: AdminData = res.data;
 
@@ -104,8 +106,7 @@ interface AdminDashboardProps {
 export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
   const [dateRange, setDateRange] = useState<DateRange>(getDateRangeToday());
   const [includeAdmins, setIncludeAdmins] = useState(false);
-  const [filterZeroSecondDurations, setFilterZeroSecondDurations] =
-    useState(true);
+  const [minDurationSeconds, setMinDurationSeconds] = useState("15");
 
   const { isFetching, data } = useQuery({
     queryKey: [
@@ -113,7 +114,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
       formatDate(dateRange.from),
       formatDate(dateRange.to),
       includeAdmins,
-      filterZeroSecondDurations,
+      minDurationSeconds,
     ],
     queryFn: () =>
       fetchUserData({
@@ -121,7 +122,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
         toDate: formatDate(dateRange.to),
         adminKey: adminKey,
         includeAdmins: includeAdmins,
-        filterOutZeroSecondDurations: filterZeroSecondDurations,
+        minDurationSeconds: minDurationSeconds,
       }),
   });
 
@@ -196,19 +197,21 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                 onChange={() => setIncludeAdmins(!includeAdmins)}
               />
             </Stack>
-            <Stack
-              direction={"row"}
-              spacing={0.5}
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <Typography>Filter Out Zero Second Durations?</Typography>
-              <Checkbox
-                checked={filterZeroSecondDurations}
-                onChange={() =>
-                  setFilterZeroSecondDurations(!filterZeroSecondDurations)
-                }
+            <Box sx={{ paddingTop: "20px", width: "300px" }}>
+              <Autocomplete
+                fullWidth
+                options={["5", "15", "30", "60", "120", "300"]}
+                renderInput={(params) => (
+                  <TextField {...params} label="Min Duration (in seconds)" />
+                )}
+                value={minDurationSeconds + " seconds"}
+                onChange={(_, newMinDuration: string | null) => {
+                  if (newMinDuration) {
+                    setMinDurationSeconds(newMinDuration);
+                  }
+                }}
               />
-            </Stack>
+            </Box>
           </Box>
         </Stack>
         {allData && (
@@ -350,7 +353,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                       sx={{ cursor: "pointer" }}
                       onClick={() => sortUsers("duration")}
                     >
-                      Duration
+                      Duration (in minutes)
                     </TableCell>
                     <TableCell
                       align="right"
@@ -428,7 +431,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
                           {user[1].user_id}
                         </Link>
                       </TableCell>
-                      <TableCell align="right">{user[1].duration}</TableCell>
+                      <TableCell align="right">{`${user[1].duration} min`}</TableCell>
                       <TableCell align="right">
                         {dayjs(user[1].start_time.replace("GMT", "")).format(
                           "MMMM D, YYYY h:mm A"

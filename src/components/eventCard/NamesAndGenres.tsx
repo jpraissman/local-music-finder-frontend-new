@@ -67,6 +67,13 @@ export default function NamesAndGenres({ event }: { event: Event }) {
       <Box sx={{ paddingTop: "20px" }}>
         <SocialMediaIcons event={event} />
       </Box>
+      {event.other_info !== "" && (
+        <Box sx={{ paddingTop: "20px", display: { xs: "none", sm: "flex" } }}>
+          <Typography color="gray" variant="body1">
+            {event.other_info}
+          </Typography>
+        </Box>
+      )}
     </Stack>
   );
 }

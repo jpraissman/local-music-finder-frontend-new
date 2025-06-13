@@ -84,9 +84,20 @@ export default function NewEventCard({
         )}
       </Box>
       <Box sx={{ width: size === "Small" ? "90%" : "50%", padding: "20px" }}>
-        <Stack direction="row" spacing={1}>
-          <NamesAndGenres event={event} />
-          <OtherEventDetails event={event} />
+        <Stack direction={"column"}>
+          <Stack direction="row" spacing={1}>
+            <NamesAndGenres event={event} />
+            <OtherEventDetails event={event} />
+          </Stack>
+          {event.other_info !== "" && (
+            <Box
+              sx={{ paddingTop: "20px", display: { xs: "flex", sm: "none" } }}
+            >
+              <Typography color="gray" variant="body1">
+                {event.other_info}
+              </Typography>
+            </Box>
+          )}
         </Stack>
       </Box>
     </Stack>
