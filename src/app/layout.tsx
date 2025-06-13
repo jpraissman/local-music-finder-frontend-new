@@ -13,6 +13,8 @@ import {
 } from "@/lib/search-bar-data";
 import { cookies, headers } from "next/headers";
 import ActivityTracker from "@/components/ActivityTracker";
+import useExitLogger from "@/components/ExitTracker";
+import ExitTracker from "@/components/ExitTracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,6 +66,7 @@ export default async function RootLayout({
                 ip={ip}
                 referer={referer}
               />
+              <ExitTracker userId={userId?.value || "Undefined"} />
               <Box sx={{ paddingTop: "75px" }}>
                 <div>{children}</div>
               </Box>
