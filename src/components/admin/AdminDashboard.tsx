@@ -200,7 +200,7 @@ export default function AdminDashboard({ adminKey }: AdminDashboardProps) {
             <Box sx={{ paddingTop: "20px", width: "300px" }}>
               <Autocomplete
                 fullWidth
-                options={["5", "15", "30", "60", "120", "300"]}
+                options={["0", "1", "5", "15", "30", "60", "120", "300"]}
                 renderInput={(params) => (
                   <TextField {...params} label="Min Duration (in seconds)" />
                 )}
