@@ -28,18 +28,24 @@ interface AddVideoProps {
       id: string;
     };
   };
+  bandToPostFor: string | null;
+  bandIdToPostFor: string | null;
 }
 
-export default function AddVideo({ bands }: AddVideoProps) {
-  const [band, setBand] = useState<string | null>(null);
-  const [bandId, setBandId] = useState<string | null>(null);
+export default function AddVideo({
+  bands,
+  bandToPostFor,
+  bandIdToPostFor,
+}: AddVideoProps) {
+  const [band, setBand] = useState<string | null>(bandToPostFor);
+  const [bandId, setBandId] = useState<string | null>(bandIdToPostFor);
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
 
   const router = useRouter();
-  const { mutate, isPending, isError } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: addVideo,
     onSuccess: (data) => {
-      router.push(`/video/success`);
+      router.push(`/post/video/success`);
     },
   });
 
@@ -48,6 +54,7 @@ export default function AddVideo({ bands }: AddVideoProps) {
       sx={{
         display: "flex",
         justifyContent: "center",
+        paddingTop: "50px",
       }}
     >
       <Stack
@@ -60,7 +67,13 @@ export default function AddVideo({ bands }: AddVideoProps) {
           width: "700px",
         }}
       >
-        <Typography variant="h4">Add A Video</Typography>
+        <Stack direction={"column"} spacing={2}>
+          <Typography variant="h4">Post A Video</Typography>
+          <Typography variant="body1">
+            Use the following form to post a YouTube video for a specific band.
+            We currently only support adding YouTube videos.
+          </Typography>
+        </Stack>
         <Autocomplete
           fullWidth
           options={Object.keys(bands)}
@@ -81,10 +94,9 @@ export default function AddVideo({ bands }: AddVideoProps) {
           value={youtubeUrl}
           onChange={(event) => {
             setYoutubeUrl(event.target.value);
-            console.log(event.target.value);
           }}
           fullWidth
-          label="YouTube Link"
+          label="YouTube Video Link"
         />
         {!isPending && (
           <Button
@@ -93,7 +105,14 @@ export default function AddVideo({ bands }: AddVideoProps) {
             size="large"
             onClick={() => {
               if (bandId && youtubeUrl.length > 0) {
-                mutate({ bandId: bandId, youTubeUrl: youtubeUrl });
+                if (
+                  youtubeUrl.indexOf("youtube.com") != -1 ||
+                  youtubeUrl.indexOf("youtu.be") != -1
+                ) {
+                  mutate({ bandId: bandId, youTubeUrl: youtubeUrl });
+                } else {
+                  alert("Please post a valid YouTube link.");
+                }
               } else {
                 alert("All fields are required.");
               }
@@ -105,7 +124,8 @@ export default function AddVideo({ bands }: AddVideoProps) {
         {isPending && <CircularProgress />}
         {isError && (
           <Typography variant="body1" color="red">
-            There was an error. Try again.
+            There was an error posting the video. Please try again. This video
+            may have been posted for this band already or the link is incorrect.
           </Typography>
         )}
       </Stack>

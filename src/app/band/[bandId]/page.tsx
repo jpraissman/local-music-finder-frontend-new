@@ -1,5 +1,9 @@
 import BandPage from "@/components/venueBandPages/BandPage";
-import { loadBandEvents, loadBandInfo } from "@/lib/load-band-info";
+import {
+  loadBandEvents,
+  loadBandInfo,
+  loadBandVideos,
+} from "@/lib/load-band-info";
 import {
   dehydrate,
   HydrationBoundary,
@@ -11,13 +15,19 @@ interface PageProps {
   params: {
     bandId: string;
   };
+  searchParams: { p?: string };
 }
 
-export default async function Page({ params: { bandId } }: PageProps) {
+export default async function Page({
+  params: { bandId },
+  searchParams,
+}: PageProps) {
   const cookieStore = await cookies();
   const userId = cookieStore.get("userId")?.value || "Undefined";
   const requestHeaders = headers();
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
+
+  const navValue = parseInt(searchParams.p ?? "0", 10);
 
   const queryClient = new QueryClient();
   await Promise.all([
@@ -29,13 +39,22 @@ export default async function Page({ params: { bandId } }: PageProps) {
       queryKey: ["bandInfo", bandId],
       queryFn: () => loadBandInfo(bandId),
     }),
+    queryClient.prefetchQuery({
+      queryKey: ["bandVideos", bandId],
+      queryFn: () => loadBandVideos(bandId),
+    }),
   ]);
 
   const dehydratedState = dehydrate(queryClient);
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <BandPage bandId={bandId} userAgent={userAgent} userId={userId} />
+      <BandPage
+        bandId={bandId}
+        userAgent={userAgent}
+        userId={userId}
+        initialNavValue={navValue}
+      />
     </HydrationBoundary>
   );
 }

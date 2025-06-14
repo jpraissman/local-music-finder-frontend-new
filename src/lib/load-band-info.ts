@@ -17,3 +17,10 @@ export async function loadBandInfo(bandId: string) {
 
   return data;
 }
+
+export async function loadBandVideos(bandId: string) {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/videos/${bandId}`);
+  const data: {video_ids: string[]} = await res.data;
+
+  return data;
+}

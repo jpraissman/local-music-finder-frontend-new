@@ -3,11 +3,14 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <Stack spacing={4} sx={{ display: "flex", alignItems: "center" }}>
-      <Typography variant="h4">Video Added!</Typography>
+    <Stack
+      spacing={4}
+      sx={{ display: "flex", alignItems: "center", paddingTop: "50px" }}
+    >
+      <Typography variant="h4">Video Posted!</Typography>
       <Link href="/post/video">
         <Button variant="contained" size="large" color="primary">
-          Add Another Video
+          Post Another Video
         </Button>
       </Link>
     </Stack>
