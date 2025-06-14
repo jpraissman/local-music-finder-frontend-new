@@ -59,7 +59,7 @@ export default function DisplayBandVideos({
             }}
           >
             <Typography sx={{ fontSize: { xs: "20px", md: "30px" } }}>
-              We currently don't have any videos of this band/performer.
+              {"We currently don't have any videos of this band/performer."}
             </Typography>
           </Box>
         )}
