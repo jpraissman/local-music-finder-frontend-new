@@ -1,4 +1,5 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
+import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import { blankFilters } from "@/types/constants";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
@@ -16,15 +17,24 @@ export default async function Page() {
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   return (
-    <>
-      <EventSearchScreen
-        filters={blankFilters}
-        eventsInit={[]}
-        noFilters={true}
-        landingPage={false}
-        userId={userId}
-        userAgent={userAgent}
-      />
-    </>
+    <NewEventSearchPage
+      initialLocation={null}
+      initialDateRange={undefined}
+      initialMaxDistance={20}
+      userAgent={userAgent}
+      userId={userId}
+      initialEvents={null}
+      initialDisplayText={null}
+    />
+    // <>
+    //   <EventSearchScreen
+    //     filters={blankFilters}
+    //     eventsInit={[]}
+    //     noFilters={true}
+    //     landingPage={false}
+    //     userId={userId}
+    //     userAgent={userAgent}
+    //   />
+    // </>
   );
 }
