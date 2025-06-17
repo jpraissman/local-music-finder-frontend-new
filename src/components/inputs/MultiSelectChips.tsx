@@ -1,5 +1,4 @@
-import { GENRES } from "@/types/constants";
-import { Button, Chip, Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 interface MultiSelectChipsProps {
   chips: string[];
@@ -46,21 +45,6 @@ export default function MultiSelectChips({
           />
         ))}
       </Stack>
-      <Button
-        variant="contained"
-        sx={{ maxWidth: "200px" }}
-        onClick={() => {
-          if (GENRES.every((genre) => selectedChips.includes(genre))) {
-            setSelectedChips([]);
-          } else {
-            setSelectedChips(GENRES);
-          }
-        }}
-      >
-        {GENRES.every((genre) => selectedChips.includes(genre))
-          ? "Remove All"
-          : "Select All"}
-      </Button>
     </Stack>
   );
 }

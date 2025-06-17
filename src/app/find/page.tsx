@@ -21,8 +21,8 @@ export default async function Page() {
       initialLocation={null}
       initialDateRange={undefined}
       initialMaxDistance={20}
-      initialGenres={GENRES}
-      initialBandTypes={BAND_TYPES}
+      initialGenres={[]}
+      initialBandTypes={[]}
       userAgent={userAgent}
       userId={userId}
       initialEvents={null}

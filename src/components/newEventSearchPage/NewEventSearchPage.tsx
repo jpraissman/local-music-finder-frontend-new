@@ -19,6 +19,7 @@ import {
   SentimentVeryDissatisfied,
 } from "@mui/icons-material";
 import EventsFoundHeader from "./EventsFoundHeader";
+import { BAND_TYPES, GENRES } from "@/types/constants";
 
 interface NewEventSearchPage {
   initialLocation: PlaceType | null;
@@ -76,14 +77,16 @@ export default function NewEventSearchPage({
     if (events && dateRange) {
       const fromDate = dayjs(dateRange.from).startOf("day").subtract(1, "day");
       const toDate = dayjs(dateRange.to).startOf("day").add(1, "day");
+      const genresToUse = genres.length === 0 ? GENRES : genres;
+      const bandTypesToUse = bandTypes.length === 0 ? BAND_TYPES : bandTypes;
       const newDisplayedEvents = events.filter((event) => {
         const eventDate = dayjs(event.date_string).startOf("day");
         return (
           event.distance_value <= maxDistance &&
           eventDate.isAfter(fromDate) &&
           eventDate.isBefore(toDate) &&
-          bandTypes.includes(event.band_type) &&
-          genres.some((genre) => event.genres.includes(genre))
+          bandTypesToUse.includes(event.band_type) &&
+          genresToUse.some((genre) => event.genres.includes(genre))
         );
       });
       const newDisplayedEventsSorted = newDisplayedEvents.sort((a, b) => {
@@ -206,46 +209,9 @@ export default function NewEventSearchPage({
               />
             </Box>
           )}
-          {location && dateRange && genres.length === 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: "100px",
-              }}
-            >
-              <DisplayMissingField
-                icon={<MusicNote sx={{ color: "#dc2626", fontSize: "40px" }} />}
-                header="Genres Required"
-                body="You must select at least one genre to find events in your area"
-              />
-            </Box>
-          )}
-          {location &&
-            dateRange &&
-            genres.length > 0 &&
-            bandTypes.length === 0 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingTop: "100px",
-                }}
-              >
-                <DisplayMissingField
-                  icon={
-                    <MusicNote sx={{ color: "#dc2626", fontSize: "40px" }} />
-                  }
-                  header="Band Types Required"
-                  body="You must select at least one band type to find events in your area"
-                />
-              </Box>
-            )}
           {!isLoading &&
             location &&
             dateRange &&
-            genres.length > 0 &&
-            bandTypes.length > 0 &&
             displayedEvents.length === 0 && (
               <Box
                 sx={{
