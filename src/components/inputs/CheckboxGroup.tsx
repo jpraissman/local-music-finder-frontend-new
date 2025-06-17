@@ -15,9 +15,13 @@ export default function CheckboxGroup({
     <Stack direction={"column"}>
       {labels.map((label, index) => {
         return (
-          <Stack direction={"row"} display={"flex"} alignItems={"center"}>
+          <Stack
+            key={index}
+            direction={"row"}
+            display={"flex"}
+            alignItems={"center"}
+          >
             <Checkbox
-              key={index}
               checked={selectedLabels.includes(label)}
               onChange={() => {
                 if (selectedLabels.includes(label)) {
