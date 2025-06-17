@@ -1,6 +1,6 @@
 import EventSearchScreen from "@/components/EventSearchScreen";
 import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
-import { blankFilters } from "@/types/constants";
+import { BAND_TYPES, blankFilters, GENRES } from "@/types/constants";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 
@@ -21,6 +21,8 @@ export default async function Page() {
       initialLocation={null}
       initialDateRange={undefined}
       initialMaxDistance={20}
+      initialGenres={GENRES}
+      initialBandTypes={BAND_TYPES}
       userAgent={userAgent}
       userId={userId}
       initialEvents={null}

@@ -17,6 +17,8 @@ interface NewEventSearchPage {
   initialLocation: PlaceType | null;
   initialDateRange: DateRange | undefined;
   initialMaxDistance: number;
+  initialGenres: string[];
+  initialBandTypes: string[];
   userAgent: string;
   userId: string;
   initialEvents: Event[] | null;
@@ -39,6 +41,8 @@ export default function NewEventSearchPage({
   initialLocation,
   initialDateRange,
   initialMaxDistance,
+  initialGenres,
+  initialBandTypes,
   userAgent,
   userId,
   initialEvents,
@@ -49,6 +53,8 @@ export default function NewEventSearchPage({
     initialDateRange
   );
   const [maxDistance, setMaxDistance] = useState(initialMaxDistance);
+  const [genres, setGenres] = useState<string[]>(initialGenres);
+  const [bandTypes, setBandTypes] = useState<string[]>(initialBandTypes);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events", location],
@@ -67,14 +73,16 @@ export default function NewEventSearchPage({
         return (
           event.distance_value <= maxDistance &&
           eventDate.isAfter(fromDate) &&
-          eventDate.isBefore(toDate)
+          eventDate.isBefore(toDate) &&
+          bandTypes.includes(event.band_type) &&
+          genres.some((genre) => event.genres.includes(genre))
         );
       });
       setDisplayedEvents(newDisplayedEvents);
     } else {
       setDisplayedEvents([]);
     }
-  }, [events, dateRange, maxDistance]);
+  }, [events, dateRange, maxDistance, bandTypes, genres]);
 
   const confirmLocationSet = () => {
     if (!location) {
@@ -87,7 +95,7 @@ export default function NewEventSearchPage({
   const setDefaultDateRange = () => {
     const fromDate = new Date();
     const toDate = new Date();
-    toDate.setDate(toDate.getDate() + 14);
+    toDate.setDate(toDate.getDate() + 7);
     setDateRange({
       to: toDate,
       from: fromDate,
@@ -118,6 +126,18 @@ export default function NewEventSearchPage({
               setMaxDistance={(newMaxDistance) => {
                 if (confirmLocationSet()) {
                   setMaxDistance(newMaxDistance);
+                }
+              }}
+              genres={genres}
+              setGenres={(newGenres) => {
+                if (confirmLocationSet()) {
+                  setGenres(newGenres);
+                }
+              }}
+              bandTypes={bandTypes}
+              setBandTypes={(newBandTypes) => {
+                if (confirmLocationSet()) {
+                  setBandTypes(newBandTypes);
                 }
               }}
             />

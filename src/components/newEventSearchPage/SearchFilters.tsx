@@ -1,11 +1,14 @@
 "use client";
 
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { PlaceType } from "@/types/PlaceType";
 import { DateRange, DayPicker } from "react-day-picker";
 import RadioButtons from "../inputs/RadioButtons";
 import { useState } from "react";
+import CheckboxGroup from "../inputs/CheckboxGroup";
+import { BAND_TYPES, GENRES } from "@/types/constants";
+import MultiSelectChips from "../inputs/MultiSelectChips";
 
 interface SearchFilterProps {
   location: PlaceType | null;
@@ -14,6 +17,10 @@ interface SearchFilterProps {
   setDateRange: (newDateRange: DateRange | undefined) => void;
   maxDistance: number;
   setMaxDistance: (newMaxDistance: number) => void;
+  genres: string[];
+  setGenres: (newGenres: string[]) => void;
+  bandTypes: string[];
+  setBandTypes: (newBandTypes: string[]) => void;
 }
 
 export default function SearchFilters({
@@ -23,6 +30,10 @@ export default function SearchFilters({
   setDateRange,
   maxDistance,
   setMaxDistance,
+  genres,
+  setGenres,
+  bandTypes,
+  setBandTypes,
 }: SearchFilterProps) {
   return (
     <Paper
@@ -44,7 +55,12 @@ export default function SearchFilters({
           spacing={2}
           divider={<Divider orientation="horizontal" flexItem />}
         >
-          <Typography variant="h5">Filters</Typography>
+          <Stack direction={"column"}>
+            <Typography variant="h5" fontWeight={"bold"}>
+              Filter & Sort
+            </Typography>
+            <Typography variant="h6">(scroll to see all options)</Typography>
+          </Stack>
           <Stack direction={"column"} spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>
               Location
@@ -62,7 +78,7 @@ export default function SearchFilters({
           </Stack>
           <Stack direction={"column"} spacing={0.5}>
             <Typography variant="body1" fontWeight={"bold"}>
-              Date
+              Date Range
             </Typography>
             <Box
               sx={{
@@ -71,14 +87,24 @@ export default function SearchFilters({
                 justifyContent: "center",
               }}
             >
-              <DayPicker
-                mode="range"
-                selected={dateRange}
-                disabled={{ before: new Date() }}
-                onSelect={(newDateRange) => {
-                  setDateRange(newDateRange);
-                }}
-              />
+              <Stack display={"flex"} alignItems={"center"} spacing={1}>
+                <DayPicker
+                  mode="range"
+                  selected={dateRange}
+                  disabled={{ before: new Date() }}
+                  onSelect={(newDateRange) => {
+                    setDateRange(newDateRange);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ maxWidth: "200px" }}
+                  onClick={() => setDateRange(undefined)}
+                >
+                  Clear Calendar
+                </Button>
+              </Stack>
             </Box>
           </Stack>
           <Stack direction={"column"} spacing={1}>
@@ -98,6 +124,31 @@ export default function SearchFilters({
               onChange={(_, newMaxDistanceStr) => {
                 setMaxDistance(Number(newMaxDistanceStr));
               }}
+            />
+          </Stack>
+          <Stack direction={"column"} spacing={1}>
+            <Stack>
+              <Typography variant="body1" fontWeight={"bold"}>
+                Genres
+              </Typography>
+              <Typography variant="body2" color="gray">
+                Click to include/remove
+              </Typography>
+            </Stack>
+            <MultiSelectChips
+              chips={GENRES}
+              selectedChips={genres}
+              setSelectedChips={setGenres}
+            />
+          </Stack>
+          <Stack direction={"column"} spacing={1}>
+            <Typography variant="body1" fontWeight={"bold"}>
+              Band Types
+            </Typography>
+            <CheckboxGroup
+              labels={BAND_TYPES}
+              selectedLabels={bandTypes}
+              setSelectedLabels={setBandTypes}
             />
           </Stack>
         </Stack>
