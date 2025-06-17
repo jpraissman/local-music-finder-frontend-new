@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Modal, Stack } from "@mui/material";
+import { Box, Modal, Stack, Typography } from "@mui/material";
 import SearchFilters from "./SearchFilters";
 import { PlaceType } from "@/types/PlaceType";
 import { useEffect, useState } from "react";
@@ -78,6 +78,7 @@ export default function NewEventSearchPage({
           genres.some((genre) => event.genres.includes(genre))
         );
       });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       setDisplayedEvents(newDisplayedEvents);
     } else {
       setDisplayedEvents([]);
@@ -112,7 +113,7 @@ export default function NewEventSearchPage({
     <Box sx={{ paddingTop: "50px", paddingX: "20px" }}>
       <Stack direction={"row"} spacing={3}>
         <Box sx={{ width: "30%" }}>
-          <Box sx={{ position: "sticky", top: "100px" }}>
+          <Box sx={{ position: "sticky", top: "125px" }}>
             <SearchFilters
               location={location}
               setLocation={(newLocation) => setLocation(newLocation)}
@@ -171,7 +172,13 @@ export default function NewEventSearchPage({
             </Box>
           )}
           {!isLoading && displayedEvents.length > 0 && (
-            <Stack direction={"column"} spacing={2}>
+            <Stack
+              direction={"column"}
+              spacing={2}
+              display={"flex"}
+              alignItems={"center"}
+            >
+              <Typography variant="h4">{`${displayedEvents.length} events found`}</Typography>
               {displayedEvents.map((event) => {
                 return (
                   <NewEventCard
