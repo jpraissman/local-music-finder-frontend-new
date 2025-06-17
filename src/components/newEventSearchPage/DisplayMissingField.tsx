@@ -1,12 +1,17 @@
 import { DateRange, LocationOn } from "@mui/icons-material";
 import { Avatar, Paper, Stack, Typography } from "@mui/material";
+import { ReactElement } from "react";
 
 interface DisplayMissingFieldProps {
-  type: "Location" | "Date";
+  icon: ReactElement;
+  header: string;
+  body: string;
 }
 
 export default function DisplayMissingField({
-  type,
+  icon,
+  header,
+  body,
 }: DisplayMissingFieldProps) {
   return (
     <Paper
@@ -24,19 +29,13 @@ export default function DisplayMissingField({
         sx={{ display: "flex", alignItems: "center" }}
       >
         <Avatar sx={{ backgroundColor: "#fee2e2", width: 60, height: 60 }}>
-          {type === "Location" ? (
-            <LocationOn sx={{ color: "#dc2626", fontSize: "40px" }} />
-          ) : (
-            <DateRange sx={{ color: "#dc2626", fontSize: "40px" }} />
-          )}
+          {icon}
         </Avatar>
         <Typography fontWeight={"bold"} color="#991b1b" variant="h6">
-          {type === "Location" ? "Location Required" : "Date Range Required"}
+          {header}
         </Typography>
         <Typography fontWeight={"medium"} color="#b91c1c" variant="body1">
-          {type === "Location"
-            ? "You must enter a location to find events in your area"
-            : "You must select a date range to find events in your area"}
+          {body}
         </Typography>
       </Stack>
     </Paper>

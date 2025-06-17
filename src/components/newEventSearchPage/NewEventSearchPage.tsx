@@ -12,6 +12,13 @@ import { DateRange } from "react-day-picker";
 import EventCardSkeleton from "../eventCard/EventCardSkeleton";
 import dayjs from "dayjs";
 import DisplayMissingField from "./DisplayMissingField";
+import {
+  DateRange as DateRangeIcon,
+  LocationOn,
+  MusicNote,
+  SentimentVeryDissatisfied,
+} from "@mui/icons-material";
+import EventsFoundHeader from "./EventsFoundHeader";
 
 interface NewEventSearchPage {
   initialLocation: PlaceType | null;
@@ -55,6 +62,7 @@ export default function NewEventSearchPage({
   const [maxDistance, setMaxDistance] = useState(initialMaxDistance);
   const [genres, setGenres] = useState<string[]>(initialGenres);
   const [bandTypes, setBandTypes] = useState<string[]>(initialBandTypes);
+  const [sort, setSort] = useState<"Date" | "Distance">("Date");
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events", location],
@@ -78,12 +86,21 @@ export default function NewEventSearchPage({
           genres.some((genre) => event.genres.includes(genre))
         );
       });
+      const newDisplayedEventsSorted = newDisplayedEvents.sort((a, b) => {
+        if (sort == "Date") {
+          const dateA = dayjs(a.event_datetime);
+          const dateB = dayjs(b.event_datetime);
+          return dateA.isAfter(dateB) ? 1 : -1;
+        } else {
+          return a.distance_value - b.distance_value;
+        }
+      });
       window.scrollTo({ top: 0, behavior: "smooth" });
-      setDisplayedEvents(newDisplayedEvents);
+      setDisplayedEvents(newDisplayedEventsSorted);
     } else {
       setDisplayedEvents([]);
     }
-  }, [events, dateRange, maxDistance, bandTypes, genres]);
+  }, [events, dateRange, maxDistance, bandTypes, genres, sort]);
 
   const confirmLocationSet = () => {
     if (!location) {
@@ -141,6 +158,12 @@ export default function NewEventSearchPage({
                   setBandTypes(newBandTypes);
                 }
               }}
+              sort={sort}
+              setSort={(newSort) => {
+                if (confirmLocationSet()) {
+                  setSort(newSort);
+                }
+              }}
             />
           </Box>
         </Box>
@@ -157,7 +180,13 @@ export default function NewEventSearchPage({
                 paddingTop: "100px",
               }}
             >
-              <DisplayMissingField type="Location" />
+              <DisplayMissingField
+                icon={
+                  <LocationOn sx={{ color: "#dc2626", fontSize: "40px" }} />
+                }
+                header="Location Required"
+                body="You must enter a location to find events in your area"
+              />
             </Box>
           )}
           {location && !dateRange && (
@@ -168,9 +197,74 @@ export default function NewEventSearchPage({
                 paddingTop: "100px",
               }}
             >
-              <DisplayMissingField type="Date" />
+              <DisplayMissingField
+                icon={
+                  <DateRangeIcon sx={{ color: "#dc2626", fontSize: "40px" }} />
+                }
+                header="Date Range Required"
+                body="You must select a date range to find events in your area"
+              />
             </Box>
           )}
+          {location && dateRange && genres.length === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "100px",
+              }}
+            >
+              <DisplayMissingField
+                icon={<MusicNote sx={{ color: "#dc2626", fontSize: "40px" }} />}
+                header="Genres Required"
+                body="You must select at least one genre to find events in your area"
+              />
+            </Box>
+          )}
+          {location &&
+            dateRange &&
+            genres.length > 0 &&
+            bandTypes.length === 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "100px",
+                }}
+              >
+                <DisplayMissingField
+                  icon={
+                    <MusicNote sx={{ color: "#dc2626", fontSize: "40px" }} />
+                  }
+                  header="Band Types Required"
+                  body="You must select at least one band type to find events in your area"
+                />
+              </Box>
+            )}
+          {!isLoading &&
+            location &&
+            dateRange &&
+            genres.length > 0 &&
+            bandTypes.length > 0 &&
+            displayedEvents.length === 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "100px",
+                }}
+              >
+                <DisplayMissingField
+                  icon={
+                    <SentimentVeryDissatisfied
+                      sx={{ color: "#dc2626", fontSize: "40px" }}
+                    />
+                  }
+                  header="No Events Found"
+                  body="Try expanding your search to find events in your area."
+                />
+              </Box>
+            )}
           {!isLoading && displayedEvents.length > 0 && (
             <Stack
               direction={"column"}
@@ -178,7 +272,14 @@ export default function NewEventSearchPage({
               display={"flex"}
               alignItems={"center"}
             >
-              <Typography variant="h4">{`${displayedEvents.length} events found`}</Typography>
+              <Box sx={{ paddingBottom: "20px" }}>
+                <EventsFoundHeader
+                  eventCount={displayedEvents.length}
+                  location={location?.description || ""}
+                  startDate={dateRange?.from || new Date()}
+                  endDate={dateRange?.to || new Date()}
+                />
+              </Box>
               {displayedEvents.map((event) => {
                 return (
                   <NewEventCard

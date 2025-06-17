@@ -21,6 +21,8 @@ interface SearchFilterProps {
   setGenres: (newGenres: string[]) => void;
   bandTypes: string[];
   setBandTypes: (newBandTypes: string[]) => void;
+  sort: "Date" | "Distance";
+  setSort: (newSort: "Date" | "Distance") => void;
 }
 
 export default function SearchFilters({
@@ -34,6 +36,8 @@ export default function SearchFilters({
   setGenres,
   bandTypes,
   setBandTypes,
+  sort,
+  setSort,
 }: SearchFilterProps) {
   return (
     <Paper
@@ -149,6 +153,21 @@ export default function SearchFilters({
               labels={BAND_TYPES}
               selectedLabels={bandTypes}
               setSelectedLabels={setBandTypes}
+            />
+          </Stack>
+          <Stack direction={"column"} spacing={1}>
+            <Typography variant="body1" fontWeight={"bold"}>
+              Sort
+            </Typography>
+            <RadioButtons
+              labels={["Date", "Distance"]}
+              values={["Date", "Distance"]}
+              value={sort}
+              onChange={(_, newSort) => {
+                if (newSort === "Date" || newSort === "Distance") {
+                  setSort(newSort);
+                }
+              }}
             />
           </Stack>
         </Stack>
