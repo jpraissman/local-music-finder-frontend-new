@@ -45,7 +45,7 @@ export default function SearchFilters({
       sx={{
         backgroundColor: "whitesmoke",
         padding: "20px",
-        height: "70vh",
+        height: { xs: "100%", md: "70vh" },
         overflowY: "auto",
       }}
     >
@@ -155,7 +155,11 @@ export default function SearchFilters({
               setSelectedLabels={setBandTypes}
             />
           </Stack>
-          <Stack direction={"column"} spacing={1}>
+          <Stack
+            direction={"column"}
+            spacing={1}
+            sx={{ paddingBottom: "100px" }}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Sort
             </Typography>

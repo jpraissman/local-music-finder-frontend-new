@@ -1,11 +1,20 @@
 "use client";
 
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Modal,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import SearchFilters from "./SearchFilters";
 import { PlaceType } from "@/types/PlaceType";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import Event from "@/types/Event";
 import NewEventCard from "../eventCard/NewEventCard";
 import { DateRange } from "react-day-picker";
@@ -13,13 +22,20 @@ import EventCardSkeleton from "../eventCard/EventCardSkeleton";
 import dayjs from "dayjs";
 import DisplayMissingField from "./DisplayMissingField";
 import {
+  Close,
   DateRange as DateRangeIcon,
   LocationOn,
-  MusicNote,
   SentimentVeryDissatisfied,
+  Tune,
 } from "@mui/icons-material";
 import EventsFoundHeader from "./EventsFoundHeader";
 import { BAND_TYPES, GENRES } from "@/types/constants";
+import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
+import { useSearchParams, useRouter } from "next/navigation";
+import { getEventsByLoc } from "@/lib/get-events-by-loc";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const EVENTS_PER_PAGE = 20;
 
 interface NewEventSearchPage {
   initialLocation: PlaceType | null;
@@ -27,22 +43,11 @@ interface NewEventSearchPage {
   initialMaxDistance: number;
   initialGenres: string[];
   initialBandTypes: string[];
+  initialSort: "Date" | "Distance";
   userAgent: string;
   userId: string;
   initialEvents: Event[] | null;
-  initialDisplayText: string | null;
-}
-
-async function getEvents(location: PlaceType | null) {
-  if (!location) {
-    return [];
-  }
-
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/town/${location.description}`
-  );
-  const data: Event[] = await response.data.events;
-  return data;
+  initialLocationDisplay: string | null;
 }
 
 export default function NewEventSearchPage({
@@ -51,10 +56,11 @@ export default function NewEventSearchPage({
   initialMaxDistance,
   initialGenres,
   initialBandTypes,
+  initialSort,
   userAgent,
   userId,
   initialEvents,
-  initialDisplayText,
+  initialLocationDisplay,
 }: NewEventSearchPage) {
   const [location, setLocation] = useState<PlaceType | null>(initialLocation);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(
@@ -63,17 +69,22 @@ export default function NewEventSearchPage({
   const [maxDistance, setMaxDistance] = useState(initialMaxDistance);
   const [genres, setGenres] = useState<string[]>(initialGenres);
   const [bandTypes, setBandTypes] = useState<string[]>(initialBandTypes);
-  const [sort, setSort] = useState<"Date" | "Distance">("Date");
+  const [sort, setSort] = useState<"Date" | "Distance">(initialSort);
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ["events", location],
+    queryKey: ["events", location?.description],
     queryFn: () => {
-      return getEvents(location);
+      return getEventsByLoc(location?.description);
     },
   });
 
-  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
+  const [displayInitialEvents, setDisplayInitialEvents] = useState(
+    initialEvents ? true : false
+  );
+  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]); // events that can be displayed to user
+  const [visibleEvents, setVisibleEvents] = useState<Event[]>([]); // events that are actually visible
   useEffect(() => {
+    updateURL();
     if (events && dateRange) {
       const fromDate = dayjs(dateRange.from).startOf("day").subtract(1, "day");
       const toDate = dayjs(dateRange.to).startOf("day").add(1, "day");
@@ -100,18 +111,18 @@ export default function NewEventSearchPage({
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
       setDisplayedEvents(newDisplayedEventsSorted);
+      setVisibleEvents(newDisplayedEventsSorted.slice(0, EVENTS_PER_PAGE));
     } else {
       setDisplayedEvents([]);
     }
   }, [events, dateRange, maxDistance, bandTypes, genres, sort]);
 
-  const confirmLocationSet = () => {
-    if (!location) {
-      alert("Please enter a location before changing other filters.");
-      return false;
+  const [displayModal, setDisplayModal] = useState(false);
+  useEffect(() => {
+    if (!initialLocation) {
+      setDisplayModal(true);
     }
-    return true;
-  };
+  }, []);
 
   const setDefaultDateRange = () => {
     const fromDate = new Date();
@@ -123,66 +134,112 @@ export default function NewEventSearchPage({
     });
   };
 
+  const confirmLocationSet = () => {
+    if (!location) {
+      alert("Please enter a location before changing other filters.");
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false);
+  const handleChipFilterClick = () => {
+    if (isMdUp) {
+      alert("Use the filters on the left to edit your search.");
+    } else {
+      setOpenFilterDrawer(true);
+    }
+  };
+
   useEffect(() => {
     if (!dateRange) {
       setDefaultDateRange();
     }
   }, []);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const updateURL = () => {
+    if (location && dateRange) {
+      const params = new URLSearchParams(searchParams);
+      params.set("loc", location.description);
+      params.set("from", dayjs(dateRange.from).format("YYYY-MM-DD"));
+      params.set("to", dayjs(dateRange.to).format("YYYY-MM-DD"));
+      params.set("dis", maxDistance.toString());
+      params.set("genres", genres.join("-"));
+      params.set("types", bandTypes.join("-"));
+      params.set("sort", sort);
+      router.replace(`/find?${params.toString()}`);
+    }
+  };
+
+  const fetchMoreData = () => {
+    const nextChunk = displayedEvents.slice(
+      visibleEvents.length,
+      visibleEvents.length + EVENTS_PER_PAGE
+    );
+    setVisibleEvents((prev) => [...prev, ...nextChunk]);
+  };
+
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const FiltersComponent = (
+    <SearchFilters
+      location={location}
+      setLocation={(newLocation) => setLocation(newLocation)}
+      dateRange={dateRange}
+      setDateRange={(newDateRange) => {
+        if (confirmLocationSet()) {
+          setDateRange(newDateRange);
+        }
+      }}
+      maxDistance={maxDistance}
+      setMaxDistance={(newMaxDistance) => {
+        if (confirmLocationSet()) {
+          setMaxDistance(newMaxDistance);
+        }
+      }}
+      genres={genres}
+      setGenres={(newGenres) => {
+        if (confirmLocationSet()) {
+          setGenres(newGenres);
+        }
+      }}
+      bandTypes={bandTypes}
+      setBandTypes={(newBandTypes) => {
+        if (confirmLocationSet()) {
+          setBandTypes(newBandTypes);
+        }
+      }}
+      sort={sort}
+      setSort={(newSort) => {
+        if (confirmLocationSet()) {
+          setSort(newSort);
+        }
+      }}
+    />
+  );
+
   return (
-    <Box sx={{ paddingTop: "50px", paddingX: "20px" }}>
-      <Stack direction={"row"} spacing={3}>
-        <Box sx={{ width: "30%" }}>
-          <Box sx={{ position: "sticky", top: "125px" }}>
-            <SearchFilters
-              location={location}
-              setLocation={(newLocation) => setLocation(newLocation)}
-              dateRange={dateRange}
-              setDateRange={(newDateRange) => {
-                if (confirmLocationSet()) {
-                  setDateRange(newDateRange);
-                }
-              }}
-              maxDistance={maxDistance}
-              setMaxDistance={(newMaxDistance) => {
-                if (confirmLocationSet()) {
-                  setMaxDistance(newMaxDistance);
-                }
-              }}
-              genres={genres}
-              setGenres={(newGenres) => {
-                if (confirmLocationSet()) {
-                  setGenres(newGenres);
-                }
-              }}
-              bandTypes={bandTypes}
-              setBandTypes={(newBandTypes) => {
-                if (confirmLocationSet()) {
-                  setBandTypes(newBandTypes);
-                }
-              }}
-              sort={sort}
-              setSort={(newSort) => {
-                if (confirmLocationSet()) {
-                  setSort(newSort);
-                }
-              }}
-            />
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            width: "70%",
-          }}
-        >
-          {!location && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: "100px",
-              }}
-            >
+    <>
+      <Box sx={{ paddingTop: "50px", paddingX: "20px" }}>
+        <Stack direction={"row"} spacing={3}>
+          {isMdUp && (
+            <Box sx={{ maxWidth: "400px", minWidth: "400px" }}>
+              <Box sx={{ position: "sticky", top: "125px" }}>
+                {FiltersComponent}
+              </Box>
+            </Box>
+          )}
+          <Box
+            sx={{
+              width: { xs: "100%", md: "70%" },
+            }}
+          >
+            {!displayInitialEvents && !location && (
               <DisplayMissingField
                 icon={
                   <LocationOn sx={{ color: "#dc2626", fontSize: "40px" }} />
@@ -190,16 +247,8 @@ export default function NewEventSearchPage({
                 header="Location Required"
                 body="You must enter a location to find events in your area"
               />
-            </Box>
-          )}
-          {location && !dateRange && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: "100px",
-              }}
-            >
+            )}
+            {!displayInitialEvents && location && !dateRange && (
               <DisplayMissingField
                 icon={
                   <DateRangeIcon sx={{ color: "#dc2626", fontSize: "40px" }} />
@@ -207,19 +256,12 @@ export default function NewEventSearchPage({
                 header="Date Range Required"
                 body="You must select a date range to find events in your area"
               />
-            </Box>
-          )}
-          {!isLoading &&
-            location &&
-            dateRange &&
-            displayedEvents.length === 0 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingTop: "100px",
-                }}
-              >
+            )}
+            {!displayInitialEvents &&
+              !isLoading &&
+              location &&
+              dateRange &&
+              displayedEvents.length === 0 && (
                 <DisplayMissingField
                   icon={
                     <SentimentVeryDissatisfied
@@ -229,49 +271,187 @@ export default function NewEventSearchPage({
                   header="No Events Found"
                   body="Try expanding your search to find events in your area."
                 />
-              </Box>
-            )}
-          {!isLoading && displayedEvents.length > 0 && (
-            <Stack
-              direction={"column"}
-              spacing={2}
-              display={"flex"}
-              alignItems={"center"}
-            >
-              <Box sx={{ paddingBottom: "20px" }}>
-                <EventsFoundHeader
-                  eventCount={displayedEvents.length}
-                  location={location?.description || ""}
-                  startDate={dateRange?.from || new Date()}
-                  endDate={dateRange?.to || new Date()}
-                />
-              </Box>
-              {displayedEvents.map((event) => {
-                return (
-                  <NewEventCard
-                    key={event.id}
-                    event={event}
-                    size="Large"
-                    userAgent={userAgent}
-                    userId={userId}
+              )}
+            {!displayInitialEvents &&
+              !isLoading &&
+              displayedEvents.length > 0 && (
+                <InfiniteScroll
+                  dataLength={visibleEvents.length}
+                  next={fetchMoreData}
+                  hasMore={visibleEvents.length < displayedEvents.length}
+                  loader={<h4>Loading...</h4>}
+                >
+                  <Stack
+                    direction={"column"}
+                    spacing={2}
+                    display={"flex"}
+                    alignItems={"center"}
+                  >
+                    <Box sx={{ paddingBottom: "20px" }}>
+                      <EventsFoundHeader
+                        eventCount={displayedEvents.length}
+                        location={location?.description || ""}
+                        startDate={dateRange?.from || new Date()}
+                        endDate={dateRange?.to || new Date()}
+                        maxDistance={maxDistance}
+                        handleFilterClick={handleChipFilterClick}
+                      />
+                    </Box>
+
+                    {visibleEvents.map((event) => {
+                      return (
+                        <NewEventCard
+                          key={event.id}
+                          event={event}
+                          size={isLgUp ? "Large" : "Small"}
+                          userAgent={userAgent}
+                          userId={userId}
+                        />
+                      );
+                    })}
+                  </Stack>
+                </InfiniteScroll>
+              )}
+            {displayInitialEvents && initialEvents && (
+              <Stack
+                direction={"column"}
+                spacing={2}
+                display={"flex"}
+                alignItems={"center"}
+              >
+                <Box sx={{ paddingBottom: "20px" }}>
+                  <EventsFoundHeader
+                    eventCount={initialEvents.length}
+                    location={initialLocationDisplay || ""}
+                    startDate={dateRange?.from || new Date()}
+                    endDate={dateRange?.to || new Date()}
+                    maxDistance={null}
+                    handleFilterClick={handleChipFilterClick}
                   />
-                );
-              })}
-            </Stack>
-          )}
-          {location && dateRange && isLoading && (
-            <Stack direction={"column"} spacing={2}>
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-            </Stack>
-          )}
+                </Box>
+                {initialEvents.map((event) => {
+                  return (
+                    <NewEventCard
+                      key={event.id}
+                      event={event}
+                      size={isLgUp ? "Large" : "Small"}
+                      userAgent={userAgent}
+                      userId={userId}
+                    />
+                  );
+                })}
+              </Stack>
+            )}
+            {!displayInitialEvents && location && dateRange && isLoading && (
+              <Stack direction={"column"} spacing={2}>
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+              </Stack>
+            )}
+          </Box>
+        </Stack>
+      </Box>
+      <Modal open={displayModal} onClose={() => setDisplayModal(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            borderRadius: "15px",
+            boxShadow: 24,
+            paddingTop: "50px",
+            paddingBottom: "20px",
+            paddingX: "40px",
+            width: { xs: "300px", md: "550px" },
+          }}
+        >
+          <Stack
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+            spacing={2}
+          >
+            <IconButton
+              onClick={() => setDisplayModal(false)}
+              sx={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                color: "red",
+              }}
+            >
+              <Close />
+            </IconButton>
+            <Typography variant="h6" component="h2">
+              Enter your location to find live music events in your area
+            </Typography>
+            <NewAddressAutocomplete
+              id="location"
+              label="Your Location (town, city, or zip)"
+              error={false}
+              value={location}
+              setValue={(newLocation: PlaceType | null) => {
+                setDisplayModal(false);
+                setLocation(newLocation);
+              }}
+              landingPage={false}
+            />
+          </Stack>
         </Box>
-      </Stack>
-    </Box>
+      </Modal>
+      {!isMdUp && (
+        <Drawer
+          open={openFilterDrawer}
+          onClose={() => setOpenFilterDrawer(false)}
+          slotProps={{
+            paper: {
+              sx: { p: 0, width: "400px", maxWidth: "90%" },
+            },
+          }}
+        >
+          <Box
+            sx={{ position: "relative", height: "100%", overflowY: "hidden" }}
+          >
+            {FiltersComponent}
+            <Button
+              variant="contained"
+              sx={{
+                position: "absolute",
+                bottom: 16,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "200px",
+              }}
+              onClick={() => setOpenFilterDrawer(false)}
+            >
+              Apply Filters
+            </Button>
+          </Box>
+        </Drawer>
+      )}
+      {!isMdUp && (
+        <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 100 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setOpenFilterDrawer(true)}
+          >
+            <Stack direction={"row"} spacing={1}>
+              <Tune />
+              <Typography>Filter & Sort</Typography>
+            </Stack>
+          </Button>
+        </Box>
+      )}
+    </>
   );
 }
