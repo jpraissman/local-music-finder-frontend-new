@@ -1,6 +1,4 @@
 function get_random_image(rankingPos: number) {
-  const randomNum = Math.floor(Math.random() * 3) + 1
-
   switch (rankingPos % 7) {
     case 0:
       return "/drumset.jpg"
