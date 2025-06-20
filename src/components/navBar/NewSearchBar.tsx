@@ -16,7 +16,7 @@ import {
 import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NewSearchBarProps {
   venues: {
@@ -45,6 +45,7 @@ export default function NewSearchBar({
   const [searchTerm, setSearchTerm] = useState("");
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const filteredVenues = venues.filter(
     (venue) =>
@@ -195,7 +196,11 @@ export default function NewSearchBar({
                       onClick={(e) => {
                         e.preventDefault();
                         setSearchTerm("");
-                        window.location.href = getTownUrl(town);
+                        if (pathname.includes("/find")) {
+                          window.location.href = getTownUrl(town);
+                        } else {
+                          router.push(getTownUrl(town));
+                        }
                       }}
                     >
                       <ListItem
