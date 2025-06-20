@@ -195,8 +195,7 @@ export default function NewSearchBar({
                       onClick={(e) => {
                         e.preventDefault();
                         setSearchTerm("");
-                        router.push(getTownUrl(town));
-                        router.refresh();
+                        window.location.href = getTownUrl(town);
                       }}
                     >
                       <ListItem
