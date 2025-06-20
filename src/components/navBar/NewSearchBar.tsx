@@ -16,6 +16,7 @@ import {
 import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
 import dayjs from "dayjs";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NewSearchBarProps {
   venues: {
@@ -43,6 +44,9 @@ export default function NewSearchBar({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const filteredVenues = venues.filter(
     (venue) =>
       venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,6 +71,18 @@ export default function NewSearchBar({
     filteredVenues.length > 0 ||
     filteredBands.length > 0 ||
     filteredTowns.length > 0;
+
+  const getTownUrl = (location: string) => {
+    const params = new URLSearchParams();
+    params.set("loc", location);
+    params.set("from", dayjs().format("YYYY-MM-DD"));
+    params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
+    params.set("dis", "20");
+    params.set("genres", "");
+    params.set("types", "");
+    params.set("sort", "Date");
+    return `/find?${params.toString()}`;
+  };
 
   return (
     <Box
@@ -174,15 +190,18 @@ export default function NewSearchBar({
                 <List disablePadding>
                   {filteredTowns.slice(0, 9).map((town, index) => (
                     <Link
-                      href={`/find/${town.replaceAll(
-                        " ",
-                        "-"
-                      )}/20-mi/${dayjs().format("YYYY-MM-DD")}/${dayjs()
-                        .add(14, "day")
-                        .format("YYYY-MM-DD")}/All-Genres/All-Types`}
                       style={{ textDecoration: "none", color: "black" }}
                       key={index}
-                      onClick={() => setSearchTerm("")}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setSearchTerm("");
+                        if (pathname.includes("/find")) {
+                          window.location.href = getTownUrl(town);
+                        } else {
+                          router.push(getTownUrl(town));
+                        }
+                      }}
                     >
                       <ListItem
                         key={index}

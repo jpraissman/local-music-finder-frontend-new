@@ -1,4 +1,5 @@
-import EventSearchScreen from "@/components/EventSearchScreen";
+import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
+import getDateByRange from "@/lib/get-date-by-range";
 import Event from "@/types/Event";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
@@ -40,27 +41,28 @@ export default async function Page({ params: { countyNames } }: PageProps) {
     }
   } catch (error) {}
 
+  const dates = getDateByRange("next-30-days");
+  const [fromYear, fromMonth, fromDay] = dates[0].split("-").map(Number);
+  const [toYear, toMonth, toDay] = dates[1].split("-").map(Number);
+
   return (
-    <>
-      <EventSearchScreen
-        filters={{
-          dateRange: undefined,
-          address: undefined,
-          maxDistance: "",
-          genres: ["All Genres"],
-          bandTypes: ["All Types"],
-        }}
-        eventsInit={events}
-        noFilters={false}
-        landingPage={true}
-        searchLocation={countyNames
-          .replaceAll("%20", " ")
-          .split("%3A%3A")
-          .join(", ")}
-        searchDateRange="in the next month"
-        userId={userId}
-        userAgent={userAgent}
-      />
-    </>
+    <NewEventSearchPage
+      initialLocation={null}
+      initialDateRange={{
+        from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
+        to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),
+      }}
+      initialMaxDistance={20}
+      initialGenres={[]}
+      initialBandTypes={[]}
+      initialSort="Date"
+      initialEvents={events}
+      initialLocationDisplay={countyNames
+        .replaceAll("%20", " ")
+        .split("%3A%3A")
+        .join(", ")}
+      userAgent={userAgent}
+      userId={userId}
+    />
   );
 }

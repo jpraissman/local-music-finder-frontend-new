@@ -1,4 +1,4 @@
-import EventSearchScreen from "@/components/EventSearchScreen";
+import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import Event from "@/types/Event";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
@@ -36,21 +36,17 @@ export default async function Page({ params: { ids } }: PageProps) {
   } catch (error) {}
 
   return (
-    <>
-      <EventSearchScreen
-        filters={{
-          dateRange: undefined,
-          address: undefined,
-          maxDistance: "",
-          genres: [],
-          bandTypes: [],
-        }}
-        eventsInit={events}
-        noFilters={false}
-        landingPage={false}
-        userId={userId}
-        userAgent={userAgent}
-      />
-    </>
+    <NewEventSearchPage
+      initialLocation={null}
+      initialDateRange={undefined}
+      initialMaxDistance={20}
+      initialGenres={[]}
+      initialBandTypes={[]}
+      initialSort="Date"
+      initialEvents={events}
+      initialLocationDisplay="Id Page"
+      userAgent={userAgent}
+      userId={userId}
+    />
   );
 }

@@ -1,12 +1,12 @@
-import EventSearchScreenWrapper from "@/components/EventSearchScreenWrapper";
+import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import getDateByRange from "@/lib/get-date-by-range";
+import { getEventsByLoc } from "@/lib/get-events-by-loc";
+import { blankStructuredFormatting, TOWNS } from "@/types/constants";
 import {
-  blankStructuredFormatting,
-  GENRES,
-  BAND_TYPES,
-  TOWNS,
-} from "@/types/constants";
-import Event from "@/types/Event";
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 
@@ -53,44 +53,40 @@ export default async function Page({ params: { town, range } }: PageProps) {
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   const townFormatted = TOWNS[town.replaceAll("%2C", ",")][0];
-  const genresFormatted = GENRES.join("::").replaceAll(" ", "+");
-  const typesFormatted = BAND_TYPES.join("::").replaceAll(" ", "+");
   const dates = getDateByRange(range);
+  const [fromYear, fromMonth, fromDay] = dates[0].split("-").map(Number);
+  const [toYear, toMonth, toDay] = dates[1].split("-").map(Number);
 
-  let events: Event[] = [];
-  try {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/events?from_date=${dates[0]}&to_date=${dates[1]}&address=${townFormatted}&max_distance=20+mi&genres=${genresFormatted}&band_types=${typesFormatted}&user_agent=${userAgent}&user_id=${userId}`
-    );
-    if (response.ok) {
-      const eventsRaw = await response.json();
-      events = eventsRaw.events;
-    }
-  } catch (error) {}
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["events", townFormatted],
+    queryFn: () => {
+      return getEventsByLoc(townFormatted);
+    },
+  });
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <>
-      <EventSearchScreenWrapper
-        filters={{
-          dateRange: undefined,
-          address: {
-            description: townFormatted,
-            structured_formatting: blankStructuredFormatting,
-            place_id: "",
-          },
-          maxDistance: "20 mi",
-          genres: ["All Genres"],
-          bandTypes: ["All Types"],
+    <HydrationBoundary state={dehydratedState}>
+      <NewEventSearchPage
+        initialLocation={{
+          description: townFormatted,
+          place_id: "",
+          structured_formatting: blankStructuredFormatting,
         }}
-        eventsInit={events}
-        noFilters={false}
-        landingPage={false}
-        fromDate={dates[0]}
-        toDate={dates[1]}
-        userId={userId}
+        initialDateRange={{
+          from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
+          to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),
+        }}
+        initialMaxDistance={35}
+        initialGenres={[]}
+        initialBandTypes={[]}
+        initialSort="Date"
+        initialEvents={null}
+        initialLocationDisplay={null}
         userAgent={userAgent}
+        userId={userId}
       />
-    </>
+    </HydrationBoundary>
   );
 }

@@ -14,14 +14,15 @@ export default function FirstSection() {
 
   const findEvents = () => {
     if (location) {
-      const today = dayjs().format("YYYY-MM-DD");
-      const twoWeeksFromToday = dayjs().add(14, "day").format("YYYY-MM-DD");
-      router.push(
-        `/find/${location.description.replaceAll(
-          " ",
-          "-"
-        )}/20-mi/${today}/${twoWeeksFromToday}/All-Genres/All-Types`
-      );
+      const params = new URLSearchParams();
+      params.set("loc", location.description);
+      params.set("from", dayjs().format("YYYY-MM-DD"));
+      params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
+      params.set("dis", "20");
+      params.set("genres", "");
+      params.set("types", "");
+      params.set("sort", "Date");
+      router.push(`/find?${params.toString()}`);
     } else {
       setLocationError(true);
     }
