@@ -118,9 +118,13 @@ export default function NewEventSearchPage({
   }, [events, dateRange, maxDistance, bandTypes, genres, sort]);
 
   const [displayModal, setDisplayModal] = useState(false);
+  const [modalTitleText, setModalTitleText] = useState<string>("");
   useEffect(() => {
     if (!initialLocation) {
       setDisplayModal(true);
+      setModalTitleText(
+        "Enter your location to find live music events in your area"
+      );
     }
   }, []);
 
@@ -136,7 +140,10 @@ export default function NewEventSearchPage({
 
   const confirmLocationSet = () => {
     if (!location) {
-      alert("Please enter a location before changing other filters.");
+      setModalTitleText(
+        "Please enter a location before changing other filters"
+      );
+      setDisplayModal(true);
       return false;
     } else {
       return true;
@@ -246,6 +253,7 @@ export default function NewEventSearchPage({
                 }
                 header="Location Required"
                 body="You must enter a location to find events in your area"
+                handleFilterClick={() => setOpenFilterDrawer(true)}
               />
             )}
             {!displayInitialEvents && location && !dateRange && (
@@ -255,6 +263,7 @@ export default function NewEventSearchPage({
                 }
                 header="Date Range Required"
                 body="You must select a date range to find events in your area"
+                handleFilterClick={() => setOpenFilterDrawer(true)}
               />
             )}
             {!displayInitialEvents &&
@@ -262,15 +271,30 @@ export default function NewEventSearchPage({
               location &&
               dateRange &&
               displayedEvents.length === 0 && (
-                <DisplayMissingField
-                  icon={
-                    <SentimentVeryDissatisfied
-                      sx={{ color: "#dc2626", fontSize: "40px" }}
-                    />
-                  }
-                  header="No Events Found"
-                  body="Try expanding your search to find events in your area."
-                />
+                <Stack
+                  direction={"column"}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
+                  <EventsFoundHeader
+                    eventCount={displayedEvents.length}
+                    location={location?.description || ""}
+                    startDate={dateRange?.from || new Date()}
+                    endDate={dateRange?.to || new Date()}
+                    maxDistance={maxDistance}
+                    handleFilterClick={handleChipFilterClick}
+                  />
+                  <DisplayMissingField
+                    icon={
+                      <SentimentVeryDissatisfied
+                        sx={{ color: "#dc2626", fontSize: "40px" }}
+                      />
+                    }
+                    header="No Events Found"
+                    body="Try expanding your search to find events in your area."
+                    handleFilterClick={() => setOpenFilterDrawer(true)}
+                  />
+                </Stack>
               )}
             {!displayInitialEvents &&
               !isLoading &&
@@ -366,46 +390,51 @@ export default function NewEventSearchPage({
             bgcolor: "white",
             borderRadius: "15px",
             boxShadow: 24,
-            paddingTop: "50px",
-            paddingBottom: "20px",
-            paddingX: "40px",
-            width: { xs: "300px", md: "550px" },
+            width: "100%",
+            maxWidth: { xs: "90%", sm: "300px", md: "550px" },
           }}
         >
-          <Stack
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-            spacing={2}
+          <Box
+            sx={{ paddingX: "40px", paddingBottom: "20px", paddingTop: "50px" }}
           >
-            <IconButton
-              onClick={() => setDisplayModal(false)}
+            <Stack
               sx={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                color: "red",
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
               }}
+              spacing={2}
             >
-              <Close />
-            </IconButton>
-            <Typography variant="h6" component="h2">
-              Enter your location to find live music events in your area
-            </Typography>
-            <NewAddressAutocomplete
-              id="location"
-              label="Your Location (town, city, or zip)"
-              error={false}
-              value={location}
-              setValue={(newLocation: PlaceType | null) => {
-                setDisplayModal(false);
-                setLocation(newLocation);
-              }}
-              landingPage={false}
-            />
-          </Stack>
+              <IconButton
+                onClick={() => setDisplayModal(false)}
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  color: "red",
+                }}
+              >
+                <Close />
+              </IconButton>
+              <Typography
+                sx={{ fontSize: { xs: "16px", md: "18px" } }}
+                component="h2"
+              >
+                {modalTitleText}
+              </Typography>
+              <NewAddressAutocomplete
+                id="location"
+                label="Your Location (town, city, or zip)"
+                error={false}
+                value={location}
+                setValue={(newLocation: PlaceType | null) => {
+                  setDisplayModal(false);
+                  setLocation(newLocation);
+                }}
+                landingPage={false}
+              />
+            </Stack>
+          </Box>
         </Box>
       </Modal>
       {!isMdUp && (

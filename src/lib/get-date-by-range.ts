@@ -4,7 +4,7 @@ import timezone from 'dayjs/plugin/timezone';
 import isoWeek from 'dayjs/plugin/isoWeek';
 
 export default function getDateByRange(range: "today" 
-  | "tomorrow" | "this-weekend" | "this-week" | "next-weekend" | "next-week") {
+  | "tomorrow" | "this-weekend" | "this-week" | "next-weekend" | "next-week" | "next-30-days") {
     
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -35,9 +35,13 @@ export default function getDateByRange(range: "today"
     const startDate = nyTimeRightNow.isoWeekday(1).add(7, 'day').format("YYYY-MM-DD");
     const endDate = nyTimeRightNow.isoWeekday(7).add(7, 'day').format("YYYY-MM-DD");
     return [startDate, endDate];
-  } else {
+  } else if (range === "next-weekend") {
     const startDate = nyTimeRightNow.isoWeekday(5).add(7, 'day').format("YYYY-MM-DD");
     const endDate = nyTimeRightNow.isoWeekday(7).add(7, 'day').format("YYYY-MM-DD");
     return [startDate, endDate];
-  }
+  } else {
+    const startDate = nyTimeRightNow.format("YYYY-MM-DD");
+    const endDate = nyTimeRightNow.add(30, 'day').format("YYYY-MM-DD");
+    return [startDate, endDate];
+  } 
 }

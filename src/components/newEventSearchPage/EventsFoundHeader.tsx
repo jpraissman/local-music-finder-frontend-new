@@ -72,7 +72,7 @@ export default function EventsFoundHeader({
         }}
       >
         <Chip
-          clickable
+          clickable={isMdUp ? false : true}
           icon={<LocationOn sx={{ fontSize: "20px !important" }} />}
           label={location}
           variant="outlined"
@@ -85,11 +85,11 @@ export default function EventsFoundHeader({
             borderColor: "primary.main",
             color: "primary.main",
           }}
-          onClick={handleFilterClick}
+          onClick={isMdUp ? () => {} : handleFilterClick}
         />
         {maxDistance && (
           <Chip
-            clickable
+            clickable={isMdUp ? false : true}
             icon={<Map sx={{ fontSize: "20px !important" }} />}
             label={`Within ${maxDistance.toString()} miles`}
             variant="outlined"
@@ -102,11 +102,11 @@ export default function EventsFoundHeader({
               borderColor: "primary.main",
               color: "primary.main",
             }}
-            onClick={handleFilterClick}
+            onClick={isMdUp ? () => {} : handleFilterClick}
           />
         )}
         <Chip
-          clickable
+          clickable={isMdUp ? false : true}
           icon={<DateRange sx={{ fontSize: "20px !important" }} />}
           label={`${formatDate(startDate)} - ${formatDate(endDate)}`}
           variant="outlined"
@@ -119,12 +119,16 @@ export default function EventsFoundHeader({
             borderColor: "primary.main",
             color: "primary.main",
           }}
-          onClick={handleFilterClick}
+          onClick={isMdUp ? () => {} : handleFilterClick}
         />
       </Box>
       {!isMdUp && (
         <Box sx={{ paddingTop: "10px" }}>
-          <Button variant="contained" color="secondary">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleFilterClick}
+          >
             <Stack direction={"row"} spacing={1}>
               <Tune />
               <Typography>All Filters</Typography>

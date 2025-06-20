@@ -1,4 +1,3 @@
-import EventSearchScreen from "@/components/EventSearchScreen";
 import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import Event from "@/types/Event";
 import { Metadata } from "next";
