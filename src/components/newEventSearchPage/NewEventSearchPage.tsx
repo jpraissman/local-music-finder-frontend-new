@@ -120,7 +120,7 @@ export default function NewEventSearchPage({
   const [displayModal, setDisplayModal] = useState(false);
   const [modalTitleText, setModalTitleText] = useState<string>("");
   useEffect(() => {
-    if (!initialLocation) {
+    if (!initialLocation && initialLocationDisplay !== "Id Page") {
       setDisplayModal(true);
       setModalTitleText(
         "Enter your location to find live music events in your area"
@@ -131,7 +131,7 @@ export default function NewEventSearchPage({
   const setDefaultDateRange = () => {
     const fromDate = new Date();
     const toDate = new Date();
-    toDate.setDate(toDate.getDate() + 7);
+    toDate.setDate(toDate.getDate() + 14);
     setDateRange({
       to: toDate,
       from: fromDate,

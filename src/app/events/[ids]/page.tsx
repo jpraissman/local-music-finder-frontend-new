@@ -44,7 +44,7 @@ export default async function Page({ params: { ids } }: PageProps) {
       initialBandTypes={[]}
       initialSort="Date"
       initialEvents={events}
-      initialLocationDisplay="New Jersey"
+      initialLocationDisplay="Id Page"
       userAgent={userAgent}
       userId={userId}
     />

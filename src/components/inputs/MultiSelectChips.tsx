@@ -1,4 +1,4 @@
-import { Chip, Stack } from "@mui/material";
+import { Button, Chip, Stack } from "@mui/material";
 
 interface MultiSelectChipsProps {
   chips: string[];
@@ -45,6 +45,16 @@ export default function MultiSelectChips({
           />
         ))}
       </Stack>
+      {selectedChips.length > 0 && (
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{ maxWidth: "200px" }}
+          onClick={() => setSelectedChips([])}
+        >
+          Reset
+        </Button>
+      )}
     </Stack>
   );
 }
