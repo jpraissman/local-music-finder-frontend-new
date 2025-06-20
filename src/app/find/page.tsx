@@ -66,8 +66,8 @@ export default async function Page({ searchParams }: PageProps) {
         initialDateRange={
           searchParams.to && searchParams.from
             ? {
-                to: new Date(toYear, toMonth - 1, toDay, 0, 0, 0),
-                from: new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0),
+                to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),
+                from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
               }
             : undefined
         }

@@ -75,8 +75,8 @@ export default async function Page({ params: { town, range } }: PageProps) {
           structured_formatting: blankStructuredFormatting,
         }}
         initialDateRange={{
-          from: new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0),
-          to: new Date(toYear, toMonth - 1, toDay, 0, 0, 0),
+          from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
+          to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),
         }}
         initialMaxDistance={35}
         initialGenres={[]}
