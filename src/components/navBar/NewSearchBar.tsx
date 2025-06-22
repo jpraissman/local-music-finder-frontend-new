@@ -202,6 +202,7 @@ export default function NewSearchBar({
                           router.push(getTownUrl(town));
                         }
                       }}
+                      prefetch={false}
                     >
                       <ListItem
                         key={index}
@@ -257,6 +258,7 @@ export default function NewSearchBar({
                       style={{ textDecoration: "none", color: "black" }}
                       key={index}
                       onClick={() => setSearchTerm("")}
+                      prefetch={false}
                     >
                       <ListItem
                         sx={{
@@ -308,6 +310,7 @@ export default function NewSearchBar({
                       style={{ textDecoration: "none", color: "black" }}
                       key={index}
                       onClick={() => setSearchTerm("")}
+                      prefetch={false}
                     >
                       <ListItem
                         sx={{
