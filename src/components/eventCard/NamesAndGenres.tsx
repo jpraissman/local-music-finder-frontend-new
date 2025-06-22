@@ -9,6 +9,7 @@ export default function NamesAndGenres({ event }: { event: Event }) {
       <Link
         href={`/venue/${event.venue_id}`}
         style={{ textDecoration: "none", color: "black" }}
+        prefetch={false}
       >
         <Typography
           variant="h5"
@@ -26,6 +27,7 @@ export default function NamesAndGenres({ event }: { event: Event }) {
       <Link
         href={`/band/${event.band_id}`}
         style={{ textDecoration: "none", color: "black" }}
+        prefetch={false}
       >
         <Typography
           variant="h6"
