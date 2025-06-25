@@ -34,6 +34,7 @@ import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getEventsByLoc } from "@/lib/get-events-by-loc";
 import InfiniteScroll from "react-infinite-scroll-component";
+import SubscribeModal from "./SubscribeModal";
 
 const EVENTS_PER_PAGE = 20;
 
@@ -189,6 +190,8 @@ export default function NewEventSearchPage({
     setVisibleEvents((prev) => [...prev, ...nextChunk]);
   };
 
+  const [displaySubscribeModal, setDisplaySubscribeModal] = useState(false);
+
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
@@ -227,6 +230,7 @@ export default function NewEventSearchPage({
           setSort(newSort);
         }
       }}
+      displayFullHeight={openFilterDrawer}
     />
   );
 
@@ -437,36 +441,35 @@ export default function NewEventSearchPage({
           </Box>
         </Box>
       </Modal>
-      {!isMdUp && (
-        <Drawer
-          open={openFilterDrawer}
-          onClose={() => setOpenFilterDrawer(false)}
-          slotProps={{
-            paper: {
-              sx: { p: 0, width: "400px", maxWidth: "90%" },
-            },
-          }}
-        >
-          <Box
-            sx={{ position: "relative", height: "100%", overflowY: "hidden" }}
+      <Drawer
+        open={openFilterDrawer}
+        onClose={() => setOpenFilterDrawer(false)}
+        slotProps={{
+          paper: {
+            sx: { p: 0, width: "400px", maxWidth: "90%", zIndex: 1401 },
+          },
+          root: {
+            sx: { zIndex: 1400 },
+          },
+        }}
+      >
+        <Box sx={{ position: "relative", height: "100%", overflowY: "hidden" }}>
+          {FiltersComponent}
+          <Button
+            variant="contained"
+            sx={{
+              position: "absolute",
+              bottom: 16,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "200px",
+            }}
+            onClick={() => setOpenFilterDrawer(false)}
           >
-            {FiltersComponent}
-            <Button
-              variant="contained"
-              sx={{
-                position: "absolute",
-                bottom: 16,
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: "200px",
-              }}
-              onClick={() => setOpenFilterDrawer(false)}
-            >
-              Apply Filters
-            </Button>
-          </Box>
-        </Drawer>
-      )}
+            Apply Filters
+          </Button>
+        </Box>
+      </Drawer>
       {!isMdUp && (
         <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 100 }}>
           <Button
@@ -480,6 +483,41 @@ export default function NewEventSearchPage({
             </Stack>
           </Button>
         </Box>
+      )}
+      {!isMdUp && location && dateRange && (
+        <Box sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 100 }}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => setDisplaySubscribeModal(true)}
+          >
+            <Typography>Subscribe</Typography>
+          </Button>
+        </Box>
+      )}
+      {isMdUp && location && dateRange && (
+        <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 100 }}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => setDisplaySubscribeModal(true)}
+          >
+            <Typography>Subscribe to Filters</Typography>
+          </Button>
+        </Box>
+      )}
+      {location && (
+        <SubscribeModal
+          displayModal={displaySubscribeModal}
+          closeModal={() => setDisplaySubscribeModal(false)}
+          location={location?.description || ""}
+          maxDistance={maxDistance.toString()}
+          genres={genres.length === 0 ? ["All Genres"] : genres}
+          bandTypes={bandTypes.length === 0 ? ["All Band Types"] : bandTypes}
+          openFilters={() => {
+            setOpenFilterDrawer(true);
+          }}
+        />
       )}
     </>
   );

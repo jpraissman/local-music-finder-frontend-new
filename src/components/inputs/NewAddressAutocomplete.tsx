@@ -15,7 +15,7 @@ import parse from "autosuggest-highlight/parse";
 // import throttle from 'lodash/throttle';
 import { debounce } from "@mui/material/utils";
 import { PlaceType } from "@/types/PlaceType";
-import { InputAdornment } from "@mui/material";
+import { InputAdornment, Popper } from "@mui/material";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -255,6 +255,19 @@ export default function NewAddressAutocomplete({
               color: error ? "red" : "gray",
               opacity: error ? 1 : 0.42,
             },
+          }}
+        />
+      )}
+      PopperComponent={(props) => (
+        <Popper
+          {...props}
+          placement="bottom-start"
+          style={{
+            zIndex: 2000,
+            width:
+              props.anchorEl && props.anchorEl instanceof HTMLElement
+                ? props.anchorEl.clientWidth
+                : undefined,
           }}
         />
       )}

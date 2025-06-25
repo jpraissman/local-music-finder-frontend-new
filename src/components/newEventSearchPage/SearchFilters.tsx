@@ -23,6 +23,7 @@ interface SearchFilterProps {
   setBandTypes: (newBandTypes: string[]) => void;
   sort: "Date" | "Distance";
   setSort: (newSort: "Date" | "Distance") => void;
+  displayFullHeight: boolean;
 }
 
 export default function SearchFilters({
@@ -38,6 +39,7 @@ export default function SearchFilters({
   setBandTypes,
   sort,
   setSort,
+  displayFullHeight,
 }: SearchFilterProps) {
   return (
     <Paper
@@ -45,7 +47,7 @@ export default function SearchFilters({
       sx={{
         backgroundColor: "whitesmoke",
         padding: "20px",
-        height: { xs: "100%", md: "70vh" },
+        height: displayFullHeight ? "100%" : "70vh",
         overflowY: "auto",
       }}
     >
