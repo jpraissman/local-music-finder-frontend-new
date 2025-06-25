@@ -80,8 +80,9 @@ export default function SubscribeModal({
           </IconButton>
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Stay updated with the latest events in your area. We'll send you
-          recommendations every Wedsenday night based on your preferences.
+          {
+            "Stay updated with the latest events in your area. We'll send you recommendations every Wedsenday night based on your preferences."
+          }
         </Typography>
       </DialogTitle>
 
@@ -239,8 +240,9 @@ export default function SubscribeModal({
             color="text.secondary"
             sx={{ display: "block", textAlign: "center" }}
           >
-            We'll send you weekly updates about events matching your
-            preferences. You can unsubscribe at any time.
+            {
+              "We'll send you weekly updates about events matching your preferences. You can unsubscribe at any time."
+            }
           </Typography>
         </Box>
       </DialogContent>
