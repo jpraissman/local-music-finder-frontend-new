@@ -137,9 +137,9 @@ export default function MergeBandsOrVenues({
         </Button>
         {mergeType === "Band" && (
           <Typography variant="body2">
-            NOTE: Be careful when merging bands. The band that currently has
-            more events will keep its videos. The other band's videos will be
-            deleted and have to be added back.
+            {
+              "NOTE: Be careful when merging bands. The band that currently has more events will keep its videos. The other band's videos will be deleted and have to be added back."
+            }
           </Typography>
         )}
       </Stack>
