@@ -16,6 +16,7 @@ interface PageProps {
 export default async function Page({ params: { venueId } }: PageProps) {
   const cookieStore = await cookies();
   const userId = cookieStore.get("userId")?.value || "Undefined";
+  const adminKey = cookieStore.get("adminKey")?.value || "Undefined";
   const requestHeaders = headers();
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
@@ -35,7 +36,12 @@ export default async function Page({ params: { venueId } }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <VenuePage venueId={venueId} userAgent={userAgent} userId={userId} />
+      <VenuePage
+        venueId={venueId}
+        userAgent={userAgent}
+        userId={userId}
+        userIsAdmin={adminKey === process.env.ADMIN_KEY}
+      />
     </HydrationBoundary>
   );
 }

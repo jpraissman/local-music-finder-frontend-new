@@ -24,6 +24,7 @@ export default async function Page({
 }: PageProps) {
   const cookieStore = await cookies();
   const userId = cookieStore.get("userId")?.value || "Undefined";
+  const adminKey = cookieStore.get("adminKey")?.value || "Undefined";
   const requestHeaders = headers();
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
@@ -54,6 +55,7 @@ export default async function Page({
         userAgent={userAgent}
         userId={userId}
         initialNavValue={navValue}
+        userIsAdmin={adminKey === process.env.ADMIN_KEY}
       />
     </HydrationBoundary>
   );
