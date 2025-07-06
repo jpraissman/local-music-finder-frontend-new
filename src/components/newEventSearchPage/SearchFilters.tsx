@@ -23,11 +23,13 @@ interface SearchFilterProps {
   setBandTypes: (newBandTypes: string[]) => void;
   sort: "Date" | "Distance";
   setSort: (newSort: "Date" | "Distance") => void;
+  locationError: boolean;
 }
 
 export default function SearchFilters({
   location,
   setLocation,
+  locationError,
   dateRange,
   setDateRange,
   maxDistance,
@@ -72,12 +74,12 @@ export default function SearchFilters({
             <NewAddressAutocomplete
               id="location"
               label="Your Location (town, city, or zip)"
-              error={false}
+              error={locationError}
               value={location}
               setValue={(newLocation: PlaceType | null) => {
                 setLocation(newLocation);
               }}
-              landingPage={false}
+              landingPage={true}
             />
           </Stack>
           <Stack direction={"column"} spacing={0.5}>

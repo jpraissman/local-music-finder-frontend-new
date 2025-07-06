@@ -119,14 +119,14 @@ export default function NewEventSearchPage({
 
   const [displayModal, setDisplayModal] = useState(false);
   const [modalTitleText, setModalTitleText] = useState<string>("");
-  useEffect(() => {
-    if (!initialLocation && initialLocationDisplay !== "Id Page") {
-      setDisplayModal(true);
-      setModalTitleText(
-        "Enter your location to find live music events in your area"
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!initialLocation && initialLocationDisplay !== "Id Page") {
+  //     setDisplayModal(true);
+  //     setModalTitleText(
+  //       "Enter your location to find live music events in your area"
+  //     );
+  //   }
+  // }, []);
 
   const setDefaultDateRange = () => {
     const fromDate = new Date();
@@ -197,6 +197,7 @@ export default function NewEventSearchPage({
     <SearchFilters
       location={location}
       setLocation={(newLocation) => setLocation(newLocation)}
+      locationError={location === null}
       dateRange={dateRange}
       setDateRange={(newDateRange) => {
         if (confirmLocationSet()) {
@@ -254,6 +255,8 @@ export default function NewEventSearchPage({
                 header="Location Required"
                 body="You must enter a location to find events in your area"
                 handleFilterClick={() => setOpenFilterDrawer(true)}
+                editButtonText="Add Location"
+                editButtonIcon={<LocationOn />}
               />
             )}
             {!displayInitialEvents && location && !dateRange && (
@@ -264,6 +267,8 @@ export default function NewEventSearchPage({
                 header="Date Range Required"
                 body="You must select a date range to find events in your area"
                 handleFilterClick={() => setOpenFilterDrawer(true)}
+                editButtonText="Add Date Range"
+                editButtonIcon={<DateRangeIcon />}
               />
             )}
             {!displayInitialEvents &&
@@ -293,6 +298,8 @@ export default function NewEventSearchPage({
                     header="No Events Found"
                     body="Try expanding your search to find events in your area."
                     handleFilterClick={() => setOpenFilterDrawer(true)}
+                    editButtonText="Edit Filters"
+                    editButtonIcon={<Tune />}
                   />
                 </Stack>
               )}
@@ -422,7 +429,7 @@ export default function NewEventSearchPage({
               >
                 {modalTitleText}
               </Typography>
-              <NewAddressAutocomplete
+              {/* <NewAddressAutocomplete
                 id="location"
                 label="Your Location (town, city, or zip)"
                 error={false}
@@ -432,7 +439,7 @@ export default function NewEventSearchPage({
                   setLocation(newLocation);
                 }}
                 landingPage={false}
-              />
+              /> */}
             </Stack>
           </Box>
         </Box>

@@ -18,6 +18,8 @@ interface DisplayMissingFieldProps {
   header: string;
   body: string;
   handleFilterClick: () => void;
+  editButtonText: string;
+  editButtonIcon: ReactElement;
 }
 
 export default function DisplayMissingField({
@@ -25,6 +27,8 @@ export default function DisplayMissingField({
   header,
   body,
   handleFilterClick,
+  editButtonText,
+  editButtonIcon,
 }: DisplayMissingFieldProps) {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
@@ -76,8 +80,8 @@ export default function DisplayMissingField({
             sx={{ width: "200px" }}
           >
             <Stack direction={"row"} spacing={1}>
-              <Tune />
-              <Typography>Edit Filters</Typography>
+              {editButtonIcon}
+              <Typography>{editButtonText}</Typography>
             </Stack>
           </Button>
         )}
