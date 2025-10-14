@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 
 export default function FirstSection() {
-  const [location, setLocation] = useState<PlaceType | null>(null);
+  const [location, setLocation] = useState<string | null>(null);
   const [locationError, setLocationError] = useState(false);
   const router = useRouter();
 
   const findEvents = () => {
     if (location) {
       const params = new URLSearchParams();
-      params.set("loc", location.description);
+      params.set("loc", location);
       params.set("from", dayjs().format("YYYY-MM-DD"));
       params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
       params.set("dis", "20");
@@ -83,7 +83,7 @@ export default function FirstSection() {
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <NewAddressAutocomplete
               value={location}
-              setValue={(newLocation: PlaceType | null) => {
+              setValue={(newLocation: string | null) => {
                 setLocation(newLocation);
                 if (newLocation) {
                   setLocationError(false);

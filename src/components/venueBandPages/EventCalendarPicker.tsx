@@ -1,7 +1,6 @@
-import Event from "@/types/Event";
+import { EventDTO } from "@/dto/event/Event.dto";
 import { Box, Skeleton } from "@mui/material";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -33,7 +32,7 @@ function Day(props: PickersDayProps & { highlightedDays?: string[] }) {
 }
 
 interface EventCalendarPickerProps {
-  allEvents: Event[];
+  allEvents: EventDTO[];
   handleDateChange: (newDate: string | undefined) => void;
 }
 
@@ -42,7 +41,9 @@ export default function EventCalendarPicker({
   handleDateChange,
 }: EventCalendarPickerProps) {
   const [highlightedDays, _] = useState(
-    allEvents.map((event) => event.date_string)
+    allEvents.map((event) => {
+      return event.eventDate;
+    })
   );
 
   return (

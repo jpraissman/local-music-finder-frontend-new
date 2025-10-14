@@ -27,16 +27,12 @@ interface YouTubeVideoProps {
   videoId: string;
   size: "Small" | "Large";
   eventId: number;
-  userId: string;
-  userAgent: string;
 }
 
 export default function YouTubeVideo({
   videoId,
   size,
   eventId,
-  userId,
-  userAgent,
 }: YouTubeVideoProps) {
   const [videoClicked, setVideoClicked] = useState(false);
 
@@ -44,8 +40,6 @@ export default function YouTubeVideo({
     <Box
       onClick={() => {
         axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/video-clicked`, {
-          user_id: userId,
-          user_agent: userAgent,
           event_id: eventId,
         });
         setVideoClicked(true);

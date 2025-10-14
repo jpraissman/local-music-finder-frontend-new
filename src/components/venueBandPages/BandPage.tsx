@@ -3,36 +3,32 @@
 import { Box, IconButton, Stack, Tab, Tabs } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import DisplayEventsAndCalendar from "./DisplayEventsAndCalendar";
-import { loadBandEvents, loadBandInfo } from "@/lib/load-band-info";
 import BandHeaderInfo from "./BandHeaderInfo";
 import { useState } from "react";
 import DisplayBandVideos from "./DisplayBandVideos";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { Edit } from "@mui/icons-material";
 import Link from "next/link";
+import { BandWithEventsDTO } from "@/dto/band/BandWithEvents.dto";
+import { getBandById } from "@/api/apiCalls";
 
 interface BandPageProps {
-  bandId: string;
-  userId: string;
-  userAgent: string;
+  bandId: number;
+  initialBandData: BandWithEventsDTO;
   initialNavValue: number;
   userIsAdmin: boolean;
 }
 
 export default function BandPage({
   bandId,
-  userId,
-  userAgent,
+  initialBandData,
   initialNavValue,
   userIsAdmin,
 }: BandPageProps) {
-  const { data: allEvents } = useSuspenseQuery({
-    queryKey: ["bandEvents", bandId],
-    queryFn: () => loadBandEvents(bandId),
-  });
-  const { data: bandInfo } = useSuspenseQuery({
-    queryKey: ["bandInfo", bandId],
-    queryFn: () => loadBandInfo(bandId),
+  const { data: band } = useSuspenseQuery({
+    queryKey: ["getBandById", bandId],
+    queryFn: () => getBandById(bandId),
+    initialData: initialBandData,
   });
 
   const router = useRouter();
@@ -40,10 +36,7 @@ export default function BandPage({
   const searchParams = useSearchParams();
 
   const [navValue, setNavValue] = useState(initialNavValue);
-  const handleNavChange = (
-    event: React.SyntheticEvent,
-    newNavValue: number
-  ) => {
+  const handleNavChange = (_: React.SyntheticEvent, newNavValue: number) => {
     setNavValue(newNavValue);
 
     const params = new URLSearchParams(searchParams);
@@ -73,7 +66,7 @@ export default function BandPage({
         direction={"column"}
         sx={{ backgroundColor: "white", paddingBottom: "200px" }}
       >
-        <BandHeaderInfo bandInfo={bandInfo} />
+        <BandHeaderInfo bandInfo={band.bandInfo} />
         <Box
           sx={{
             paddingTop: "10px",
@@ -119,17 +112,15 @@ export default function BandPage({
         {navValue == 0 && (
           <Box sx={{ paddingTop: "20px" }}>
             <DisplayEventsAndCalendar
-              allEvents={allEvents}
-              userId={userId}
-              userAgent={userAgent}
-              name={bandInfo.name}
+              allEvents={band.events}
+              name={band.bandInfo.bandName}
               page="Band"
             />
           </Box>
         )}
-        {navValue == 1 && bandInfo && (
+        {navValue == 1 && band.bandInfo && (
           <Box sx={{ paddingTop: "20px" }}>
-            <DisplayBandVideos bandName={bandInfo.name} bandId={bandId} />
+            <DisplayBandVideos bandInfo={band.bandInfo} />
           </Box>
         )}
       </Stack>

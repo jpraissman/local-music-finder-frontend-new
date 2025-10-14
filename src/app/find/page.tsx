@@ -54,15 +54,7 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <HydrationBoundary state={dehydratedState}>
       <NewEventSearchPage
-        initialLocation={
-          searchParams.loc
-            ? {
-                description: searchParams.loc,
-                place_id: "",
-                structured_formatting: blankStructuredFormatting,
-              }
-            : null
-        }
+        initialLocation={searchParams.loc ?? null}
         initialDateRange={
           searchParams.to && searchParams.from
             ? {

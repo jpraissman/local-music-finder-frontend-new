@@ -8,16 +8,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 
-export default function EventIdInput() {
+interface EventIdInputProps {
+  errorMessage?: string;
+  initialEventId?: string;
+}
+
+export default function EventIdInput({
+  errorMessage = "",
+  initialEventId = "",
+}: EventIdInputProps) {
   const {
     register,
     formState: { errors },
-    watch,
     handleSubmit,
   } = useForm<EventIdInputFields>({
     resolver: zodResolver(eventIdInputSchema),
     defaultValues: {
-      eventId: "",
+      eventId: initialEventId,
     },
   });
 
@@ -42,6 +49,18 @@ export default function EventIdInput() {
         spacing={1}
         alignItems="center"
       >
+        {errorMessage && (
+          <Typography
+            sx={{
+              fontSize: { xs: "16px", sm: "18px" },
+              paddingBottom: "30px",
+              fontWeight: "bold",
+              color: "red",
+            }}
+          >
+            {errorMessage}
+          </Typography>
+        )}
         <Typography
           sx={{
             fontSize: { xs: "28px", sm: "32px" },

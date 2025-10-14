@@ -69,11 +69,7 @@ export default async function Page({ params: { town, range } }: PageProps) {
   return (
     <HydrationBoundary state={dehydratedState}>
       <NewEventSearchPage
-        initialLocation={{
-          description: townFormatted,
-          place_id: "",
-          structured_formatting: blankStructuredFormatting,
-        }}
+        initialLocation={townFormatted}
         initialDateRange={{
           from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
           to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),

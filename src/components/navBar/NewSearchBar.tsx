@@ -17,20 +17,12 @@ import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
+import { BandDTO } from "@/dto/band/Band.dto";
+import { VenueDTO } from "@/dto/venue/Venue.dto";
 
 interface NewSearchBarProps {
-  venues: {
-    name: string;
-    town: string;
-    id: string;
-  }[];
-  bands: {
-    name: string;
-    genres: string[];
-    id: string;
-    band_type: string;
-    tribute_band_name: string;
-  }[];
+  venues: VenueDTO[];
+  bands: BandDTO[];
   towns: string[];
 }
 
@@ -49,18 +41,18 @@ export default function NewSearchBar({
 
   const filteredVenues = venues.filter(
     (venue) =>
-      venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      venue.venueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       venue.town.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredBands = bands.filter(
     (band) =>
-      band.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      band.bandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       band.genres.some((genre) =>
         genre.toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
-      band.tribute_band_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      band.band_type.toLowerCase().includes(searchTerm.toLowerCase())
+      band.tributeBandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      band.bandType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredTowns = towns.filter((town) =>
@@ -271,7 +263,7 @@ export default function NewSearchBar({
                         }}
                       >
                         <ListItemText
-                          primary={venue.name}
+                          primary={venue.venueName}
                           secondary={venue.town}
                         />
                       </ListItem>
@@ -323,10 +315,10 @@ export default function NewSearchBar({
                         }}
                       >
                         <ListItemText
-                          primary={band.name}
+                          primary={band.bandName}
                           secondary={
-                            band.band_type === "Tribute Band"
-                              ? `${band.band_type} - ${band.tribute_band_name}`
+                            band.bandType === "TRIBUTE_BAND"
+                              ? `${band.bandType} - ${band.tributeBandName}`
                               : band.genres.join(" • ")
                           }
                         />

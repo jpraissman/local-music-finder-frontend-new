@@ -1,5 +1,6 @@
 "use client";
 
+import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
 import {
   FormControl,
   FormHelperText,
@@ -8,7 +9,7 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -26,8 +27,9 @@ interface PicklistProps<TFieldValues extends FieldValues> {
   label: string;
   error: boolean;
   allValues: string[];
-  control: Control<TFieldValues>;
+  valueDisplayNames: Record<string, string>;
   rhfName: Path<TFieldValues>;
+  valueSetCallback?: (newValue: string) => void;
 }
 
 export default function Picklist<TFieldValues extends FieldValues>({
@@ -35,9 +37,12 @@ export default function Picklist<TFieldValues extends FieldValues>({
   label,
   error,
   allValues,
-  control,
+  valueDisplayNames,
   rhfName,
+  valueSetCallback,
 }: PicklistProps<TFieldValues>) {
+  const { control } = useFormContext<UpsertEventRequestDTO>();
+
   return (
     <Controller
       name={rhfName}
@@ -49,7 +54,12 @@ export default function Picklist<TFieldValues extends FieldValues>({
             labelId={id + "-label"}
             id={id}
             value={value ? value : ""}
-            onChange={(event) => onChange(event.target.value)}
+            onChange={(event) => {
+              onChange(event.target.value);
+              if (valueSetCallback) {
+                valueSetCallback(event.target.value);
+              }
+            }}
             input={<OutlinedInput label={label} />}
             MenuProps={MenuProps}
             sx={{ textAlign: "left" }}
@@ -57,7 +67,7 @@ export default function Picklist<TFieldValues extends FieldValues>({
           >
             {allValues.map((value) => (
               <MenuItem key={value} value={value}>
-                {value}
+                {valueDisplayNames[value]}
               </MenuItem>
             ))}
           </Select>

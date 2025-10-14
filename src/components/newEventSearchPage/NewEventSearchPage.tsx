@@ -38,7 +38,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const EVENTS_PER_PAGE = 20;
 
 interface NewEventSearchPage {
-  initialLocation: PlaceType | null;
+  initialLocation: string | null;
   initialDateRange: DateRange | undefined;
   initialMaxDistance: number;
   initialGenres: string[];
@@ -62,7 +62,7 @@ export default function NewEventSearchPage({
   initialEvents,
   initialLocationDisplay,
 }: NewEventSearchPage) {
-  const [location, setLocation] = useState<PlaceType | null>(initialLocation);
+  const [location, setLocation] = useState<string | null>(initialLocation);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(
     initialDateRange
   );
@@ -72,9 +72,9 @@ export default function NewEventSearchPage({
   const [sort, setSort] = useState<"Date" | "Distance">(initialSort);
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ["events", location?.description],
+    queryKey: ["events", location],
     queryFn: () => {
-      return getEventsByLoc(location?.description);
+      return getEventsByLoc(location ?? undefined);
     },
   });
 
@@ -170,7 +170,7 @@ export default function NewEventSearchPage({
   const updateURL = () => {
     if (location && dateRange) {
       const params = new URLSearchParams(searchParams);
-      params.set("loc", location.description);
+      params.set("loc", location);
       params.set("from", dayjs(dateRange.from).format("YYYY-MM-DD"));
       params.set("to", dayjs(dateRange.to).format("YYYY-MM-DD"));
       params.set("dis", maxDistance.toString());
@@ -283,7 +283,7 @@ export default function NewEventSearchPage({
                 >
                   <EventsFoundHeader
                     eventCount={displayedEvents.length}
-                    location={location?.description || ""}
+                    location={location || ""}
                     startDate={dateRange?.from || new Date()}
                     endDate={dateRange?.to || new Date()}
                     maxDistance={maxDistance}
@@ -321,7 +321,7 @@ export default function NewEventSearchPage({
                     <Box sx={{ paddingBottom: "20px" }}>
                       <EventsFoundHeader
                         eventCount={displayedEvents.length}
-                        location={location?.description || ""}
+                        location={location || ""}
                         startDate={dateRange?.from || new Date()}
                         endDate={dateRange?.to || new Date()}
                         maxDistance={maxDistance}

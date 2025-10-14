@@ -1,11 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  EventFormFields,
-  eventFormSchema,
-} from "@/types/schemas/eventFormSchema";
 import {
   Box,
   Button,
@@ -14,51 +10,35 @@ import {
   Typography,
 } from "@mui/material";
 import EventForm from "./EventForm";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-const postEvent = async (data: EventFormFields) => {
-  const formattedData = {
-    ...data,
-    eventDate: data.eventDate.format("YYYY-MM-DD"),
-    eventStartTime: data.eventStartTime.format("HH:mm"),
-    eventEndTime: data.eventEndTime ? data.eventEndTime.format("HH:mm") : null,
-  };
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
-    formattedData
-  );
-  return response.data;
-};
+import {
+  UpsertEventRequestDTOSchema,
+  UpsertEventRequestDTOInput,
+} from "@/dto/event/UpsertEventRequest.dto";
+import { createEvent } from "@/api/apiCalls";
+import { isAxiosError } from "axios";
 
 export default function CreateEventForm() {
-  const { register, handleSubmit, control, formState, setValue, watch } =
-    useForm<EventFormFields>({
-      resolver: zodResolver(eventFormSchema),
-      defaultValues: {
-        genres: [],
-        coverCharge: "",
-        eventEndTime: null,
-        tributeBandName: "",
-        phone: "",
-      },
-    });
+  const formMethods = useForm<UpsertEventRequestDTOInput>({
+    resolver: zodResolver(UpsertEventRequestDTOSchema),
+    defaultValues: {
+      genres: [],
+    },
+  });
 
   const router = useRouter();
-  const { mutate, isPending, isError } = useMutation({
-    mutationFn: postEvent,
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: createEvent,
     onSuccess: (data) => {
-      router.push(`/post/success/${data.event.event_id}`);
+      router.push(`/post/success/${data.eventCode}`);
     },
   });
 
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit((data) => {
-        mutate(data);
-      })}
+      onSubmit={formMethods.handleSubmit((data) => mutate(data))}
       sx={{
         width: "100%",
         display: "flex",
@@ -81,14 +61,9 @@ export default function CreateEventForm() {
         >
           Create An Event
         </Typography>
-        <EventForm
-          creatingEvent={true}
-          register={register}
-          control={control}
-          formState={formState}
-          setValue={setValue}
-          watch={watch}
-        />
+        <FormProvider {...formMethods}>
+          <EventForm creatingEvent={true} />
+        </FormProvider>
         {!isPending && (
           <Stack direction={"column"} spacing={2}>
             <Button type="submit" variant="contained" size="large">
@@ -96,7 +71,10 @@ export default function CreateEventForm() {
             </Button>
             {isError && (
               <Typography color="red">
-                There was an error posting the event. Please try again.
+                {isAxiosError(error) &&
+                error?.response?.data?.code === "ADDRESS_ERROR"
+                  ? "There was an error with the given address. Please check that the given address is correct."
+                  : "There was an error posting the event. Our team has been made aware of the issue and we are looking into it."}
               </Typography>
             )}
           </Stack>

@@ -110,9 +110,11 @@ interface NewAddressAutocompleteProps {
   id: string;
   label: string;
   error: boolean;
-  value: PlaceType | null;
-  setValue: (newValue: PlaceType | null) => void;
+  value: string | null;
+  setValue: (newValue: string | null) => void;
   landingPage: boolean;
+  disabled?: boolean;
+  helperText?: string;
 }
 
 export default function NewAddressAutocomplete({
@@ -122,6 +124,8 @@ export default function NewAddressAutocomplete({
   value,
   setValue,
   landingPage,
+  disabled = false,
+  helperText,
 }: NewAddressAutocompleteProps) {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] =
@@ -129,6 +133,9 @@ export default function NewAddressAutocomplete({
   const callbackId = React.useId().replace(/:/g, "");
   const [loaded, setLoaded] = React.useState(false);
   const [isFocused, setIsFocused] = React.useState(false);
+  const [internalValue, setInternalValue] = React.useState<PlaceType | null>(
+    null
+  );
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -183,16 +190,16 @@ export default function NewAddressAutocomplete({
         if (results) {
           newOptions = results;
 
-          if (value) {
+          if (internalValue) {
             newOptions = [
-              value,
+              internalValue,
               ...results.filter(
-                (result) => result.description !== value.description
+                (result) => result.description !== internalValue.description
               ),
             ];
           }
-        } else if (value) {
-          newOptions = [value];
+        } else if (internalValue) {
+          newOptions = [internalValue];
         }
         setOptions(newOptions);
       }
@@ -201,10 +208,12 @@ export default function NewAddressAutocomplete({
     return () => {
       active = false;
     };
-  }, [value, inputValue, loaded]);
+  }, [value, inputValue, loaded, internalValue]);
 
   return (
     <Autocomplete
+      freeSolo
+      disabled={disabled}
       fullWidth
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
@@ -219,22 +228,33 @@ export default function NewAddressAutocomplete({
       filterSelectedOptions
       value={value}
       noOptionsText="Start typing location..."
-      onChange={(_, newValue: PlaceType | null) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
+      onChange={(_, newValue: PlaceType | null | string) => {
+        if (typeof newValue === "string") {
+          setValue(newValue);
+        } else {
+          setOptions(newValue ? [newValue, ...options] : options);
+          setInternalValue(newValue);
+          setValue(newValue ? newValue.description : null);
+        }
       }}
       onInputChange={(_, newInputValue) => {
         setInputValue(newInputValue);
+        setValue(newInputValue);
       }}
       renderInput={(params) => (
         <TextField
           {...params}
+          disabled={disabled}
           label={landingPage ? undefined : label}
           placeholder={landingPage ? label : undefined}
           fullWidth
           error={error}
           helperText={
-            error && !landingPage ? "This field is required." : undefined
+            helperText
+              ? helperText
+              : error && !landingPage
+              ? "This field is required."
+              : undefined
           }
           slotProps={{
             inputLabel: { shrink: value !== null || isFocused },

@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Page() {
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/upcoming`
-  );
+  // const response = await axios.get(
+  //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/upcoming`
+  // );
 
   const cookieStore = await cookies();
   const userId = cookieStore.get("userId")?.value || "Undefined";
@@ -22,10 +22,6 @@ export default async function Page() {
   const userAgent = requestHeaders.get("user-agent") || "Undefined";
 
   return (
-    <LandingPage
-      upcomingEvents={response.data.events}
-      userId={userId}
-      userAgent={userAgent}
-    />
+    <LandingPage upcomingEvents={[]} userId={userId} userAgent={userAgent} />
   );
 }

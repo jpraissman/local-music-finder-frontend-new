@@ -1,0 +1,55 @@
+import { BandWithEventsDTOSchema } from "@/dto/band/BandWithEvents.dto";
+import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
+import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
+import {
+  UpsertEventRequestDTO,
+  UpsertEventRequestDTOInput,
+  UpsertEventRequestDTOSchema,
+} from "@/dto/event/UpsertEventRequest.dto";
+import { GetVenuesDTOSchema } from "@/dto/venue/GetVenues.dto";
+import { VenueDTOSchema } from "@/dto/venue/Venue.dto";
+import axios from "axios";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
+
+export const getBands = async () => {
+  const { data } = await axios.get(`${BASE_URL}/api/bands`);
+  return GetBandsDTOSchema.parse(data);
+};
+
+export const getVenues = async () => {
+  const { data } = await axios.get(`${BASE_URL}/api/venues`);
+  return GetVenuesDTOSchema.parse(data);
+};
+
+export const getEventByEventCode = async (eventCode: string) => {
+  const { data } = await axios.get(`${BASE_URL}/api/events/${eventCode}`);
+  return UpsertEventRequestDTOSchema.parse(data);
+};
+
+export const editEvent = async (
+  eventCode: string,
+  data: UpsertEventRequestDTO
+): Promise<void> => {
+  await axios.put(`${BASE_URL}/api/events/${eventCode}`, data);
+};
+
+export const deleteEvent = async (eventCode: string): Promise<void> => {
+  await axios.delete(`${BASE_URL}/api/events/${eventCode}`);
+};
+
+export const createEvent = async (data: UpsertEventRequestDTOInput) => {
+  const dataValidated = UpsertEventRequestDTOSchema.parse(data);
+  const response = await axios.post(`${BASE_URL}/api/events`, dataValidated);
+  return CreateEventResponseDTOSchema.parse(response.data);
+};
+
+export const getBandById = async (id: number) => {
+  const { data } = await axios.get(`${BASE_URL}/api/bands/${id}`);
+  return BandWithEventsDTOSchema.parse(data);
+};
+
+export const getVenueById = async (id: number) => {
+  const { data } = await axios.get(`${BASE_URL}/api/venues/${id}`);
+  return VenueDTOSchema.parse(data);
+};

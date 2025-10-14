@@ -2,17 +2,15 @@
 
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
-import { PlaceType } from "@/types/PlaceType";
 import { DateRange, DayPicker } from "react-day-picker";
 import RadioButtons from "../inputs/RadioButtons";
-import { useState } from "react";
 import CheckboxGroup from "../inputs/CheckboxGroup";
 import { BAND_TYPES, GENRES } from "@/types/constants";
 import MultiSelectChips from "../inputs/MultiSelectChips";
 
 interface SearchFilterProps {
-  location: PlaceType | null;
-  setLocation: (newLocation: PlaceType | null) => void;
+  location: string | null;
+  setLocation: (newLocation: string | null) => void;
   dateRange: DateRange | undefined;
   setDateRange: (newDateRange: DateRange | undefined) => void;
   maxDistance: number;
@@ -76,7 +74,7 @@ export default function SearchFilters({
               label="Your Location (town, city, or zip)"
               error={locationError}
               value={location}
-              setValue={(newLocation: PlaceType | null) => {
+              setValue={(newLocation: string | null) => {
                 setLocation(newLocation);
               }}
               landingPage={true}
