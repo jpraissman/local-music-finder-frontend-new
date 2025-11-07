@@ -13,6 +13,7 @@ import useExitLogger from "@/components/ExitTracker";
 // import ExitTrackerNEXT_PUBLIC_API_BASE_URL from "@/components/ExitTracker";
 import { BandProvider } from "@/context/BandContext";
 import { VenueProvider } from "@/context/VenueContext";
+import { LocationProvider } from "@/context/LocationContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,22 +55,24 @@ export default async function RootLayout({
           <ThemeWrapper>
             <BandProvider>
               <VenueProvider>
-                <Box sx={{ minHeight: "100vh" }}>
-                  <NavBar />
-                  {/* <ActivityTracker
+                <LocationProvider>
+                  <Box sx={{ minHeight: "100vh" }}>
+                    <NavBar />
+                    {/* <ActivityTracker
                   userId={userId?.value || "Undefined"}
                   userAgent={userAgent}
                   ip={ip}
                   referer={referer}
                 /> */}
-                  {/* <ExitTracker userId={userId?.value || "Undefined"} /> */}
-                  <Box sx={{ paddingTop: "75px" }}>
-                    <div>{children}</div>
+                    {/* <ExitTracker userId={userId?.value || "Undefined"} /> */}
+                    <Box sx={{ paddingTop: "75px" }}>
+                      <div>{children}</div>
+                    </Box>
                   </Box>
-                </Box>
-                <Box sx={{ paddingTop: "100px" }}>
-                  <WebsiteFooter />
-                </Box>
+                  <Box sx={{ paddingTop: "100px" }}>
+                    <WebsiteFooter />
+                  </Box>
+                </LocationProvider>
               </VenueProvider>
             </BandProvider>
           </ThemeWrapper>

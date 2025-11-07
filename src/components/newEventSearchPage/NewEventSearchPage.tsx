@@ -12,10 +12,8 @@ import {
   useTheme,
 } from "@mui/material";
 import SearchFilters from "./SearchFilters";
-import { PlaceType } from "@/types/PlaceType";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Event from "@/types/Event";
 import NewEventCard from "../eventCard/NewEventCard";
 import { DateRange } from "react-day-picker";
 import EventCardSkeleton from "../eventCard/EventCardSkeleton";
@@ -29,36 +27,23 @@ import {
   Tune,
 } from "@mui/icons-material";
 import EventsFoundHeader from "./EventsFoundHeader";
-import { BAND_TYPES, GENRES } from "@/types/constants";
-import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { useSearchParams, useRouter } from "next/navigation";
-import { getEventsByLoc } from "@/lib/get-events-by-loc";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { EventDTO } from "@/dto/event/Event.dto";
+import { findEvents } from "@/api/apiCalls";
 
 const EVENTS_PER_PAGE = 20;
 
 interface NewEventSearchPage {
   initialLocation: string | null;
   initialDateRange: DateRange | undefined;
-  initialMaxDistance: number;
-  initialGenres: string[];
-  initialBandTypes: string[];
-  initialSort: "Date" | "Distance";
-  userAgent: string;
-  userId: string;
-  initialEvents: Event[] | null;
+  initialEvents: EventDTO[] | null;
   initialLocationDisplay: string | null;
 }
 
 export default function NewEventSearchPage({
   initialLocation,
   initialDateRange,
-  initialMaxDistance,
-  initialGenres,
-  initialBandTypes,
-  initialSort,
-  userAgent,
-  userId,
   initialEvents,
   initialLocationDisplay,
 }: NewEventSearchPage) {
@@ -72,41 +57,42 @@ export default function NewEventSearchPage({
   const [sort, setSort] = useState<"Date" | "Distance">(initialSort);
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ["events", location],
+    queryKey: ["findEvents", location],
     queryFn: () => {
-      return getEventsByLoc(location ?? undefined);
+      return findEvents(location ?? undefined);
     },
   });
 
   const [displayInitialEvents, setDisplayInitialEvents] = useState(
     initialEvents ? true : false
   );
-  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]); // events that can be displayed to user
-  const [visibleEvents, setVisibleEvents] = useState<Event[]>([]); // events that are actually visible
+  const [displayedEvents, setDisplayedEvents] = useState<EventDTO[]>([]); // events that can be displayed to user
+  const [visibleEvents, setVisibleEvents] = useState<EventDTO[]>([]); // events that are actually visible
   useEffect(() => {
     updateURL();
     if (events && dateRange) {
       const fromDate = dayjs(dateRange.from).startOf("day").subtract(1, "day");
       const toDate = dayjs(dateRange.to).startOf("day").add(1, "day");
-      const genresToUse = genres.length === 0 ? GENRES : genres;
-      const bandTypesToUse = bandTypes.length === 0 ? BAND_TYPES : bandTypes;
-      const newDisplayedEvents = events.filter((event) => {
-        const eventDate = dayjs(event.date_string).startOf("day");
+      // const genresToUse = genres.length === 0 ? Object.values(Genre) : genres;
+      // const bandTypesToUse = bandTypes.length === 0 ? Object.values(BandType) : bandTypes;
+      const newDisplayedEvents = events.events.filter((event) => {
+        const eventDate = dayjs(event.eventDate).startOf("day");
         return (
-          event.distance_value <= maxDistance &&
+          event.distanceInMiles <= maxDistance &&
           eventDate.isAfter(fromDate) &&
-          eventDate.isBefore(toDate) &&
-          bandTypesToUse.includes(event.band_type) &&
-          genresToUse.some((genre) => event.genres.includes(genre))
+          eventDate.isBefore(toDate)
+          // &&
+          // bandTypesToUse.includes(event.band.bandType) &&
+          // genresToUse.some((genre) => event.band.genres.includes(genre))
         );
       });
       const newDisplayedEventsSorted = newDisplayedEvents.sort((a, b) => {
         if (sort == "Date") {
-          const dateA = dayjs(a.event_datetime);
-          const dateB = dayjs(b.event_datetime);
+          const dateA = dayjs(`${a.eventDate} ${a.startTime}`);
+          const dateB = dayjs(`${b.eventDate} ${b.startTime}`);
           return dateA.isAfter(dateB) ? 1 : -1;
         } else {
-          return a.distance_value - b.distance_value;
+          return a.distanceInMiles - b.distanceInMiles;
         }
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -335,8 +321,6 @@ export default function NewEventSearchPage({
                           key={event.id}
                           event={event}
                           size={isLgUp ? "Large" : "Small"}
-                          userAgent={userAgent}
-                          userId={userId}
                         />
                       );
                     })}
@@ -366,8 +350,6 @@ export default function NewEventSearchPage({
                       key={event.id}
                       event={event}
                       size={isLgUp ? "Large" : "Small"}
-                      userAgent={userAgent}
-                      userId={userId}
                     />
                   );
                 })}

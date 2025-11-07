@@ -11,6 +11,7 @@ import { Edit } from "@mui/icons-material";
 import Link from "next/link";
 import { BandWithEventsDTO } from "@/dto/band/BandWithEvents.dto";
 import { getBandById } from "@/api/apiCalls";
+import dayjs from "dayjs";
 
 interface BandPageProps {
   bandId: number;
@@ -112,7 +113,11 @@ export default function BandPage({
         {navValue == 0 && (
           <Box sx={{ paddingTop: "20px" }}>
             <DisplayEventsAndCalendar
-              allEvents={band.events}
+              allEvents={band.events.filter(
+                (event) =>
+                  dayjs(event.eventDate).isAfter(dayjs()) ||
+                  dayjs(event.eventDate).isSame(dayjs())
+              )}
               name={band.bandInfo.bandName}
               page="Band"
             />

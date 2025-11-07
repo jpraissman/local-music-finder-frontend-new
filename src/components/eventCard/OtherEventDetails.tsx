@@ -6,6 +6,7 @@ import {
   MusicNote,
 } from "@mui/icons-material";
 import { EventDTO } from "@/dto/event/Event.dto";
+import dayjs from "dayjs";
 
 export default function OtherEventDetails({ event }: { event: EventDTO }) {
   return (
@@ -13,9 +14,9 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
       <Stack direction="row" spacing={0.7}>
         <CalendarMonth sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
         <Typography variant="body1">
-          {event.eventDate.format("d, MMM D") +
+          {dayjs(event.eventDate).format("ddd, MMM D") +
             " @ " +
-            event.startTime.format("h:mm A")}
+            dayjs(`2000-01-01 ${event.startTime}`).format("h:mm A")}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={0.7}>

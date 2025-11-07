@@ -2,32 +2,29 @@
 
 import { Box, IconButton, Stack } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { loadVenueEvents, loadVenueInfo } from "@/lib/load-venue-info";
 import VenueHeaderInfo from "./VenueHeaderInfo";
 import DisplayEventsAndCalendar from "./DisplayEventsAndCalendar";
 import { Edit } from "@mui/icons-material";
 import Link from "next/link";
+import { getVenueById } from "@/api/apiCalls";
+import { VenueWithEventsDTO } from "@/dto/venue/VenueWithEvents.dto";
+import dayjs from "dayjs";
 
 interface VenuePageProps {
-  venueId: string;
-  userId: string;
-  userAgent: string;
+  venueId: number;
+  initialVenueData: VenueWithEventsDTO;
   userIsAdmin: boolean;
 }
 
 export default function VenuePage({
   venueId,
-  userId,
-  userAgent,
+  initialVenueData,
   userIsAdmin,
 }: VenuePageProps) {
-  const { data: allEvents } = useSuspenseQuery({
-    queryKey: ["venueEvents", venueId],
-    queryFn: () => loadVenueEvents(venueId),
-  });
-  const { data: venueInfo } = useSuspenseQuery({
-    queryKey: ["venueInfo", venueId],
-    queryFn: () => loadVenueInfo(venueId),
+  const { data: venue } = useSuspenseQuery({
+    queryKey: ["getVenueById", venueId],
+    queryFn: () => getVenueById(venueId),
+    initialData: initialVenueData,
   });
 
   return (
@@ -53,12 +50,14 @@ export default function VenuePage({
         spacing={{ xs: 2, md: 5 }}
         sx={{ backgroundColor: "#c8c9cc", paddingBottom: "200px" }}
       >
-        <VenueHeaderInfo venueInfo={venueInfo} />
+        <VenueHeaderInfo venueInfo={venue.venueInfo} />
         <DisplayEventsAndCalendar
-          allEvents={allEvents}
-          userId={userId}
-          userAgent={userAgent}
-          name={venueInfo.name}
+          allEvents={venue.events.filter(
+            (event) =>
+              dayjs(event.eventDate).isAfter(dayjs()) ||
+              dayjs(event.eventDate).isSame(dayjs())
+          )}
+          name={venue.venueInfo.venueName}
           page="Venue"
         />
       </Stack>

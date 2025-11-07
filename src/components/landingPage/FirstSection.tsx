@@ -6,9 +6,10 @@ import { PlaceType } from "@/types/PlaceType";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import { useLocationContext } from "@/context/LocationContext";
 
 export default function FirstSection() {
-  const [location, setLocation] = useState<string | null>(null);
+  const { location, setLocation } = useLocationContext();
   const [locationError, setLocationError] = useState(false);
   const router = useRouter();
 

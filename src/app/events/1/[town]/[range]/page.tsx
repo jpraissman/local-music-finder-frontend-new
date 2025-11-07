@@ -1,7 +1,7 @@
 import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import getDateByRange from "@/lib/get-date-by-range";
 import { getEventsByLoc } from "@/lib/get-events-by-loc";
-import { blankStructuredFormatting, TOWNS } from "@/types/constants";
+import { TOWNS } from "@/types/constants";
 import {
   dehydrate,
   HydrationBoundary,

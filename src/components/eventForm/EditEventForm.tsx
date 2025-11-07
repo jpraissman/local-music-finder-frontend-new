@@ -15,9 +15,9 @@ import EventForm from "./EventForm";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Clear, Delete, Save } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  UpsertEventRequestDTO,
+  UpsertEventRequestDTOInput,
   UpsertEventRequestDTOSchema,
 } from "@/dto/event/UpsertEventRequest.dto";
 import { deleteEvent, editEvent, getEventByEventCode } from "@/api/apiCalls";
@@ -39,7 +39,7 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
     },
   });
 
-  const formMethods = useForm<UpsertEventRequestDTO>({
+  const formMethods = useForm<UpsertEventRequestDTOInput>({
     resolver: zodResolver(UpsertEventRequestDTOSchema),
     defaultValues: initialEventInfo,
   });
@@ -56,7 +56,7 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
       data,
     }: {
       eventCode: string;
-      data: UpsertEventRequestDTO;
+      data: UpsertEventRequestDTOInput;
     }) => editEvent(eventCode, data),
     onSuccess: () => {
       router.push(`/edit/updated`);

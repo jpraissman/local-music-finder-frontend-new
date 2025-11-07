@@ -1,7 +1,12 @@
 import { BandType, EventCreatorType, Genre } from "@/newTypes";
 import { z } from "zod";
-import { facebookUrlSchema, instagramUrlSchema, urlSchema } from "./util";
-import { FieldValues } from "react-hook-form";
+import {
+  dayjsDateSchema,
+  dayjsTimeSchema,
+  facebookUrlSchema,
+  instagramUrlSchema,
+  urlSchema,
+} from "./util";
 import dayjs from "dayjs";
 
 export const UpsertEventRequestDTOSchema = z
@@ -20,16 +25,9 @@ export const UpsertEventRequestDTOSchema = z
     bandWebsiteUrl: urlSchema.nullable().optional(),
     venuePhone: z.string().min(10).max(20).nullable().optional(),
     posterEmail: z.string().email().min(1).max(255),
-    eventDate: z
-      .union([z.string(), z.custom<dayjs.Dayjs>().refine(dayjs.isDayjs)]) // accept string OR dayjs object
-      .transform((value) => {
-        if (dayjs.isDayjs(value)) {
-          return value.format("YYYY-MM-DD");
-        }
-        return dayjs(value).format("YYYY-MM-DD");
-      }),
-    startTime: z.string(),
-    endTime: z.string().nullable().optional(),
+    eventDate: dayjsDateSchema,
+    startTime: dayjsTimeSchema,
+    endTime: dayjsTimeSchema.nullable().optional(),
     coverCharge: z.number().min(0),
     additionalInfo: z.string().max(1000).nullable().optional(),
     eventCreator: z.nativeEnum(EventCreatorType),
