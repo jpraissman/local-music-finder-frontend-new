@@ -223,8 +223,9 @@ export default function NewAddressAutocomplete({
         setOptions(newValue ? [newValue, ...options] : options);
         if (newValue?.description === "Madison, NJ, USA") {
           setValue({ ...newValue, description: "Madison, NJ" });
+        } else {
+          setValue(newValue);
         }
-        setValue(newValue);
       }}
       onInputChange={(_, newInputValue) => {
         setInputValue(newInputValue);
