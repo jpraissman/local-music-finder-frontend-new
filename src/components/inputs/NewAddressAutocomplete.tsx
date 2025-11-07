@@ -221,6 +221,9 @@ export default function NewAddressAutocomplete({
       noOptionsText="Start typing location..."
       onChange={(_, newValue: PlaceType | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
+        if (newValue?.description === "Madison, NJ, USA") {
+          setValue({ ...newValue, description: "Madison, NJ" });
+        }
         setValue(newValue);
       }}
       onInputChange={(_, newInputValue) => {
