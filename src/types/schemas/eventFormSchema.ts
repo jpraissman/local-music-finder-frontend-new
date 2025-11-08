@@ -1,11 +1,18 @@
 import { z } from "zod";
 import { placeTypeSchema } from "../PlaceType";
-import { dayjsDateSchema, dayjsTimeSchema, facebookUrlSchema, instagramUrlSchema, phoneSchema, urlSchema } from "./generalSchemas";
+import {
+  dayjsDateSchema,
+  dayjsTimeSchema,
+  facebookUrlSchema,
+  instagramUrlSchema,
+  phoneSchema,
+  urlSchema,
+} from "./generalSchemas";
 
 export const eventFormSchema = z
   .object({
-    venueName: z.string().min(1),
-    bandName: z.string().min(1),
+    venueName: z.string().min(1).max(100),
+    bandName: z.string().min(1).max(100),
     bandType: z.string().min(1),
     tributeBandName: z.union([z.literal(""), z.string()]),
     genres: z.array(z.string()).min(1),

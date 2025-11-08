@@ -12,6 +12,7 @@ interface FreeSoloAutocompleteProps<T extends FieldValues> {
   options: string[];
   error: boolean;
   handleSelect: (newValue: string | null) => void;
+  errorText?: string;
 }
 
 export default function FreeSoloAutocomplete<T extends FieldValues>(
@@ -33,7 +34,11 @@ export default function FreeSoloAutocomplete<T extends FieldValues>(
               {...params}
               label={props.label}
               error={props.error}
-              helperText={props.error ? "This field is required." : undefined}
+              helperText={
+                props.error
+                  ? props.errorText || "This field is required."
+                  : undefined
+              }
               inputRef={ref}
             />
           )}

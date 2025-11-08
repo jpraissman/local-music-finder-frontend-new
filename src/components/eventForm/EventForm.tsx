@@ -117,6 +117,7 @@ export default function EventForm({
               options={Object.keys(venues)}
               control={control}
               rhfName="venueName"
+              errorText={errors.venueName?.message}
               handleSelect={(newVenueName: string | null) => {
                 if (newVenueName !== null && newVenueName in venues) {
                   const relatedPlaceType: PlaceType = {
@@ -161,6 +162,7 @@ export default function EventForm({
               id="band-name-input"
               label="Band/Performer Name *"
               error={!!errors.bandName}
+              errorText={errors.bandName?.message}
               options={Object.keys(bands)}
               handleSelect={(newBandName: string | null) => {
                 if (newBandName !== null && newBandName in bands) {
