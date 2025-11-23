@@ -1,5 +1,5 @@
 import { DateRange } from "react-day-picker";
-import { PlaceType } from "./PlaceType";
+import { PlaceType } from "../newTypes/Location";
 
 interface Filters {
   dateRange: DateRange | undefined;

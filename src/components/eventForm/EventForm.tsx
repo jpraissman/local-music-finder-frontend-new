@@ -22,14 +22,13 @@ import TermsAgreement from "./TermsAgreement";
 import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
 import { useBandContext } from "@/context/BandContext";
 import { useVenueContext } from "@/context/VenueContext";
+import { BandType, BandTypeLabels } from "@/newTypes/BandType";
+import { Genre, GenreLabels } from "@/newTypes/Genre";
 import {
-  BandType,
-  BandTypeLabels,
   EventCreatorType,
   EventCreatorTypeLabels,
-  Genre,
-  GenreLabels,
-} from "@/newTypes";
+} from "@/newTypes/EventCreatorType";
+import { useEffect } from "react";
 
 interface EventFormProps {
   creatingEvent: boolean;
@@ -50,7 +49,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
     const venueNameTrimmed = venueName?.trim();
     if (venueNameTrimmed && venueNameTrimmed in venues) {
       const existingVenue = venues[venueNameTrimmed];
-      setValue("address", existingVenue.address);
+      setValue("location", existingVenue.location);
       setValue("venuePhone", existingVenue?.phoneNumber || undefined);
       setValue("venueFacebookUrl", existingVenue?.facebookUrl || undefined);
       setValue("venueInstagramUrl", existingVenue?.instagramUrl || undefined);
@@ -123,6 +122,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               options={Object.keys(venues)}
               rhfName="venueName"
               valueChangeCallback={prefillVenueInfo}
+              helperText={errors.venueName?.message}
             />
             <TextFieldWithAutofill
               id="phone-number"
@@ -174,6 +174,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               options={Object.keys(bands)}
               valueChangeCallback={prefillBandInfo}
               rhfName="bandName"
+              helperText={errors.bandName?.message}
             />
             <Picklist
               id="band-type-input"
@@ -187,6 +188,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
                   setValue("tributeBandName", undefined);
                 }
               }}
+              helperText={errors.bandType?.message}
             />
             {watch("bandType") === "TRIBUTE_BAND" && (
               <TextFieldWithAutofill
@@ -195,9 +197,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
                 error={!!errors.tributeBandName}
                 rhfName="tributeBandName"
                 value={watch("tributeBandName") || undefined}
-                helperText={
-                  errors.tributeBandName ? "This field is required." : undefined
-                }
+                helperText={errors.tributeBandName?.message}
               />
             )}
             <MultiselectPicklist
@@ -242,6 +242,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               label="Start Time *"
               control={control}
               rhfName="startTime"
+              helperText={errors.startTime?.message}
             />
             <RHFTimePicker
               name="event-start-time-input"
@@ -249,24 +250,20 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               label="End Time (optional)"
               control={control}
               rhfName="endTime"
+              helperText={errors.endTime?.message}
             />
             <Controller
-              name="address"
+              name="location"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <NewAddressAutocomplete
                   id="venue-address-input"
                   label="Address of Event *"
-                  value={value ? value : null}
+                  value={value ? value : { locationId: "", address: "" }}
                   setValue={onChange}
-                  error={!!errors.address}
+                  error={!!errors.location}
                   landingPage={false}
-                  disabled={!creatingEvent}
-                  helperText={
-                    !creatingEvent
-                      ? "Note: To change the address please delete the event and create a new one"
-                      : undefined
-                  }
+                  helperText={errors.location?.message}
                 />
               )}
             />
@@ -491,6 +488,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               allValues={Object.values(EventCreatorType)}
               valueDisplayNames={EventCreatorTypeLabels}
               error={!!errors.eventCreator}
+              helperText={errors.eventCreator?.message}
             />
             <TextField
               id="email-address-input"

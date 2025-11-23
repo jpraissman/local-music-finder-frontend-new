@@ -6,8 +6,8 @@ import {
   UpsertEventRequestDTOInput,
   UpsertEventRequestDTOSchema,
 } from "@/dto/event/UpsertEventRequest.dto";
+import { LocationDTOSchema } from "@/dto/location/Location.dto";
 import { GetVenuesDTOSchema } from "@/dto/venue/GetVenues.dto";
-import { VenueDTOSchema } from "@/dto/venue/Venue.dto";
 import { VenueWithEventsDTOSchema } from "@/dto/venue/VenueWithEvents.dto";
 import axios from "axios";
 
@@ -44,6 +44,11 @@ export const createEvent = async (data: UpsertEventRequestDTOInput) => {
   const dataValidated = UpsertEventRequestDTOSchema.parse(data);
   const response = await axios.post(`${BASE_URL}/api/events`, dataValidated);
   return CreateEventResponseDTOSchema.parse(response.data);
+};
+
+export const getLocationById = async (locationId: string) => {
+  const response = await axios.get(`${BASE_URL}/api/location/${locationId}`);
+  return LocationDTOSchema.parse(response.data);
 };
 
 export const findEvents = async (address: string | undefined) => {

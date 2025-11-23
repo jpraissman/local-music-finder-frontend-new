@@ -1,6 +1,5 @@
 "use client";
 
-import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
 import {
   FormControl,
   FormHelperText,
@@ -11,8 +10,6 @@ import {
 } from "@mui/material";
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
@@ -30,6 +27,7 @@ interface PicklistProps<TFieldValues extends FieldValues> {
   valueDisplayNames: Record<string, string>;
   rhfName: Path<TFieldValues>;
   valueSetCallback?: (newValue: string) => void;
+  helperText?: string;
 }
 
 export default function Picklist<TFieldValues extends FieldValues>({
@@ -40,8 +38,9 @@ export default function Picklist<TFieldValues extends FieldValues>({
   valueDisplayNames,
   rhfName,
   valueSetCallback,
+  helperText,
 }: PicklistProps<TFieldValues>) {
-  const { control } = useFormContext<UpsertEventRequestDTO>();
+  const { control } = useFormContext<TFieldValues>();
 
   return (
     <Controller
@@ -71,9 +70,7 @@ export default function Picklist<TFieldValues extends FieldValues>({
               </MenuItem>
             ))}
           </Select>
-          <FormHelperText error={error}>
-            {error ? "This field is required." : undefined}
-          </FormHelperText>
+          <FormHelperText error={error}>{helperText}</FormHelperText>
         </FormControl>
       )}
     />

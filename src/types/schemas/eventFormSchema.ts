@@ -1,6 +1,14 @@
 import { z } from "zod";
-import { placeTypeSchema } from "../PlaceType";
-import { dayjsDateSchema, dayjsTimeSchema, facebookUrlSchema, instagramUrlSchema, phoneSchema, urlSchema } from "./generalSchemas";
+import { placeTypeSchema } from "../../newTypes/Location";
+import {
+  dayjsDateSchema,
+  dayjsTimeSchema,
+  facebookUrlSchema,
+  instagramUrlSchema,
+  phoneSchema,
+  urlSchema,
+} from "./generalSchemas";
+import { LocationDTOSchema } from "@/dto/location/Location.dto";
 
 export const eventFormSchema = z
   .object({
@@ -9,7 +17,7 @@ export const eventFormSchema = z
     bandType: z.string().min(1),
     tributeBandName: z.union([z.literal(""), z.string()]),
     genres: z.array(z.string()).min(1),
-    venueAddress: placeTypeSchema,
+    venueAddress: LocationDTOSchema,
     eventDate: dayjsDateSchema,
     eventStartTime: dayjsTimeSchema,
     eventEndTime: z.union([z.null(), dayjsTimeSchema]),

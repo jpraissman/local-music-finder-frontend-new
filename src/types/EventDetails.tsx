@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { PlaceType } from "@/types/PlaceType";
+import { PlaceType } from "@/newTypes/Location";
 
 interface EventDetails {
   venueName: string;

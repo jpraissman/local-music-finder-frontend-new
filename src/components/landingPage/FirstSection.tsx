@@ -2,7 +2,7 @@
 
 import { Box, Button, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
-import { PlaceType } from "@/types/PlaceType";
+import { PlaceType } from "@/newTypes/Location";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -94,6 +94,7 @@ export default function FirstSection() {
               label="Enter your location"
               error={locationError}
               landingPage={true}
+              helperText={locationError ? "This is required" : undefined}
             />
             <Button
               variant="contained"

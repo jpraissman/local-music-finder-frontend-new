@@ -78,6 +78,7 @@ export default function SearchFilters({
                 setLocation(newLocation);
               }}
               landingPage={true}
+              helperText={locationError ? "This is required" : undefined}
             />
           </Stack>
           <Stack direction={"column"} spacing={0.5}>

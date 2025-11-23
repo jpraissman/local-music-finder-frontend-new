@@ -2,14 +2,7 @@
 
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import {
-  Control,
-  Controller,
-  FieldValues,
-  Path,
-  useFormContext,
-} from "react-hook-form";
-import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
+import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
 interface FreeSoloAutocompleteProps<T extends FieldValues> {
   rhfName: Path<T>;
@@ -18,12 +11,13 @@ interface FreeSoloAutocompleteProps<T extends FieldValues> {
   options: string[];
   error: boolean;
   valueChangeCallback: (newValue: string | null) => void;
+  helperText?: string;
 }
 
 export default function FreeSoloAutocomplete<T extends FieldValues>(
   props: FreeSoloAutocompleteProps<T>
 ) {
-  const { control } = useFormContext<UpsertEventRequestDTO>();
+  const { control } = useFormContext<T>();
 
   return (
     <Controller
@@ -41,7 +35,7 @@ export default function FreeSoloAutocomplete<T extends FieldValues>(
               {...params}
               label={props.label}
               error={props.error}
-              helperText={props.error ? "This field is required." : undefined}
+              helperText={props.helperText}
               inputRef={ref}
             />
           )}

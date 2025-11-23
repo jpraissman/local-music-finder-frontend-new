@@ -1,49 +1,69 @@
-import Event from "@/types/Event"
-import Filters from "@/types/Filters"
-import { PlaceType } from "./PlaceType"
+import Event from "@/types/Event";
+import Filters from "@/types/Filters";
+import { PlaceType } from "../newTypes/Location";
 
 export const GENRES = [
-  "Alternative", "Blues", "Classic Rock", "Country", "Dance", "DJ", "EDM", "Folk", 
-  "Hip Hop", "Indie", "Jazz", "Karaoke", "Latin", "Metal", "Pop", "R'n'B Soul", "Reggae", "Rock", "World Music"
-]
+  "Alternative",
+  "Blues",
+  "Classic Rock",
+  "Country",
+  "Dance",
+  "DJ",
+  "EDM",
+  "Folk",
+  "Hip Hop",
+  "Indie",
+  "Jazz",
+  "Karaoke",
+  "Latin",
+  "Metal",
+  "Pop",
+  "R'n'B Soul",
+  "Reggae",
+  "Rock",
+  "World Music",
+];
 
-export const BAND_TYPES =[
-  "Cover Band", "Tribute Band",
-  "Originals Only", "Originals and Covers", "Other"
-]
+export const BAND_TYPES = [
+  "Cover Band",
+  "Tribute Band",
+  "Originals Only",
+  "Originals and Covers",
+  "Other",
+];
 
 export const blankEventDetails = {
-    venueName: "",
-    bandName: "",
-    bandType: "",
-    tributeBandName: "",
-    genres: [],
-    date: null,
-    startTime: null,
-    endTime: null,
-    address: null,
-    hasCoverCharge: "",
-    coverCharge: "",
-    otherInfo: "",
-    facebookHandle: "",
-    instagramHandle: "",
-    venuePhoneNumber: "",
-    website: "",
-    bandOrVenue: "",
-    emailAddress: "",
-}
+  venueName: "",
+  bandName: "",
+  bandType: "",
+  tributeBandName: "",
+  genres: [],
+  date: null,
+  startTime: null,
+  endTime: null,
+  address: null,
+  hasCoverCharge: "",
+  coverCharge: "",
+  otherInfo: "",
+  facebookHandle: "",
+  instagramHandle: "",
+  venuePhoneNumber: "",
+  website: "",
+  bandOrVenue: "",
+  emailAddress: "",
+};
 
 export const blankStructuredFormatting = {
   main_text: "",
   secondary_text: "",
   main_text_matched_substrings: [],
-}
+};
 
 export const blankPlaceType: PlaceType = {
   description: "",
   structured_formatting: blankStructuredFormatting,
   place_id: "",
-}
+};
 
 export const blankEvent: Event = {
   id: -1,
@@ -75,8 +95,8 @@ export const blankEvent: Event = {
   youtube_id: "",
   ranking_position: -1,
   venue_id: "",
-  band_id: ""
-}
+  band_id: "",
+};
 
 export const blankFilters: Filters = {
   dateRange: undefined,
@@ -84,7 +104,7 @@ export const blankFilters: Filters = {
   maxDistance: "",
   genres: [],
   bandTypes: [],
-}
+};
 
 export const TOWNS_2: string[] = [
   "Newark, NJ",
@@ -650,7 +670,7 @@ export const TOWNS_2: string[] = [
   "Loch Arbour, NJ",
   "Teterboro, NJ",
   "Tavistock, NJ",
-  "Walpack Township, NJ"
+  "Walpack Township, NJ",
 ];
 
 export const TOWNS: { [key: string]: string[] } = {
@@ -692,7 +712,10 @@ export const TOWNS: { [key: string]: string[] } = {
   "SouthOrange-NJ": ["South Orange, NJ, USA", "South Orange, NJ"],
   "Nutley-NJ": ["Nutley, NJ, USA", "Nutley, NJ"],
   "Maplewood-NJ": ["Maplewood, NJ, USA", "Maplewood, NJ"],
-  "Parsippany-TroyHills-NJ": ["Parsippany-Troy Hills, NJ, USA", "Parsippany-Troy Hills, NJ"],
+  "Parsippany-TroyHills-NJ": [
+    "Parsippany-Troy Hills, NJ, USA",
+    "Parsippany-Troy Hills, NJ",
+  ],
   "Morristown-NJ": ["Morristown, NJ, USA", "Morristown, NJ"],
   "MountOlive-NJ": ["Mount Olive, NJ, USA", "Mount Olive, NJ"],
   "Roxbury-NJ": ["Roxbury, NJ, USA", "Roxbury, NJ"],
@@ -710,5 +733,5 @@ export const TOWNS: { [key: string]: string[] } = {
   "Lopatcong-NJ": ["Lopatcong, NJ, USA", "Lopatcong, NJ"],
   "White-NJ": ["White, NJ, USA", "White, NJ"],
   "Warren-NJ": ["Warren, NJ, USA", "Warren, NJ"],
-  "Allamuchy-NJ": ["Allamuchy, NJ, USA", "Allamuchy, NJ"]
+  "Allamuchy-NJ": ["Allamuchy, NJ, USA", "Allamuchy, NJ"],
 };

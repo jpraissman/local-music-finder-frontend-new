@@ -1,5 +1,5 @@
 import Event from "@/types/Event";
-import { PlaceType } from "@/types/PlaceType";
+import { PlaceType } from "@/newTypes/Location";
 import axios from "axios";
 
 export async function getEventsByLoc(location: string | undefined) {

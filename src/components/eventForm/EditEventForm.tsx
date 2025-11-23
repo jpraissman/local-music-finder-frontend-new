@@ -12,22 +12,30 @@ import {
   Typography,
 } from "@mui/material";
 import EventForm from "./EventForm";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Clear, Delete, Save } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   UpsertEventRequestDTOInput,
   UpsertEventRequestDTOSchema,
 } from "@/dto/event/UpsertEventRequest.dto";
-import { deleteEvent, editEvent, getEventByEventCode } from "@/api/apiCalls";
+import {
+  deleteEvent,
+  editEvent,
+  getEventByEventCode,
+  getLocationById,
+} from "@/api/apiCalls";
 import { HttpStatusCode, isAxiosError } from "axios";
+import BaseModal from "../base/BaseModal";
 
 interface EditEventFormProps {
   eventCode: string;
 }
 
 export default function EditEventForm({ eventCode }: EditEventFormProps) {
+  const [showConfirmAddressModal, setShowConfirmAddressModal] = useState(false);
+
   const { data: initialEventInfo } = useSuspenseQuery({
     queryKey: ["getEvent", eventCode],
     queryFn: () => getEventByEventCode(eventCode),
@@ -75,13 +83,32 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const locationId = formMethods.watch("location.locationId");
+
+  const {
+    data: locationInfo,
+    isLoading: islocationInfoLoading,
+    isError: islocationInfoError,
+    error: locationInfoError,
+  } = useQuery({
+    queryKey: ["getLocationById", locationId],
+    queryFn: () => getLocationById(locationId),
+    enabled: !!locationId,
+  });
+
+  const confirmAddress = formMethods.handleSubmit(() => {
+    if (!islocationInfoLoading && !islocationInfoError && locationInfo) {
+      formMethods.setValue("location.address", locationInfo.address);
+      formMethods.setValue("location.locationId", locationInfo.locationId);
+      setShowConfirmAddressModal(true);
+    }
+  });
+
   return (
     <>
       <Box
         component="form"
-        onSubmit={formMethods.handleSubmit((data) => {
-          editEventMutation({ eventCode, data });
-        })}
+        onSubmit={confirmAddress}
         sx={{
           width: "100%",
           display: "flex",
@@ -89,6 +116,48 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
           paddingTop: "20px",
         }}
       >
+        <BaseModal
+          open={showConfirmAddressModal}
+          onClose={() => setShowConfirmAddressModal(false)}
+        >
+          <Typography sx={{ fontSize: "20px" }}>
+            {`Confirm this address is correct for ${formMethods.watch(
+              "venueName"
+            )}`}
+          </Typography>
+          <Typography sx={{ fontSize: "20px" }} fontWeight={"bold"}>
+            {formMethods.watch("location.address")}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="warning"
+              size="large"
+              onClick={() => {
+                setShowConfirmAddressModal(false);
+              }}
+            >
+              Edit Address
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={formMethods.handleSubmit((data) => {
+                setShowConfirmAddressModal(false);
+                editEventMutation({ eventCode, data });
+              })}
+            >
+              Update Event
+            </Button>
+          </Box>
+        </BaseModal>
         <Stack
           direction={"column"}
           spacing={2}
@@ -107,38 +176,55 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
           <FormProvider {...formMethods}>
             <EventForm creatingEvent={false} />
           </FormProvider>
-          {!editEventPending && !deleteEventPending && (
-            <Stack direction={"column"} spacing={2}>
-              <Stack direction="row" spacing={4}>
-                <Button
-                  onClick={() => {
-                    setConfirmDelete(true);
-                  }}
-                  variant="outlined"
-                  startIcon={<Delete />}
-                  size="large"
-                >
-                  Delete
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  endIcon={<Save />}
-                  size="large"
-                >
-                  Update
-                </Button>
+          {!editEventPending &&
+            !deleteEventPending &&
+            !islocationInfoLoading && (
+              <Stack direction={"column"} spacing={2}>
+                <Stack direction="row" spacing={4}>
+                  <Button
+                    onClick={() => {
+                      setConfirmDelete(true);
+                    }}
+                    variant="outlined"
+                    startIcon={<Delete />}
+                    size="large"
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    endIcon={<Save />}
+                    size="large"
+                  >
+                    Update
+                  </Button>
+                </Stack>
+                {isEditEventError && (
+                  <Typography color="red">
+                    {isAxiosError(editEventError) &&
+                    editEventError?.response?.data?.code === "ADDRESS_ERROR"
+                      ? "There was an error with the given address. Please check that the given address is correct."
+                      : "There was an error posting the event. Our team has been made aware of the issue and we are looking into it."}
+                  </Typography>
+                )}
+                {islocationInfoError && (
+                  <Typography color="red">
+                    {isAxiosError(locationInfoError) &&
+                    locationInfoError?.response?.data?.code === "ADDRESS_ERROR"
+                      ? "There was an error with the given address. Please check that the given address is correct."
+                      : "There is an error on our end. Our team has been made aware of the issue and we are looking into it."}
+                  </Typography>
+                )}
+                {deleteEventError && (
+                  <Typography color="red">
+                    {
+                      "There is an error on our end. Our team has been made aware of the issue and we are looking into it."
+                    }
+                  </Typography>
+                )}
               </Stack>
-              {(isEditEventError || deleteEventError) && (
-                <Typography color="red">
-                  {isAxiosError(editEventError) &&
-                  editEventError?.response?.data?.code === "ADDRESS_ERROR"
-                    ? "There was an error with the given address. Please check that the given address is correct."
-                    : "There was an error posting the event. Our team has been made aware of the issue and we are looking into it."}
-                </Typography>
-              )}
-            </Stack>
-          )}
+            )}
           {(editEventPending || deleteEventPending) && <CircularProgress />}
         </Stack>
       </Box>

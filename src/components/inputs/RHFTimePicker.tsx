@@ -11,6 +11,7 @@ interface RHFTimePickerProps<TFieldValues extends FieldValues> {
   label: string;
   rhfName: Path<TFieldValues>;
   control: Control<TFieldValues>;
+  helperText?: string;
 }
 
 export default function RHFTimePicker<TFieldValues extends FieldValues>(
@@ -41,7 +42,7 @@ export default function RHFTimePicker<TFieldValues extends FieldValues>(
             textField: {
               onClick: () => setSelectorOpen(true),
               error: props.error,
-              helperText: props.error ? "This field is required." : undefined,
+              helperText: props.helperText,
               fullWidth: true,
               inputRef: ref,
             },

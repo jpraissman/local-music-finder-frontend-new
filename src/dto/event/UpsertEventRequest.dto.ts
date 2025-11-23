@@ -1,4 +1,3 @@
-import { BandType, EventCreatorType, Genre } from "@/newTypes";
 import { z } from "zod";
 import {
   dayjsDateSchema,
@@ -8,30 +7,39 @@ import {
   urlSchema,
 } from "./util";
 import dayjs from "dayjs";
+import { BandType } from "@/newTypes/BandType";
+import { Genre } from "@/newTypes/Genre";
+import { EventCreatorType } from "@/newTypes/EventCreatorType";
+import { requiredString } from "../util";
+import { LocationDTOSchema } from "../location/Location.dto";
 
 export const UpsertEventRequestDTOSchema = z
   .object({
-    bandName: z.string().min(1).max(100).trim(),
-    bandType: z.nativeEnum(BandType),
-    tributeBandName: z.string().min(1).max(100).nullable().optional(),
-    genres: z.array(z.nativeEnum(Genre)).min(1),
-    venueName: z.string().min(1).max(100).trim(),
-    address: z.string().min(1).max(255),
+    bandName: requiredString(100),
+    bandType: z.enum(BandType, { error: "This is required" }),
+    tributeBandName: requiredString(100).nullable().optional(),
+    genres: z.array(z.enum(Genre)).min(1, { error: "This is required" }),
+    venueName: requiredString(100),
+    location: LocationDTOSchema,
     venueFacebookUrl: facebookUrlSchema.nullable().optional(),
     venueInstagramUrl: instagramUrlSchema.nullable().optional(),
     venueWebsiteUrl: urlSchema.nullable().optional(),
     bandFacebookUrl: facebookUrlSchema.nullable().optional(),
     bandInstagramUrl: instagramUrlSchema.nullable().optional(),
     bandWebsiteUrl: urlSchema.nullable().optional(),
-    venuePhone: z.string().min(10).max(20).nullable().optional(),
-    posterEmail: z.string().email().min(1).max(255),
+    venuePhone: requiredString(20).min(10).nullable().optional(),
+    posterEmail: z.email({ error: "Please enter a valid email" }),
     eventDate: dayjsDateSchema,
     startTime: dayjsTimeSchema,
     endTime: dayjsTimeSchema.nullable().optional(),
-    coverCharge: z.number().min(0),
-    additionalInfo: z.string().max(1000).nullable().optional(),
-    eventCreator: z.nativeEnum(EventCreatorType),
-    agreesToTermsAndPrivacy: z.literal(true),
+    coverCharge: z
+      .number({ error: "This is required" })
+      .min(0, { error: "Enter a value greater than 0" }),
+    additionalInfo: requiredString(1000).nullable().optional(),
+    eventCreator: z.enum(EventCreatorType, { error: "This is required" }),
+    agreesToTermsAndPrivacy: z.literal(true, {
+      error: "You must agree to the terms",
+    }),
   })
   .refine(
     (data) =>
