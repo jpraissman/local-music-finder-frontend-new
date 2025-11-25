@@ -3,12 +3,6 @@ import Event from "@/types/Event";
 import { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 
-interface PageProps {
-  params: {
-    ids: string;
-  };
-}
-
 export function generateMetadata(): Metadata {
   return {
     title: "Live Music Events - The Local Music Finder",
@@ -17,12 +11,7 @@ export function generateMetadata(): Metadata {
 
 export const revalidate = 0;
 
-export default async function Page({ params: { ids } }: PageProps) {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userId")?.value || "Undefined";
-  const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent") || "Undefined";
-
+export default async function Page() {
   let events: Event[] = [];
   try {
     const response = await fetch(

@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import { EventDTO } from "@/dto/event/Event.dto";
 import dayjs from "dayjs";
+import { BandTypeLabels } from "@/newTypes/BandType";
 
 export default function OtherEventDetails({ event }: { event: EventDTO }) {
   return (
@@ -24,17 +25,21 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
         <Typography variant="body1">
           {!event.distanceInMiles
             ? event.venue.town
-            : event.venue.town + `(${event.distanceInMiles} mi)`}
+            : event.venue.town + ` (${event.distanceInMiles.toFixed(1)} mi)`}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={0.7}>
         <MusicNote sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
         {event.band.bandType !== "TRIBUTE_BAND" && (
-          <Typography variant="body1">{event.band.bandType}</Typography>
+          <Typography variant="body1">
+            {BandTypeLabels[event.band.bandType]}
+          </Typography>
         )}
         {event.band.bandType === "TRIBUTE_BAND" && (
           <Typography variant="body1">
-            {event.band.bandType + " - " + event.band.tributeBandName}
+            {BandTypeLabels[event.band.bandType] +
+              " - " +
+              event.band.tributeBandName}
           </Typography>
         )}
       </Stack>
@@ -56,7 +61,7 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
           component="a"
           href={
             "https://www.google.com/maps/search/?api=1&query=" +
-            event.venue.address
+            event.venue.location.address
           }
           target="_blank"
           rel="noopener noreferrer"

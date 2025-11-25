@@ -2,6 +2,7 @@ import { Box, Chip, Stack, Typography } from "@mui/material";
 // import SocialMediaIcons from "./SocialMediaIcons";
 import Link from "next/link";
 import { EventDTO } from "@/dto/event/Event.dto";
+import { GenreLabels } from "@/newTypes/Genre";
 
 export default function NamesAndGenres({ event }: { event: EventDTO }) {
   return (
@@ -56,8 +57,8 @@ export default function NamesAndGenres({ event }: { event: EventDTO }) {
       >
         {event.band.genres.map((genre) => (
           <Chip
-            key={genre}
-            label={genre}
+            key={GenreLabels[genre]}
+            label={GenreLabels[genre]}
             size="small"
             sx={{
               backgroundColor: "secondary.light",

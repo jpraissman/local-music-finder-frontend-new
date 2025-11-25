@@ -14,7 +14,7 @@ import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
-import { TOWNS_2 } from "@/types/constants";
+import { TOWNS_2 } from "@/newTypes/constants";
 import { useBandContext } from "@/context/BandContext";
 import { useVenueContext } from "@/context/VenueContext";
 

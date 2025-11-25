@@ -1,7 +1,7 @@
 import { BandWithEventsDTOSchema } from "@/dto/band/BandWithEvents.dto";
 import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
 import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
-import { FindEventsResponseDTOSchema } from "@/dto/event/FindEventsResponse.dto";
+import { MultiEventsResponseDTOSchema } from "@/dto/event/FindEventsResponse.dto";
 import {
   UpsertEventRequestDTOInput,
   UpsertEventRequestDTOSchema,
@@ -51,16 +51,20 @@ export const getLocationById = async (locationId: string) => {
   return LocationDTOSchema.parse(response.data);
 };
 
-export const findEvents = async (address: string | undefined) => {
-  if (!address) {
-    return FindEventsResponseDTOSchema.parse({ events: [] });
+export const findEvents = async (locationId: string | undefined) => {
+  if (!locationId) {
+    return MultiEventsResponseDTOSchema.parse({ events: [] });
   }
 
-  const encodedAddress = encodeURIComponent(address);
   const { data } = await axios.get(
-    `${BASE_URL}/api/events/find?address=${encodedAddress}}`
+    `${BASE_URL}/api/events/find?locationId=${locationId}`
   );
-  return FindEventsResponseDTOSchema.parse(data);
+  return MultiEventsResponseDTOSchema.parse(data);
+};
+
+export const getEventsNextSevenDays = async () => {
+  const { data } = await axios.get(`${BASE_URL}/api/events/next-seven-days`);
+  return MultiEventsResponseDTOSchema.parse(data);
 };
 
 export const getBandById = async (id: number) => {

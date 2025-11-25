@@ -1,44 +1,45 @@
 "use client";
 
-import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  keyframes,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
-import { DateRange, DayPicker } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 import RadioButtons from "../inputs/RadioButtons";
-import CheckboxGroup from "../inputs/CheckboxGroup";
-import { BAND_TYPES, GENRES } from "@/types/constants";
-import MultiSelectChips from "../inputs/MultiSelectChips";
+import { useFiltersContext } from "@/context/FiltersContext";
+import MultiSelectGenreChips from "./MultiSelectGenreChips";
+import BandTypeCheckboxGroup from "./BandTypeCheckboxGroup";
+import React from "react";
+import { FilterRefsType } from "@/hooks/useFilterRefs";
 
-interface SearchFilterProps {
-  location: string | null;
-  setLocation: (newLocation: string | null) => void;
-  dateRange: DateRange | undefined;
-  setDateRange: (newDateRange: DateRange | undefined) => void;
-  maxDistance: number;
-  setMaxDistance: (newMaxDistance: number) => void;
-  genres: string[];
-  setGenres: (newGenres: string[]) => void;
-  bandTypes: string[];
-  setBandTypes: (newBandTypes: string[]) => void;
-  sort: "Date" | "Distance";
-  setSort: (newSort: "Date" | "Distance") => void;
-  locationError: boolean;
+const fadeHighlight = keyframes`
+  0% {
+    background-color: #faf29d;
+    box-shadow: 0 0 0 20px #faf29d;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 20px transparent;
+  }
+`;
+
+interface SearchFiltersProps {
+  onManualFilterChange: () => void;
+  filterRefsHook: FilterRefsType;
 }
 
 export default function SearchFilters({
-  location,
-  setLocation,
-  locationError,
-  dateRange,
-  setDateRange,
-  maxDistance,
-  setMaxDistance,
-  genres,
-  setGenres,
-  bandTypes,
-  setBandTypes,
-  sort,
-  setSort,
-}: SearchFilterProps) {
+  onManualFilterChange,
+  filterRefsHook,
+}: SearchFiltersProps) {
+  const { filters, setFilters } = useFiltersContext();
+
   return (
     <Paper
       elevation={5}
@@ -48,6 +49,7 @@ export default function SearchFilters({
         height: { xs: "100%", md: "70vh" },
         overflowY: "auto",
       }}
+      ref={filterRefsHook.searchFiltersContainerRef}
     >
       <Box
         sx={{
@@ -61,27 +63,49 @@ export default function SearchFilters({
         >
           <Stack direction={"column"}>
             <Typography variant="h5" fontWeight={"bold"}>
-              Filter & Sort
+              Edit Filters
             </Typography>
             <Typography variant="h6">(scroll to see all options)</Typography>
           </Stack>
-          <Stack direction={"column"} spacing={1}>
+          <Stack
+            direction={"column"}
+            spacing={1}
+            ref={filterRefsHook.locationRef}
+            sx={{
+              animation:
+                filterRefsHook.areaToHighlight === "LOCATION"
+                  ? `${fadeHighlight} 3.5s ease-out`
+                  : "none",
+            }}
+            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Location
             </Typography>
             <NewAddressAutocomplete
               id="location"
               label="Your Location (town, city, or zip)"
-              error={locationError}
-              value={location}
-              setValue={(newLocation: string | null) => {
-                setLocation(newLocation);
+              value={filters.location || { address: "", locationId: "" }}
+              setValue={(newLocation) => {
+                setFilters({ ...filters, location: newLocation });
+                onManualFilterChange();
               }}
               landingPage={true}
-              helperText={locationError ? "This is required" : undefined}
+              error={false}
             />
           </Stack>
-          <Stack direction={"column"} spacing={0.5}>
+          <Stack
+            direction={"column"}
+            spacing={0.5}
+            ref={filterRefsHook.dateRangeRef}
+            sx={{
+              animation:
+                filterRefsHook.areaToHighlight === "DATE"
+                  ? `${fadeHighlight} 3.5s ease-out`
+                  : "none",
+            }}
+            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Date Range
             </Typography>
@@ -95,24 +119,39 @@ export default function SearchFilters({
               <Stack display={"flex"} alignItems={"center"} spacing={1}>
                 <DayPicker
                   mode="range"
-                  selected={dateRange}
+                  selected={filters.dateRange}
                   disabled={{ before: new Date() }}
                   onSelect={(newDateRange) => {
-                    setDateRange(newDateRange);
+                    setFilters({ ...filters, dateRange: newDateRange });
+                    onManualFilterChange();
                   }}
                 />
                 <Button
                   variant="contained"
                   color="secondary"
                   sx={{ maxWidth: "200px" }}
-                  onClick={() => setDateRange(undefined)}
+                  onClick={() => {
+                    setFilters({ ...filters, dateRange: undefined });
+                    onManualFilterChange();
+                  }}
                 >
                   Clear Calendar
                 </Button>
               </Stack>
             </Box>
           </Stack>
-          <Stack direction={"column"} spacing={1}>
+          <Stack
+            direction={"column"}
+            spacing={1}
+            ref={filterRefsHook.maxDistanceRef}
+            sx={{
+              animation:
+                filterRefsHook.areaToHighlight === "DISTANCE"
+                  ? `${fadeHighlight} 3.5s ease-out`
+                  : "none",
+            }}
+            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Distance
             </Typography>
@@ -125,9 +164,13 @@ export default function SearchFilters({
                 "Within 35 miles",
                 "Within 50 miles",
               ]}
-              value={maxDistance.toString()}
+              value={filters.maxDistance.toString()}
               onChange={(_, newMaxDistanceStr) => {
-                setMaxDistance(Number(newMaxDistanceStr));
+                setFilters({
+                  ...filters,
+                  maxDistance: Number(newMaxDistanceStr),
+                });
+                onManualFilterChange();
               }}
             />
           </Stack>
@@ -140,21 +183,13 @@ export default function SearchFilters({
                 Click to include/remove
               </Typography>
             </Stack>
-            <MultiSelectChips
-              chips={GENRES}
-              selectedChips={genres}
-              setSelectedChips={setGenres}
-            />
+            <MultiSelectGenreChips />
           </Stack>
           <Stack direction={"column"} spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>
               Band Types
             </Typography>
-            <CheckboxGroup
-              labels={BAND_TYPES}
-              selectedLabels={bandTypes}
-              setSelectedLabels={setBandTypes}
-            />
+            <BandTypeCheckboxGroup />
           </Stack>
           <Stack
             direction={"column"}
@@ -167,10 +202,11 @@ export default function SearchFilters({
             <RadioButtons
               labels={["Date", "Distance"]}
               values={["Date", "Distance"]}
-              value={sort}
+              value={filters.sort}
               onChange={(_, newSort) => {
                 if (newSort === "Date" || newSort === "Distance") {
-                  setSort(newSort);
+                  setFilters({ ...filters, sort: newSort });
+                  onManualFilterChange();
                 }
               }}
             />

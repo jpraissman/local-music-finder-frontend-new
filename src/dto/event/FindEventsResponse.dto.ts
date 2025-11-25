@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { EventDTOSchema } from "./Event.dto";
 
-export const FindEventsResponseDTOSchema = z.object({
+export const MultiEventsResponseDTOSchema = z.object({
   events: z.array(EventDTOSchema),
 });
 
-export type FindEventsResponseDTO = z.infer<typeof FindEventsResponseDTOSchema>;
+export type MultiEventsResponseDTO = z.infer<
+  typeof MultiEventsResponseDTOSchema
+>;

@@ -6,7 +6,7 @@ import { PlaceType } from "@/newTypes/Location";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import { useLocationContext } from "@/context/LocationContext";
+import { useLocationContext } from "@/context/FiltersContext";
 
 export default function FirstSection() {
   const { location, setLocation } = useLocationContext();

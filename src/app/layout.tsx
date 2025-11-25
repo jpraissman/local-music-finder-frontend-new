@@ -13,7 +13,7 @@ import useExitLogger from "@/components/ExitTracker";
 // import ExitTrackerNEXT_PUBLIC_API_BASE_URL from "@/components/ExitTracker";
 import { BandProvider } from "@/context/BandContext";
 import { VenueProvider } from "@/context/VenueContext";
-import { LocationProvider } from "@/context/LocationContext";
+import { FiltersProvider } from "@/context/FiltersContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,7 +55,7 @@ export default async function RootLayout({
           <ThemeWrapper>
             <BandProvider>
               <VenueProvider>
-                <LocationProvider>
+                <FiltersProvider>
                   <Box sx={{ minHeight: "100vh" }}>
                     <NavBar />
                     {/* <ActivityTracker
@@ -72,7 +72,7 @@ export default async function RootLayout({
                   <Box sx={{ paddingTop: "100px" }}>
                     <WebsiteFooter />
                   </Box>
-                </LocationProvider>
+                </FiltersProvider>
               </VenueProvider>
             </BandProvider>
           </ThemeWrapper>
