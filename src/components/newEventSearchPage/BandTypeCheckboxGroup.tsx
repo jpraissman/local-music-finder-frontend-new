@@ -2,7 +2,13 @@ import { useFiltersContext } from "@/context/FiltersContext";
 import { BandType, BandTypeLabels } from "@/newTypes/BandType";
 import { Checkbox, Stack, Typography } from "@mui/material";
 
-export default function BandTypeCheckboxGroup() {
+interface BandTypeCheckboxGroupProps {
+  canEdit: () => boolean;
+}
+
+export default function BandTypeCheckboxGroup({
+  canEdit,
+}: BandTypeCheckboxGroupProps) {
   const { filters, setFilters } = useFiltersContext();
 
   return (
@@ -18,14 +24,22 @@ export default function BandTypeCheckboxGroup() {
             <Checkbox
               checked={filters.bandTypes.includes(bandType)}
               onChange={() => {
-                if (filters.bandTypes.includes(bandType)) {
-                  const newBandTypes = filters.bandTypes.filter(
-                    (selectedBandType) => selectedBandType !== bandType
-                  );
-                  setFilters({ ...filters, bandTypes: newBandTypes });
-                } else {
-                  const newBandTypes = [...filters.bandTypes, bandType];
-                  setFilters({ ...filters, bandTypes: newBandTypes });
+                if (canEdit()) {
+                  if (filters.bandTypes.includes(bandType)) {
+                    const newBandTypes = filters.bandTypes.filter(
+                      (selectedBandType) => selectedBandType !== bandType
+                    );
+                    setFilters((prev) => ({
+                      ...prev,
+                      bandTypes: newBandTypes,
+                    }));
+                  } else {
+                    const newBandTypes = [...filters.bandTypes, bandType];
+                    setFilters((prev) => ({
+                      ...prev,
+                      bandTypes: newBandTypes,
+                    }));
+                  }
                 }
               }}
             />

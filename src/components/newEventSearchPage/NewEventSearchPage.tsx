@@ -29,7 +29,7 @@ import { useRouter } from "next/navigation";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { EventDTO } from "@/dto/event/Event.dto";
 import { findEvents } from "@/api/apiCalls";
-import { useFiltersContext } from "@/context/FiltersContext";
+import { DateRangeValues, useFiltersContext } from "@/context/FiltersContext";
 import { LocationDTO } from "@/dto/location/Location.dto";
 import { Genre } from "@/newTypes/Genre";
 import { BandType } from "@/newTypes/BandType";
@@ -38,8 +38,8 @@ import { useFilterRefs } from "@/hooks/useFilterRefs";
 const EVENTS_PER_PAGE = 20;
 
 interface NewEventSearchPage {
-  initialLocation?: LocationDTO | null;
-  initialDateRange?: DateRange | undefined;
+  initialLocation?: LocationDTO | "BLANK";
+  initialDateRange?: DateRangeValues | DateRange;
   initialEvents?: EventDTO[] | null;
   initialLocationDisplay?: string | null;
 }
@@ -50,17 +50,23 @@ export default function NewEventSearchPage({
   initialEvents,
   initialLocationDisplay,
 }: NewEventSearchPage) {
-  const { filters, setFilters } = useFiltersContext();
+  const { filters, setFilters, setDateRangeWithString } = useFiltersContext();
 
   useEffect(() => {
     if (initialLocation) {
-      setFilters({ ...filters, location: initialLocation });
+      const locationToUse =
+        initialLocation === "BLANK" ? null : initialLocation;
+      setFilters((prev) => ({ ...prev, location: locationToUse }));
     }
   }, [initialLocation]);
 
   useEffect(() => {
     if (initialDateRange) {
-      setFilters({ ...filters, dateRange: initialDateRange });
+      if (typeof initialDateRange === "string") {
+        setDateRangeWithString(initialDateRange);
+      } else {
+        setFilters((prev) => ({ ...prev, dateRange: initialDateRange }));
+      }
     }
   }, [initialDateRange]);
 
@@ -69,7 +75,6 @@ export default function NewEventSearchPage({
     queryFn: () => {
       return findEvents(filters.location?.locationId);
     },
-    enabled: !!filters.location,
   });
 
   const [displayInitialEvents, setDisplayInitialEvents] = useState(
@@ -83,6 +88,7 @@ export default function NewEventSearchPage({
   const handleManualFilterChange = useCallback(() => {
     setDisplayInitialEvents(false);
     router.replace(`/find`);
+    filterRefsHook.setAreaToHighlight(null);
   }, [router]);
 
   useEffect(() => {
@@ -100,7 +106,8 @@ export default function NewEventSearchPage({
       const newAvailableEvents = events.events.filter((event) => {
         const eventDate = dayjs(event.eventDate).startOf("day");
         return (
-          event.distanceInMiles <= filters.maxDistance &&
+          (!event.distanceInMiles ||
+            event.distanceInMiles <= filters.maxDistance) &&
           eventDate.isAfter(fromDate) &&
           eventDate.isBefore(toDate) &&
           bandTypesToUse.includes(event.band.bandType) &&
@@ -113,7 +120,9 @@ export default function NewEventSearchPage({
           const dateB = dayjs(`${b.eventDate} ${b.startTime}`);
           return dateA.isAfter(dateB) ? 1 : -1;
         } else {
-          return a.distanceInMiles - b.distanceInMiles;
+          return a.distanceInMiles && b.distanceInMiles
+            ? a.distanceInMiles - b.distanceInMiles
+            : 0;
         }
       });
       window.scrollTo({ top: 0, behavior: "smooth" });

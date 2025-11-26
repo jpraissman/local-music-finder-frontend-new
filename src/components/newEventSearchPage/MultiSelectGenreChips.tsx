@@ -2,7 +2,13 @@ import { useFiltersContext } from "@/context/FiltersContext";
 import { Genre, GenreLabels } from "@/newTypes/Genre";
 import { Button, Chip, Stack } from "@mui/material";
 
-export default function MultiSelectGenreChips() {
+interface MultiSelectGenreChipsProps {
+  canEdit: () => boolean;
+}
+
+export default function MultiSelectGenreChips({
+  canEdit,
+}: MultiSelectGenreChipsProps) {
   const { filters, setFilters } = useFiltersContext();
 
   return (
@@ -15,14 +21,16 @@ export default function MultiSelectGenreChips() {
             size="small"
             clickable
             onClick={() => {
-              if (filters.genres.includes(genre)) {
-                const newGenres = filters.genres.filter(
-                  (selectedGenre) => selectedGenre !== genre
-                );
-                setFilters({ ...filters, genres: newGenres });
-              } else {
-                const newGenres = [...filters.genres, genre];
-                setFilters({ ...filters, genres: newGenres });
+              if (canEdit()) {
+                if (filters.genres.includes(genre)) {
+                  const newGenres = filters.genres.filter(
+                    (selectedGenre) => selectedGenre !== genre
+                  );
+                  setFilters((prev) => ({ ...prev, genres: newGenres }));
+                } else {
+                  const newGenres = [...filters.genres, genre];
+                  setFilters((prev) => ({ ...prev, genres: newGenres }));
+                }
               }
             }}
             variant={filters.genres.includes(genre) ? "filled" : "outlined"}
@@ -44,7 +52,7 @@ export default function MultiSelectGenreChips() {
           variant="contained"
           color="secondary"
           sx={{ maxWidth: "200px" }}
-          onClick={() => setFilters({ ...filters, genres: [] })}
+          onClick={() => setFilters((prev) => ({ ...prev, genres: [] }))}
         >
           Reset
         </Button>

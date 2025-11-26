@@ -13,7 +13,7 @@ export const EventDTOSchema = z
     endTime: z.string().nullable().optional(),
     coverCharge: z.number().min(0),
     additionalInfo: z.string().nullable().optional(),
-    distanceInMiles: z.number(),
+    distanceInMiles: z.number().nullable().optional(),
   })
   .refine((data) => dayjs(data.eventDate, "YYYY-MM-DD").isValid(), {
     path: ["eventDate"],

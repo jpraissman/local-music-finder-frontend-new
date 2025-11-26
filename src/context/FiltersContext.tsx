@@ -3,6 +3,7 @@
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -13,6 +14,17 @@ import { LocationDTO } from "@/dto/location/Location.dto";
 import { DateRange } from "react-day-picker";
 import { Genre } from "@/newTypes/Genre";
 import { BandType } from "@/newTypes/BandType";
+
+export type DateRangeValues = "NEXT_7_DAYS" | "NEXT_30_DAYS";
+
+const convertDateRangeValueToNumber = (dateRangeValue: DateRangeValues) => {
+  switch (dateRangeValue) {
+    case "NEXT_7_DAYS":
+      return 7;
+    case "NEXT_30_DAYS":
+      return 30;
+  }
+};
 
 interface FiltersType {
   location: LocationDTO | null;
@@ -25,7 +37,8 @@ interface FiltersType {
 
 type FiltersContextType = {
   filters: FiltersType;
-  setFilters: (newFilters: FiltersType) => void;
+  setFilters: React.Dispatch<React.SetStateAction<FiltersType>>;
+  setDateRangeWithString: (dateRangeString: DateRangeValues) => void;
 };
 
 const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
@@ -36,11 +49,35 @@ const defaultFilters: FiltersType = {
   maxDistance: 20,
   genres: [],
   bandTypes: [],
-  sort: "Distance",
+  sort: "Date",
 };
 
 export const FiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
+
+  useEffect(() => {
+    Cookies.set("locationId", filters.location?.locationId ?? "", {
+      expires: 365,
+    });
+    Cookies.set("locationString", filters.location?.address ?? "", {
+      expires: 365,
+    });
+  }, [filters.location]);
+
+  const setDateRangeWithString = useCallback(
+    (dateRangeString: DateRangeValues) => {
+      const daysToAdd = convertDateRangeValueToNumber(dateRangeString);
+      const fromDate = new Date();
+      const toDate = new Date();
+      toDate.setDate(toDate.getDate() + daysToAdd);
+      const newDateRange: DateRange = {
+        to: toDate,
+        from: fromDate,
+      };
+      setFilters((prev) => ({ ...prev, dateRange: newDateRange }));
+    },
+    [setFilters]
+  );
 
   useEffect(() => {
     const locationId = Cookies.get("locationId") ?? null;
@@ -61,7 +98,11 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
       from: fromDate,
     };
 
-    setFilters({ ...filters, location: location, dateRange: defaultDateRange });
+    setFilters((prev) => ({
+      ...prev,
+      location: location,
+      dateRange: defaultDateRange,
+    }));
   }, []);
 
   return (
@@ -69,17 +110,10 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
       value={useMemo(
         () => ({
           filters,
-          setFilters: (newFilters: FiltersType) => {
-            Cookies.set("locationId", newFilters.location?.locationId ?? "", {
-              expires: 365,
-            });
-            Cookies.set("locationString", newFilters.location?.address ?? "", {
-              expires: 365,
-            });
-            setFilters(newFilters);
-          },
+          setFilters,
+          setDateRangeWithString,
         }),
-        [filters]
+        [filters, setDateRangeWithString, setFilters]
       )}
     >
       {children}

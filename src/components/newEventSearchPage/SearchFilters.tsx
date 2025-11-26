@@ -18,17 +18,6 @@ import BandTypeCheckboxGroup from "./BandTypeCheckboxGroup";
 import React from "react";
 import { FilterRefsType } from "@/hooks/useFilterRefs";
 
-const fadeHighlight = keyframes`
-  0% {
-    background-color: #faf29d;
-    box-shadow: 0 0 0 20px #faf29d;
-  }
-  100% {
-    background-color: transparent;
-    box-shadow: 0 0 0 20px transparent;
-  }
-`;
-
 interface SearchFiltersProps {
   onManualFilterChange: () => void;
   filterRefsHook: FilterRefsType;
@@ -39,6 +28,19 @@ export default function SearchFilters({
   filterRefsHook,
 }: SearchFiltersProps) {
   const { filters, setFilters } = useFiltersContext();
+
+  const canEditAllFilters = () => {
+    if (filters.location) {
+      return true;
+    }
+
+    alert("You must add a location before editing other filters");
+    filterRefsHook.doScrollAndHighlight({
+      areaToHighlight: "LOCATION",
+      ref: filterRefsHook.locationRef,
+    });
+    return false;
+  };
 
   return (
     <Paper
@@ -72,12 +74,15 @@ export default function SearchFilters({
             spacing={1}
             ref={filterRefsHook.locationRef}
             sx={{
-              animation:
+              backgroundColor:
                 filterRefsHook.areaToHighlight === "LOCATION"
-                  ? `${fadeHighlight} 3.5s ease-out`
-                  : "none",
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "LOCATION"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
             }}
-            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
           >
             <Typography variant="body1" fontWeight={"bold"}>
               Location
@@ -87,7 +92,7 @@ export default function SearchFilters({
               label="Your Location (town, city, or zip)"
               value={filters.location || { address: "", locationId: "" }}
               setValue={(newLocation) => {
-                setFilters({ ...filters, location: newLocation });
+                setFilters((prev) => ({ ...prev, location: newLocation }));
                 onManualFilterChange();
               }}
               landingPage={true}
@@ -99,12 +104,15 @@ export default function SearchFilters({
             spacing={0.5}
             ref={filterRefsHook.dateRangeRef}
             sx={{
-              animation:
+              backgroundColor:
                 filterRefsHook.areaToHighlight === "DATE"
-                  ? `${fadeHighlight} 3.5s ease-out`
-                  : "none",
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "DATE"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
             }}
-            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
           >
             <Typography variant="body1" fontWeight={"bold"}>
               Date Range
@@ -122,8 +130,13 @@ export default function SearchFilters({
                   selected={filters.dateRange}
                   disabled={{ before: new Date() }}
                   onSelect={(newDateRange) => {
-                    setFilters({ ...filters, dateRange: newDateRange });
-                    onManualFilterChange();
+                    if (canEditAllFilters()) {
+                      setFilters((prev) => ({
+                        ...prev,
+                        dateRange: newDateRange,
+                      }));
+                      onManualFilterChange();
+                    }
                   }}
                 />
                 <Button
@@ -131,8 +144,10 @@ export default function SearchFilters({
                   color="secondary"
                   sx={{ maxWidth: "200px" }}
                   onClick={() => {
-                    setFilters({ ...filters, dateRange: undefined });
-                    onManualFilterChange();
+                    if (canEditAllFilters()) {
+                      setFilters((prev) => ({ ...prev, dateRange: undefined }));
+                      onManualFilterChange();
+                    }
                   }}
                 >
                   Clear Calendar
@@ -145,12 +160,15 @@ export default function SearchFilters({
             spacing={1}
             ref={filterRefsHook.maxDistanceRef}
             sx={{
-              animation:
+              backgroundColor:
                 filterRefsHook.areaToHighlight === "DISTANCE"
-                  ? `${fadeHighlight} 3.5s ease-out`
-                  : "none",
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "DISTANCE"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
             }}
-            onAnimationEnd={() => filterRefsHook.setAreaToHighlight(null)}
           >
             <Typography variant="body1" fontWeight={"bold"}>
               Distance
@@ -166,11 +184,13 @@ export default function SearchFilters({
               ]}
               value={filters.maxDistance.toString()}
               onChange={(_, newMaxDistanceStr) => {
-                setFilters({
-                  ...filters,
-                  maxDistance: Number(newMaxDistanceStr),
-                });
-                onManualFilterChange();
+                if (canEditAllFilters()) {
+                  setFilters({
+                    ...filters,
+                    maxDistance: Number(newMaxDistanceStr),
+                  });
+                  onManualFilterChange();
+                }
               }}
             />
           </Stack>
@@ -183,13 +203,13 @@ export default function SearchFilters({
                 Click to include/remove
               </Typography>
             </Stack>
-            <MultiSelectGenreChips />
+            <MultiSelectGenreChips canEdit={canEditAllFilters} />
           </Stack>
           <Stack direction={"column"} spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>
               Band Types
             </Typography>
-            <BandTypeCheckboxGroup />
+            <BandTypeCheckboxGroup canEdit={canEditAllFilters} />
           </Stack>
           <Stack
             direction={"column"}
@@ -205,8 +225,10 @@ export default function SearchFilters({
               value={filters.sort}
               onChange={(_, newSort) => {
                 if (newSort === "Date" || newSort === "Distance") {
-                  setFilters({ ...filters, sort: newSort });
-                  onManualFilterChange();
+                  if (canEditAllFilters()) {
+                    setFilters((prev) => ({ ...prev, sort: newSort }));
+                    onManualFilterChange();
+                  }
                 }
               }}
             />
