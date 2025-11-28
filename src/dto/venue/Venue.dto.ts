@@ -6,6 +6,7 @@ export const VenueDTOSchema = z.object({
   venueName: z.string(),
   location: LocationDTOSchema,
   town: z.string().nullable().optional(),
+  county: z.string().nullable().optional(),
   phoneNumber: z.string().nullable().optional(),
   facebookUrl: z.string().nullable().optional(),
   instagramUrl: z.string().nullable().optional(),

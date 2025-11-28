@@ -1,7 +1,7 @@
 import { BandWithEventsDTOSchema } from "@/dto/band/BandWithEvents.dto";
 import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
 import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
-import { MultiEventsResponseDTOSchema } from "@/dto/event/FindEventsResponse.dto";
+import { MultiEventsResponseDTOSchema } from "@/dto/event/MultiEventsResponse.dto";
 import {
   UpsertEventRequestDTOInput,
   UpsertEventRequestDTOSchema,
@@ -85,4 +85,21 @@ export const getBandById = async (id: number) => {
 export const getVenueById = async (id: number) => {
   const { data } = await axios.get(`${BASE_URL}/api/venues/${id}`);
   return VenueWithEventsDTOSchema.parse(data);
+};
+
+export const validateAdminKey = async (key: string | undefined) => {
+  await axios.get(`${BASE_URL}/api/admin/validate`, {
+    headers: {
+      "Admin-Key": key,
+    },
+  });
+};
+
+export const getEventsCsv = async (key: string | undefined) => {
+  const { data } = await axios.get(`${BASE_URL}/api/admin/event/csv`, {
+    headers: { "Admin-Key": key },
+    responseType: "blob",
+  });
+
+  return data;
 };

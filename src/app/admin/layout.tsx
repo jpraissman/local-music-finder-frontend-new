@@ -1,3 +1,5 @@
+import { validateAdminKey } from "@/api/apiCalls";
+import AdminPageWrapper from "@/components/admin/AdminPageWrapper";
 import { Box } from "@mui/material";
 import { cookies } from "next/headers";
 
@@ -6,12 +8,13 @@ export default async function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const adminKey = process.env.ADMIN_KEY;
-
   const cookieStore = await cookies();
-  const adminKeyCookie = cookieStore.get("adminKey");
+  const adminKey = cookieStore.get("adminKey")?.value;
 
-  if (!adminKeyCookie || adminKeyCookie.value !== adminKey) {
+  try {
+    await validateAdminKey(adminKey);
+    return <AdminPageWrapper>{children}</AdminPageWrapper>;
+  } catch {
     return (
       <Box
         sx={{
@@ -24,6 +27,4 @@ export default async function AdminLayout({
       </Box>
     );
   }
-
-  return <>{children}</>;
 }
