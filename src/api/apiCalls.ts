@@ -1,3 +1,7 @@
+import {
+  AddVideoRequestDTO,
+  AddVideoRequestDTOSchema,
+} from "@/dto/band/AddVideoRequest.dto";
 import { BandWithEventsDTOSchema } from "@/dto/band/BandWithEvents.dto";
 import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
 import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
@@ -44,6 +48,11 @@ export const createEvent = async (data: UpsertEventRequestDTOInput) => {
   const dataValidated = UpsertEventRequestDTOSchema.parse(data);
   const response = await axios.post(`${BASE_URL}/api/events`, dataValidated);
   return CreateEventResponseDTOSchema.parse(response.data);
+};
+
+export const postVideo = async (bandId: string, data: AddVideoRequestDTO) => {
+  const dataValidated = AddVideoRequestDTOSchema.parse(data);
+  await axios.post(`${BASE_URL}/api/bands/${bandId}/add-video`, dataValidated);
 };
 
 export const getLocationById = async (locationId: string) => {

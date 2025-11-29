@@ -1,5 +1,6 @@
 "use client";
 
+import { postVideo } from "@/api/apiCalls";
 import { useBandContext } from "@/context/BandContext";
 import {
   Autocomplete,
@@ -31,8 +32,8 @@ export default function AddVideo({
 
   const router = useRouter();
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: addVideo,
-    onSuccess: (data) => {
+    mutationFn: () => postVideo(bandId ?? "", { youtubeUrl: youtubeUrl }),
+    onSuccess: () => {
       router.push(`/post/video/success`);
     },
   });
@@ -97,7 +98,7 @@ export default function AddVideo({
                   youtubeUrl.indexOf("youtube.com") != -1 ||
                   youtubeUrl.indexOf("youtu.be") != -1
                 ) {
-                  mutate({ bandId: bandId, youTubeUrl: youtubeUrl });
+                  mutate();
                 } else {
                   alert("Please post a valid YouTube link.");
                 }

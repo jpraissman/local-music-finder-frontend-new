@@ -1,7 +1,5 @@
 import AddVideo from "@/components/postVideo/AddVideo";
 
-export const revalidate = 60;
-
 interface PageProps {
   searchParams: { b?: string; id?: string };
 }
