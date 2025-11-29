@@ -131,7 +131,6 @@ export default function NavBar() {
           <NewSearchBar
             venues={Object.values(venues)}
             bands={Object.values(bands)}
-            towns={TOWNS_2}
           />
           <Box sx={{ flexGrow: 1 }} />
           <Box

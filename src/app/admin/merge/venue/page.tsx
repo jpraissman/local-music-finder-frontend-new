@@ -2,6 +2,8 @@
 // import { Box } from "@mui/material";
 // import { cookies } from "next/headers";
 
+import { Box } from "@mui/material";
+
 // export default async function Page() {
 //   const cookieStore = await cookies();
 //   const adminKeyCookie = cookieStore.get("adminKey");
@@ -18,3 +20,11 @@
 //     />
 //   );
 // }
+
+export default function Page() {
+  return (
+    <Box paddingTop={30} textAlign={"center"}>
+      Page coming soon.
+    </Box>
+  );
+}

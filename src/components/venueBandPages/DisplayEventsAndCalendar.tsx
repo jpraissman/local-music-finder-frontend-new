@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import EventCalendarPicker from "./EventCalendarPicker";
 import NewEventCard from "../eventCard/NewEventCard";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { EventDTO } from "@/dto/event/Event.dto";
 
@@ -39,7 +39,7 @@ export default function DisplayEventsAndCalendar({
     });
   };
 
-  const setUpcomingEvents = () => {
+  const setUpcomingEvents = useCallback(() => {
     const today = dayjs();
     setDisplayedEvents(
       allEvents.filter((event) => {
@@ -50,7 +50,7 @@ export default function DisplayEventsAndCalendar({
       })
     );
     setDate("all");
-  };
+  }, [setDisplayedEvents, allEvents, setDate]);
 
   const handleDateChange = (newDate: string | undefined) => {
     if (newDate) {
@@ -70,7 +70,7 @@ export default function DisplayEventsAndCalendar({
 
   useEffect(() => {
     setUpcomingEvents();
-  }, []);
+  }, [setUpcomingEvents]);
 
   return (
     <Stack direction={{ xs: "column", md: "row" }} spacing={2}>

@@ -168,7 +168,7 @@ export default function NewAddressAutocomplete({
         setLoaded(true);
       }
     }
-  }, []);
+  }, [callbackId, loaded]);
 
   useEnhancedEffect(() => {
     if (!loaded) {

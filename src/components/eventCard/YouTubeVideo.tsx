@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import axios from "axios";
 import { useState } from "react";
 
 import("@justinribeiro/lite-youtube");
@@ -39,9 +38,6 @@ export default function YouTubeVideo({
   return (
     <Box
       onClick={() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/video-clicked`, {
-          event_id: eventId,
-        });
         setVideoClicked(true);
       }}
       sx={{ position: "relative" }}

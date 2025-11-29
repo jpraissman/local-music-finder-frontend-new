@@ -58,7 +58,7 @@ export default function NewEventSearchPage({
         initialLocation === "BLANK" ? null : initialLocation;
       setFilters((prev) => ({ ...prev, location: locationToUse }));
     }
-  }, [initialLocation]);
+  }, [initialLocation, setFilters]);
 
   useEffect(() => {
     if (initialDateRange) {
@@ -68,7 +68,7 @@ export default function NewEventSearchPage({
         setFilters((prev) => ({ ...prev, dateRange: initialDateRange }));
       }
     }
-  }, [initialDateRange]);
+  }, [initialDateRange, setFilters, setDateRangeWithString]);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["findEvents", filters.location?.locationId],
@@ -84,12 +84,13 @@ export default function NewEventSearchPage({
   const [visibleEvents, setVisibleEvents] = useState<EventDTO[]>([]); // events that are actually visible
 
   const router = useRouter();
+  const filterRefsHook = useFilterRefs();
 
   const handleManualFilterChange = useCallback(() => {
     setDisplayInitialEvents(false);
     router.replace(`/find`);
     filterRefsHook.setAreaToHighlight(null);
-  }, [router]);
+  }, [router, filterRefsHook]);
 
   useEffect(() => {
     if (events && filters.dateRange) {
@@ -151,8 +152,6 @@ export default function NewEventSearchPage({
       setOpenFilterDrawer(true);
     }
   }, [isMdUp]);
-
-  const filterRefsHook = useFilterRefs();
 
   return (
     <>

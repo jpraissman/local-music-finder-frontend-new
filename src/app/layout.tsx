@@ -8,9 +8,6 @@ import ThemeWrapper from "@/components/ThemeWrapper";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import NavBar from "@/components/navBar/NavBar";
 import { cookies, headers } from "next/headers";
-// import ActivityTracker from "@/components/ActivityTracker";
-import useExitLogger from "@/components/ExitTracker";
-// import ExitTrackerNEXT_PUBLIC_API_BASE_URL from "@/components/ExitTracker";
 import { BandProvider } from "@/context/BandContext";
 import { VenueProvider } from "@/context/VenueContext";
 import { FiltersProvider } from "@/context/FiltersContext";
@@ -58,13 +55,6 @@ export default async function RootLayout({
                 <FiltersProvider>
                   <Box sx={{ minHeight: "100vh" }}>
                     <NavBar />
-                    {/* <ActivityTracker
-                  userId={userId?.value || "Undefined"}
-                  userAgent={userAgent}
-                  ip={ip}
-                  referer={referer}
-                /> */}
-                    {/* <ExitTracker userId={userId?.value || "Undefined"} /> */}
                     <Box sx={{ paddingTop: "75px" }}>
                       <div>{children}</div>
                     </Box>

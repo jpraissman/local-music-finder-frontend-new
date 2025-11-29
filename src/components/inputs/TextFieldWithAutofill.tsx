@@ -33,7 +33,7 @@ export default function TextFieldWithAutofill<
   slotProps,
 }: TextFieldWithAutofillProps<TFieldValues>) {
   const [focused, setFocused] = useState(false);
-  const { register } = useFormContext<UpsertEventRequestDTO>();
+  const { register } = useFormContext<TFieldValues>();
 
   return (
     <TextField

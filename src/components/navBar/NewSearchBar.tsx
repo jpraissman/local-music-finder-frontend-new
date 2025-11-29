@@ -23,14 +23,9 @@ import { VenueDTO } from "@/dto/venue/Venue.dto";
 interface NewSearchBarProps {
   venues: VenueDTO[];
   bands: BandDTO[];
-  towns: string[];
 }
 
-export default function NewSearchBar({
-  venues,
-  bands,
-  towns,
-}: NewSearchBarProps) {
+export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
   const theme = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +37,7 @@ export default function NewSearchBar({
   const filteredVenues = venues.filter(
     (venue) =>
       venue.venueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      venue.town.toLowerCase().includes(searchTerm.toLowerCase())
+      venue.town?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredBands = bands.filter(
@@ -55,26 +50,7 @@ export default function NewSearchBar({
       band.bandType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredTowns = towns.filter((town) =>
-    town.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const hasResults =
-    filteredVenues.length > 0 ||
-    filteredBands.length > 0 ||
-    filteredTowns.length > 0;
-
-  const getTownUrl = (location: string) => {
-    const params = new URLSearchParams();
-    params.set("loc", location);
-    params.set("from", dayjs().format("YYYY-MM-DD"));
-    params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
-    params.set("dis", "20");
-    params.set("genres", "");
-    params.set("types", "");
-    params.set("sort", "Date");
-    return `/find?${params.toString()}`;
-  };
+  const hasResults = filteredVenues.length > 0 || filteredBands.length > 0;
 
   return (
     <Box
@@ -156,70 +132,6 @@ export default function NewSearchBar({
             </Box>
           ) : (
             <Box>
-              {/* Towns Section */}
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    px: 2,
-                    py: 1,
-                    bgcolor: "rgba(244, 241, 241, 0.98)",
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <LocationOn sx={{ fontSize: 25, color: "text.secondary" }} />
-                  <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    color="text.secondary"
-                  >
-                    Towns
-                  </Typography>
-                </Box>
-                <List disablePadding>
-                  {filteredTowns.slice(0, 9).map((town, index) => (
-                    <Link
-                      style={{ textDecoration: "none", color: "black" }}
-                      key={index}
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setSearchTerm("");
-                        if (pathname.includes("/find")) {
-                          window.location.href = getTownUrl(town);
-                        } else {
-                          router.push(getTownUrl(town));
-                        }
-                      }}
-                      prefetch={false}
-                    >
-                      <ListItem
-                        key={index}
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": {
-                            bgcolor: "grey.50",
-                          },
-                          borderBottom: index < 9 ? "1px solid" : "none",
-                          borderColor: "divider",
-                        }}
-                      >
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1" fontWeight="500">
-                              {town}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </Link>
-                  ))}
-                </List>
-              </Box>
-
               {/* Venues Section */}
               <Box>
                 <Box

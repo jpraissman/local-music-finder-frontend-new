@@ -39,7 +39,7 @@ export default function MultiselectPicklist<TFieldValues extends FieldValues>({
   error,
   rhfName,
 }: MultiselectPicklistProps<TFieldValues>) {
-  const { control } = useFormContext<UpsertEventRequestDTO>();
+  const { control } = useFormContext<TFieldValues>();
 
   const handleChange = (
     values: string[] | string,
