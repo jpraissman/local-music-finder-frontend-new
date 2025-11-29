@@ -2,28 +2,18 @@
 
 import { Box, Button, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
-import { PlaceType } from "@/newTypes/Location";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import dayjs from "dayjs";
-import { useLocationContext } from "@/context/FiltersContext";
+import { useFiltersContext } from "@/context/FiltersContext";
 
 export default function FirstSection() {
-  const { location, setLocation } = useLocationContext();
+  const { filters, setFilters } = useFiltersContext();
   const [locationError, setLocationError] = useState(false);
   const router = useRouter();
 
   const findEvents = () => {
-    if (location) {
-      const params = new URLSearchParams();
-      params.set("loc", location);
-      params.set("from", dayjs().format("YYYY-MM-DD"));
-      params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
-      params.set("dis", "20");
-      params.set("genres", "");
-      params.set("types", "");
-      params.set("sort", "Date");
-      router.push(`/find?${params.toString()}`);
+    if (filters.location) {
+      router.push("/find");
     } else {
       setLocationError(true);
     }
@@ -83,12 +73,9 @@ export default function FirstSection() {
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <NewAddressAutocomplete
-              value={location}
-              setValue={(newLocation: string | null) => {
-                setLocation(newLocation);
-                if (newLocation) {
-                  setLocationError(false);
-                }
+              value={filters.location}
+              setValue={(newLocation) => {
+                setFilters((prev) => ({ ...prev, location: newLocation }));
               }}
               id="location-input"
               label="Enter your location"

@@ -3,18 +3,14 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import FirstSection from "./FirstSection";
 import SectionSection from "./SecondSection";
-import Event from "@/types/Event";
 import NewEventCard from "../eventCard/NewEventCard";
 import Link from "next/link";
+import { EventDTO } from "@/dto/event/Event.dto";
 
 export default function LandingPage({
   upcomingEvents,
-  userAgent,
-  userId,
 }: {
-  upcomingEvents: Event[];
-  userAgent: string;
-  userId: string;
+  upcomingEvents: EventDTO[];
 }) {
   return (
     <Stack direction="column" spacing={2}>
@@ -42,15 +38,7 @@ export default function LandingPage({
             sx={{ width: "100%" }}
           >
             {upcomingEvents.map((event) => {
-              return (
-                <NewEventCard
-                  event={event}
-                  size="Small"
-                  key={event.id}
-                  userId={userId}
-                  userAgent={userAgent}
-                />
-              );
+              return <NewEventCard event={event} size="Small" key={event.id} />;
             })}
           </Stack>
           <Link href="/events">

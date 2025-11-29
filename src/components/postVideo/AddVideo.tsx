@@ -1,5 +1,6 @@
 "use client";
 
+import { useBandContext } from "@/context/BandContext";
 import {
   Autocomplete,
   Box,
@@ -10,36 +11,23 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const addVideo = async (data: { bandId: string; youTubeUrl: string }) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/bands/add-video/${data.bandId}`,
-    { video_url: data.youTubeUrl }
-  );
-  return response.data;
-};
-
 interface AddVideoProps {
-  bands: {
-    [key: string]: {
-      id: string;
-    };
-  };
   bandToPostFor: string | null;
   bandIdToPostFor: string | null;
 }
 
 export default function AddVideo({
-  bands,
   bandToPostFor,
   bandIdToPostFor,
 }: AddVideoProps) {
   const [band, setBand] = useState<string | null>(bandToPostFor);
   const [bandId, setBandId] = useState<string | null>(bandIdToPostFor);
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
+
+  const { bands } = useBandContext();
 
   const router = useRouter();
   const { mutate, isPending, isError, error } = useMutation({
@@ -84,7 +72,7 @@ export default function AddVideo({
           onChange={(_, newBand) => {
             setBand(newBand);
             if (newBand) {
-              setBandId(bands[newBand]["id"]);
+              setBandId(String(bands[newBand].id));
             } else {
               setBandId(null);
             }

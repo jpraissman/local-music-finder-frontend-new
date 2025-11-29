@@ -1,12 +1,15 @@
 "use client";
 
-import {
-  EventIdInputFields,
-  eventIdInputSchema,
-} from "@/types/schemas/eventIdInputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import z from "zod";
+
+const eventIdInputSchema = z.object({
+  eventId: z.string().min(8),
+});
+
+export type EventIdInputFields = z.infer<typeof eventIdInputSchema>;
 
 interface EventIdInputProps {
   errorMessage?: string;

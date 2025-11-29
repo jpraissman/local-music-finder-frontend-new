@@ -80,7 +80,7 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
             <Link
               href={
                 "https://www.google.com/maps/search/?api=1&query=" +
-                venueInfo.address
+                venueInfo.location.address
               }
               target="_blank"
               rel="noopener noreferrer"

@@ -67,6 +67,11 @@ export const getEventsNextSevenDays = async () => {
   return MultiEventsResponseDTOSchema.parse(data);
 };
 
+export const getUpcomingRandomEvents = async () => {
+  const { data } = await axios.get(`${BASE_URL}/api/events/random`);
+  return MultiEventsResponseDTOSchema.parse(data);
+};
+
 export const getEventsByCountiesAndNext30Days = async (counties: string) => {
   const { data } = await axios.get(`${BASE_URL}/api/events/county/${counties}`);
   return MultiEventsResponseDTOSchema.parse(data);

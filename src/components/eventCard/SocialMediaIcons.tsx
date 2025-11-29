@@ -10,7 +10,7 @@
 // export default function SocialMediaIcons({ event }: { event: EventDTO }) {
 //   return (
 //     <Stack direction="row">
-//       {event.facebook_handle !== "" && (
+//       {event.face !== "" && (
 //         <IconButton
 //           href={toAbsoluteUrl(event.facebook_handle)}
 //           target="_blank"

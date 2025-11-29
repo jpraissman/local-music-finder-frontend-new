@@ -56,7 +56,7 @@ export default function DisplayEventsAndCalendar({
     if (newDate) {
       setDisplayedEvents(
         allEvents.filter(
-          (event) => event.eventDate.format("YYYY-MM-DD") === newDate
+          (event) => dayjs(event.eventDate).format("YYYY-MM-DD") === newDate
         )
       );
       setDate(dayjs(newDate).format("MMMM D"));
