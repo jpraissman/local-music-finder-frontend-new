@@ -1,26 +1,19 @@
 "use client";
 
-import Event from "@/types/Event";
 import { Box, Stack, Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import NamesAndGenres from "./NamesAndGenres";
 import OtherEventDetails from "./OtherEventDetails";
 import Image from "next/image";
 import get_random_image from "@/lib/get-random-image";
+import { EventDTO } from "@/dto/event/Event.dto";
 
 export interface NewEventCardProps {
-  event: Event;
+  event: EventDTO;
   size: "Small" | "Large";
-  userAgent: string;
-  userId: string;
 }
 
-export default function NewEventCard({
-  event,
-  size,
-  userAgent,
-  userId,
-}: NewEventCardProps) {
+export default function NewEventCard({ event, size }: NewEventCardProps) {
   const YouTubeVideo = dynamic(() => import("./YouTubeVideo"), { ssr: false });
 
   return (
@@ -39,7 +32,7 @@ export default function NewEventCard({
       }}
     >
       <Box sx={{ width: size === "Small" ? "100%" : "50%" }}>
-        {event.youtube_id === "" && (
+        {event.band.youtubeVideoIds.length === 0 && (
           <Box sx={{ position: "relative" }}>
             <Typography
               sx={{
@@ -59,7 +52,7 @@ export default function NewEventCard({
               Video of Band Coming Soon
             </Typography>
             <Image
-              src={get_random_image(event.ranking_position)}
+              src={get_random_image(1)}
               width={1000}
               height={1000}
               alt="Image"
@@ -73,13 +66,11 @@ export default function NewEventCard({
             />
           </Box>
         )}
-        {event.youtube_id !== "" && (
+        {event.band.youtubeVideoIds.length > 0 && (
           <YouTubeVideo
-            videoId={event.youtube_id}
+            videoId={event.band.youtubeVideoIds[0]}
             size={size}
             eventId={event.id}
-            userAgent={userAgent}
-            userId={userId}
           />
         )}
       </Box>
@@ -89,12 +80,12 @@ export default function NewEventCard({
             <NamesAndGenres event={event} />
             <OtherEventDetails event={event} />
           </Stack>
-          {event.other_info !== "" && (
+          {event.additionalInfo && (
             <Box
               sx={{ paddingTop: "20px", display: { xs: "flex", sm: "none" } }}
             >
               <Typography color="gray" variant="body1">
-                {event.other_info}
+                {event.additionalInfo}
               </Typography>
             </Box>
           )}

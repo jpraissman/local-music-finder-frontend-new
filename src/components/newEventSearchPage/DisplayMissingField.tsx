@@ -1,16 +1,7 @@
 "use client";
 
-import { Tune } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Button,
-  Paper,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { FilterRefsType, SectionType } from "@/hooks/useFilterRefs";
+import { Avatar, Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { ReactElement } from "react";
 
 interface DisplayMissingFieldProps {
@@ -20,6 +11,8 @@ interface DisplayMissingFieldProps {
   handleFilterClick: () => void;
   editButtonText: string;
   editButtonIcon: ReactElement;
+  filterSectionToOpen: SectionType | null;
+  filterRefsHook: FilterRefsType;
 }
 
 export default function DisplayMissingField({
@@ -29,10 +22,9 @@ export default function DisplayMissingField({
   handleFilterClick,
   editButtonText,
   editButtonIcon,
+  filterSectionToOpen,
+  filterRefsHook,
 }: DisplayMissingFieldProps) {
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-
   return (
     <Box
       sx={{
@@ -72,19 +64,22 @@ export default function DisplayMissingField({
             </Typography>
           </Stack>
         </Paper>
-        {!isMdUp && (
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleFilterClick}
-            sx={{ width: "200px" }}
-          >
-            <Stack direction={"row"} spacing={1}>
-              {editButtonIcon}
-              <Typography>{editButtonText}</Typography>
-            </Stack>
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            if (filterSectionToOpen) {
+              filterRefsHook.handleChipFilterClick(filterSectionToOpen);
+            }
+            handleFilterClick();
+          }}
+          sx={{ width: "200px" }}
+        >
+          <Stack direction={"row"} spacing={1}>
+            {editButtonIcon}
+            <Typography>{editButtonText}</Typography>
+          </Stack>
+        </Button>
       </Stack>
     </Box>
   );

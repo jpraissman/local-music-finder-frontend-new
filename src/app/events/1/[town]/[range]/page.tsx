@@ -1,14 +1,13 @@
+import { findEvents } from "@/api/apiCalls";
 import NewEventSearchPage from "@/components/newEventSearchPage/NewEventSearchPage";
 import getDateByRange from "@/lib/get-date-by-range";
-import { getEventsByLoc } from "@/lib/get-events-by-loc";
-import { blankStructuredFormatting, TOWNS } from "@/types/constants";
+import { TOWNS } from "@/newTypes/constants";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
 import { Metadata } from "next";
-import { cookies, headers } from "next/headers";
 
 interface PageProps {
   params: {
@@ -35,7 +34,7 @@ const dateRangeDict = {
 export function generateMetadata({
   params: { town, range },
 }: PageProps): Metadata {
-  const townFormatted = TOWNS[town.replaceAll("%2C", ",")][1];
+  const townFormatted = TOWNS[town.replaceAll("%2C", ",")].display_name;
   const rangeFormatted = dateRangeDict[range];
 
   return {
@@ -47,22 +46,16 @@ export function generateMetadata({
 export const revalidate = 0;
 
 export default async function Page({ params: { town, range } }: PageProps) {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userId")?.value || "Undefined";
-  const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent") || "Undefined";
-
-  const townFormatted = TOWNS[town.replaceAll("%2C", ",")][0];
+  const townKey = town.replaceAll("%2C", ",");
+  const townLocationId = TOWNS[townKey].place_id;
   const dates = getDateByRange(range);
   const [fromYear, fromMonth, fromDay] = dates[0].split("-").map(Number);
   const [toYear, toMonth, toDay] = dates[1].split("-").map(Number);
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["events", townFormatted],
-    queryFn: () => {
-      return getEventsByLoc(townFormatted);
-    },
+    queryKey: ["findEvents", townLocationId],
+    queryFn: () => findEvents(townLocationId),
   });
   const dehydratedState = dehydrate(queryClient);
 
@@ -70,22 +63,13 @@ export default async function Page({ params: { town, range } }: PageProps) {
     <HydrationBoundary state={dehydratedState}>
       <NewEventSearchPage
         initialLocation={{
-          description: townFormatted,
-          place_id: "",
-          structured_formatting: blankStructuredFormatting,
+          address: TOWNS[townKey].real_name,
+          locationId: townLocationId,
         }}
         initialDateRange={{
           from: new Date(fromYear, fromMonth - 1, fromDay, 12, 0, 0),
           to: new Date(toYear, toMonth - 1, toDay, 12, 0, 0),
         }}
-        initialMaxDistance={35}
-        initialGenres={[]}
-        initialBandTypes={[]}
-        initialSort="Date"
-        initialEvents={null}
-        initialLocationDisplay={null}
-        userAgent={userAgent}
-        userId={userId}
       />
     </HydrationBoundary>
   );

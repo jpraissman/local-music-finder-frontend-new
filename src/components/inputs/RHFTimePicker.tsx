@@ -1,6 +1,7 @@
 "use client";
 
 import { DesktopTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
@@ -10,12 +11,20 @@ interface RHFTimePickerProps<TFieldValues extends FieldValues> {
   label: string;
   rhfName: Path<TFieldValues>;
   control: Control<TFieldValues>;
+  helperText?: string;
 }
 
 export default function RHFTimePicker<TFieldValues extends FieldValues>(
   props: RHFTimePickerProps<TFieldValues>
 ) {
   const [selectorOpen, setSelectorOpen] = useState(false);
+
+  const convertValue = (value: string | dayjs.Dayjs) => {
+    if (dayjs.isDayjs(value)) {
+      return value;
+    }
+    return dayjs(`2000-01-01 ${value}`);
+  };
 
   return (
     <Controller
@@ -27,13 +36,13 @@ export default function RHFTimePicker<TFieldValues extends FieldValues>(
           onOpen={() => setSelectorOpen(true)}
           onClose={() => setSelectorOpen(false)}
           label={props.label}
-          value={value ? value : null}
+          value={value ? convertValue(value) : null}
           onChange={onChange}
           slotProps={{
             textField: {
               onClick: () => setSelectorOpen(true),
               error: props.error,
-              helperText: props.error ? "This field is required." : undefined,
+              helperText: props.helperText,
               fullWidth: true,
               inputRef: ref,
             },

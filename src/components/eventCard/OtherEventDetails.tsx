@@ -5,43 +5,51 @@ import {
   LocationOn,
   MusicNote,
 } from "@mui/icons-material";
-import Event from "@/types/Event";
+import { EventDTO } from "@/dto/event/Event.dto";
+import dayjs from "dayjs";
+import { BandTypeLabels } from "@/newTypes/BandType";
 
-export default function OtherEventDetails({ event }: { event: Event }) {
+export default function OtherEventDetails({ event }: { event: EventDTO }) {
   return (
     <Stack direction="column" spacing={1.2} sx={{ width: "50%" }}>
       <Stack direction="row" spacing={0.7}>
         <CalendarMonth sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
         <Typography variant="body1">
-          {event.date_formatted + " @ " + event.start_time_formatted}
+          {dayjs(event.eventDate).format("ddd, MMM D") +
+            " @ " +
+            dayjs(`2000-01-01 ${event.startTime}`).format("h:mm A")}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={0.7}>
         <LocationOn sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
         <Typography variant="body1">
-          {event.distance_formatted === ""
-            ? event.town
-            : event.town + " (" + event.distance_formatted + ")"}
+          {!event.distanceInMiles
+            ? event.venue.town
+            : event.venue.town + ` (${event.distanceInMiles.toFixed(1)} mi)`}
         </Typography>
       </Stack>
       <Stack direction="row" spacing={0.7}>
         <MusicNote sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
-        {event.band_type !== "Tribute Band" && (
-          <Typography variant="body1">{event.band_type}</Typography>
-        )}
-        {event.band_type === "Tribute Band" && (
+        {event.band.bandType !== "TRIBUTE_BAND" && (
           <Typography variant="body1">
-            {event.band_type + " - " + event.tribute_band_name}
+            {BandTypeLabels[event.band.bandType]}
+          </Typography>
+        )}
+        {event.band.bandType === "TRIBUTE_BAND" && (
+          <Typography variant="body1">
+            {BandTypeLabels[event.band.bandType] +
+              " - " +
+              event.band.tributeBandName}
           </Typography>
         )}
       </Stack>
-      {event.cover_charge !== 0.01 && (
+      {event.coverCharge !== 0.01 && (
         <Stack direction="row" spacing={0.7}>
           <AttachMoney sx={{ color: "secondary.main", mr: 1, fontSize: 20 }} />
           <Typography variant="body1">
-            {event.cover_charge == 0
+            {event.coverCharge == 0
               ? "Free Admission"
-              : "$" + event.cover_charge + " cover"}
+              : "$" + event.coverCharge + " cover"}
           </Typography>
         </Stack>
       )}
@@ -52,7 +60,8 @@ export default function OtherEventDetails({ event }: { event: Event }) {
           color="secondary"
           component="a"
           href={
-            "https://www.google.com/maps/search/?api=1&query=" + event.address
+            "https://www.google.com/maps/search/?api=1&query=" +
+            event.venue.location.address
           }
           target="_blank"
           rel="noopener noreferrer"
@@ -68,7 +77,7 @@ export default function OtherEventDetails({ event }: { event: Event }) {
           size="small"
           color="primary"
           component="a"
-          href={`/venue/${event.venue_id}`}
+          href={`/venue/${event.venue.id}`}
           sx={{ borderRadius: "10px", fontWeight: "bold" }}
           fullWidth
         >
@@ -81,7 +90,7 @@ export default function OtherEventDetails({ event }: { event: Event }) {
           size="small"
           color="primary"
           component="a"
-          href={`/band/${event.band_id}`}
+          href={`/band/${event.band.id}`}
           sx={{ borderRadius: "10px", fontWeight: "bold" }}
           fullWidth
         >

@@ -1,6 +1,7 @@
 "use client";
 
 import { DesktopDatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
@@ -17,6 +18,13 @@ export default function RHFDatePicker<TFieldValues extends FieldValues>(
 ) {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
+  const convertValue = (value: string | dayjs.Dayjs) => {
+    if (dayjs.isDayjs(value)) {
+      return value;
+    }
+    return dayjs(value);
+  };
+
   return (
     <Controller
       name={props.rhfName}
@@ -27,7 +35,7 @@ export default function RHFDatePicker<TFieldValues extends FieldValues>(
           onOpen={() => setCalendarOpen(true)}
           onClose={() => setCalendarOpen(false)}
           label={props.label}
-          value={value ? value : null}
+          value={value ? convertValue(value) : null}
           onChange={onChange}
           slotProps={{
             textField: {

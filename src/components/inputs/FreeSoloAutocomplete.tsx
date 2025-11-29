@@ -2,26 +2,27 @@
 
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
 interface FreeSoloAutocompleteProps<T extends FieldValues> {
   rhfName: Path<T>;
-  control: Control<T>;
   id: string;
   label: string;
   options: string[];
   error: boolean;
-  handleSelect: (newValue: string | null) => void;
-  errorText?: string;
+  valueChangeCallback: (newValue: string | null) => void;
+  helperText?: string;
 }
 
 export default function FreeSoloAutocomplete<T extends FieldValues>(
   props: FreeSoloAutocompleteProps<T>
 ) {
+  const { control } = useFormContext<T>();
+
   return (
     <Controller
       name={props.rhfName}
-      control={props.control}
+      control={control}
       render={({ field: { onChange, value, ref } }) => (
         <Autocomplete
           freeSolo
@@ -34,19 +35,13 @@ export default function FreeSoloAutocomplete<T extends FieldValues>(
               {...params}
               label={props.label}
               error={props.error}
-              helperText={
-                props.error
-                  ? props.errorText || "This field is required."
-                  : undefined
-              }
+              helperText={props.helperText}
               inputRef={ref}
             />
           )}
           onInputChange={(_, newInputValue) => {
             onChange(newInputValue);
-          }}
-          onChange={(_, newValue) => {
-            props.handleSelect(newValue);
+            props.valueChangeCallback(newInputValue);
           }}
           value={value ? value : ""}
         />

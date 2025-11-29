@@ -1,10 +1,10 @@
-import Band from "@/types/Band";
-import { Directions, Facebook, Instagram, Language } from "@mui/icons-material";
+import { BandDTO } from "@/dto/band/Band.dto";
+import { Facebook, Instagram, Language } from "@mui/icons-material";
 import { Box, Chip, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
 interface BandHeaderInfoProps {
-  bandInfo: Band;
+  bandInfo: BandDTO;
 }
 
 const formatLink = (link: string) => {
@@ -74,7 +74,7 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
               fontWeight="bold"
               sx={{ fontSize: { xs: "35px", md: "55px" } }}
             >
-              {bandInfo.name}
+              {bandInfo.bandName}
             </Typography>
             <Box
               sx={{
@@ -105,9 +105,9 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
             }}
             spacing={4}
           >
-            {bandInfo.facebook_url && (
+            {bandInfo.facebookUrl && (
               <Link
-                href={formatLink(bandInfo.facebook_url)}
+                href={formatLink(bandInfo.facebookUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}
@@ -132,9 +132,9 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
                 </Stack>
               </Link>
             )}
-            {bandInfo.instagram_url && (
+            {bandInfo.instagramUrl && (
               <Link
-                href={formatLink(bandInfo.instagram_url)}
+                href={formatLink(bandInfo.instagramUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}
@@ -159,9 +159,9 @@ export default function BandHeaderInfo({ bandInfo }: BandHeaderInfoProps) {
                 </Stack>
               </Link>
             )}
-            {bandInfo.website_url && (
+            {bandInfo.websiteUrl && (
               <Link
-                href={formatLink(bandInfo.website_url)}
+                href={formatLink(bandInfo.websiteUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}
