@@ -66,7 +66,7 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search venues, bands, tributes, towns, etc."
+        placeholder="Search venues, bands, tributes, etc."
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
