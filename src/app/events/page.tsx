@@ -12,7 +12,7 @@ export const revalidate = 0;
 
 export default async function Page() {
   try {
-    const { events } = await getEventsNextSevenDays();
+    const events = await getEventsNextSevenDays();
     return (
       <NewEventSearchPage
         initialLocation={"BLANK"}

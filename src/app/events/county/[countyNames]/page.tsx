@@ -28,9 +28,7 @@ export default async function Page({ params: { countyNames } }: PageProps) {
       .replaceAll("%20", " ")
       .split("%3A%3A")
       .join(", ");
-    const { events } = await getEventsByCountiesAndNext30Days(
-      countyNamesToSend
-    );
+    const events = await getEventsByCountiesAndNext30Days(countyNamesToSend);
     return (
       <NewEventSearchPage
         initialLocation={"BLANK"}

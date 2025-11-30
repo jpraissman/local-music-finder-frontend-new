@@ -2,7 +2,10 @@ import {
   AddVideoRequestDTO,
   AddVideoRequestDTOSchema,
 } from "@/dto/band/AddVideoRequest.dto";
-import { BandWithEventsDTOSchema } from "@/dto/band/BandWithEvents.dto";
+import {
+  BandWithEventsDTO,
+  BandWithEventsDTOSchema,
+} from "@/dto/band/BandWithEvents.dto";
 import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
 import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
 import { MultiEventsResponseDTOSchema } from "@/dto/event/MultiEventsResponse.dto";
@@ -12,7 +15,11 @@ import {
 } from "@/dto/event/UpsertEventRequest.dto";
 import { LocationDTOSchema } from "@/dto/location/Location.dto";
 import { GetVenuesDTOSchema } from "@/dto/venue/GetVenues.dto";
-import { VenueWithEventsDTOSchema } from "@/dto/venue/VenueWithEvents.dto";
+import {
+  VenueWithEventsDTO,
+  VenueWithEventsDTOSchema,
+} from "@/dto/venue/VenueWithEvents.dto";
+import { sortEventsByDate } from "@/lib/sort-events";
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
@@ -62,43 +69,45 @@ export const getLocationById = async (locationId: string) => {
 
 export const findEvents = async (locationId: string | undefined) => {
   if (!locationId) {
-    return MultiEventsResponseDTOSchema.parse({ events: [] });
+    return MultiEventsResponseDTOSchema.parse({ events: [] }).events;
   }
 
   const { data } = await axios.get(
     `${BASE_URL}/api/events/find?locationId=${locationId}`
   );
-  return MultiEventsResponseDTOSchema.parse(data);
+  return sortEventsByDate(MultiEventsResponseDTOSchema.parse(data).events);
 };
 
 export const getEventsNextSevenDays = async () => {
   const { data } = await axios.get(`${BASE_URL}/api/events/next-seven-days`);
-  return MultiEventsResponseDTOSchema.parse(data);
+  return sortEventsByDate(MultiEventsResponseDTOSchema.parse(data).events);
 };
 
 export const getUpcomingRandomEvents = async () => {
   const { data } = await axios.get(`${BASE_URL}/api/events/random`);
-  return MultiEventsResponseDTOSchema.parse(data);
+  return sortEventsByDate(MultiEventsResponseDTOSchema.parse(data).events);
 };
 
 export const getEventsByCountiesAndNext30Days = async (counties: string) => {
   const { data } = await axios.get(`${BASE_URL}/api/events/county/${counties}`);
-  return MultiEventsResponseDTOSchema.parse(data);
+  return sortEventsByDate(MultiEventsResponseDTOSchema.parse(data).events);
 };
 
 export const getEventsByIds = async (ids: string) => {
   const { data } = await axios.get(`${BASE_URL}/api/events/ids/${ids}`);
-  return MultiEventsResponseDTOSchema.parse(data);
+  return sortEventsByDate(MultiEventsResponseDTOSchema.parse(data).events);
 };
 
-export const getBandById = async (id: number) => {
+export const getBandById = async (id: number): Promise<BandWithEventsDTO> => {
   const { data } = await axios.get(`${BASE_URL}/api/bands/${id}`);
-  return BandWithEventsDTOSchema.parse(data);
+  const band = BandWithEventsDTOSchema.parse(data);
+  return { ...band, events: sortEventsByDate(band.events) };
 };
 
-export const getVenueById = async (id: number) => {
+export const getVenueById = async (id: number): Promise<VenueWithEventsDTO> => {
   const { data } = await axios.get(`${BASE_URL}/api/venues/${id}`);
-  return VenueWithEventsDTOSchema.parse(data);
+  const venue = VenueWithEventsDTOSchema.parse(data);
+  return { ...venue, events: sortEventsByDate(venue.events) };
 };
 
 export const validateAdminKey = async (key: string | undefined) => {

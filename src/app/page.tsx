@@ -12,7 +12,7 @@ export const revalidate = 0;
 
 export default async function Page() {
   try {
-    const { events } = await getUpcomingRandomEvents();
+    const events = await getUpcomingRandomEvents();
     return <LandingPage upcomingEvents={events} />;
   } catch {
     return <LandingPage upcomingEvents={[]} />;

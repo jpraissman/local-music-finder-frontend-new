@@ -4,7 +4,7 @@ import { Box, Stack, Tab, Tabs } from "@mui/material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import DisplayEventsAndCalendar from "./DisplayEventsAndCalendar";
 import BandHeaderInfo from "./BandHeaderInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DisplayBandVideos from "./DisplayBandVideos";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { BandWithEventsDTO } from "@/dto/band/BandWithEvents.dto";
@@ -31,6 +31,10 @@ export default function BandPage({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    console.log(dayjs());
+  }, []);
 
   const [navValue, setNavValue] = useState(initialNavValue);
   const handleNavChange = (_: React.SyntheticEvent, newNavValue: number) => {
@@ -94,8 +98,8 @@ export default function BandPage({
           <DisplayEventsAndCalendar
             allEvents={band.events.filter(
               (event) =>
-                dayjs(event.eventDate).isAfter(dayjs()) ||
-                dayjs(event.eventDate).isSame(dayjs())
+                dayjs(event.eventDate).isAfter(dayjs(), "day") ||
+                dayjs(event.eventDate).isSame(dayjs(), "day")
             )}
             name={band.bandInfo.bandName}
             page="Band"

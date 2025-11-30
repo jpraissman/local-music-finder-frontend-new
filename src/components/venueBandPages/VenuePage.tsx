@@ -7,6 +7,7 @@ import DisplayEventsAndCalendar from "./DisplayEventsAndCalendar";
 import { getVenueById } from "@/api/apiCalls";
 import { VenueWithEventsDTO } from "@/dto/venue/VenueWithEvents.dto";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
 interface VenuePageProps {
   venueId: number;
@@ -23,6 +24,10 @@ export default function VenuePage({
     initialData: initialVenueData,
   });
 
+  useEffect(() => {
+    console.log(dayjs());
+  }, []);
+
   return (
     <Stack
       direction={"column"}
@@ -33,8 +38,8 @@ export default function VenuePage({
       <DisplayEventsAndCalendar
         allEvents={venue.events.filter(
           (event) =>
-            dayjs(event.eventDate).isAfter(dayjs()) ||
-            dayjs(event.eventDate).isSame(dayjs())
+            dayjs(event.eventDate).isAfter(dayjs(), "day") ||
+            dayjs(event.eventDate).isSame(dayjs(), "day")
         )}
         name={venue.venueInfo.venueName}
         page="Venue"

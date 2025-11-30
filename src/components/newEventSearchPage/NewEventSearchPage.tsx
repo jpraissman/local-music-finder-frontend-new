@@ -104,7 +104,7 @@ export default function NewEventSearchPage({
         filters.bandTypes.length === 0
           ? Object.values(BandType)
           : filters.bandTypes;
-      const newAvailableEvents = events.events.filter((event) => {
+      const newAvailableEvents = events.filter((event) => {
         const eventDate = dayjs(event.eventDate).startOf("day");
         return (
           (!event.distanceInMiles ||

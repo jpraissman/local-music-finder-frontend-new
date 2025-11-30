@@ -19,7 +19,7 @@ export const revalidate = 0;
 export default async function Page({ params: { ids } }: PageProps) {
   try {
     const idsToSend = ids.split("%3A%3A").join(",");
-    const { events } = await getEventsByIds(idsToSend);
+    const events = await getEventsByIds(idsToSend);
     return (
       <NewEventSearchPage
         initialLocation={"BLANK"}
