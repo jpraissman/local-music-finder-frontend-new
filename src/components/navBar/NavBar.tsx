@@ -14,20 +14,14 @@ import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
-import { TOWNS_2 } from "@/types/constants";
+import { TOWNS_2 } from "@/newTypes/constants";
+import { useBandContext } from "@/context/BandContext";
+import { useVenueContext } from "@/context/VenueContext";
 
-interface NavBarProps {
-  venues: { name: string; town: string; id: string }[];
-  bands: {
-    name: string;
-    genres: string[];
-    id: string;
-    band_type: string;
-    tribute_band_name: string;
-  }[];
-}
+export default function NavBar() {
+  const { bands } = useBandContext();
+  const { venues } = useVenueContext();
 
-export default function NavBar({ venues, bands }: NavBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -134,7 +128,10 @@ export default function NavBar({ venues, bands }: NavBarProps) {
               />
             </Link>
           </Box>
-          <NewSearchBar venues={venues} bands={bands} towns={TOWNS_2} />
+          <NewSearchBar
+            venues={Object.values(venues)}
+            bands={Object.values(bands)}
+          />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{

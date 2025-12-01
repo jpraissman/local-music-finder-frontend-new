@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import axios from "axios";
 import { useState } from "react";
 
 import("@justinribeiro/lite-youtube");
@@ -27,27 +26,18 @@ interface YouTubeVideoProps {
   videoId: string;
   size: "Small" | "Large";
   eventId: number;
-  userId: string;
-  userAgent: string;
 }
 
 export default function YouTubeVideo({
   videoId,
   size,
   eventId,
-  userId,
-  userAgent,
 }: YouTubeVideoProps) {
   const [videoClicked, setVideoClicked] = useState(false);
 
   return (
     <Box
       onClick={() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/video-clicked`, {
-          user_id: userId,
-          user_agent: userAgent,
-          event_id: eventId,
-        });
         setVideoClicked(true);
       }}
       sx={{ position: "relative" }}

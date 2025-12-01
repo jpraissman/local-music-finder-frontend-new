@@ -17,28 +17,17 @@ import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
+import { BandDTO } from "@/dto/band/Band.dto";
+import { VenueDTO } from "@/dto/venue/Venue.dto";
+import { BandTypeLabels } from "@/newTypes/BandType";
+import { GenreLabels } from "@/newTypes/Genre";
 
 interface NewSearchBarProps {
-  venues: {
-    name: string;
-    town: string;
-    id: string;
-  }[];
-  bands: {
-    name: string;
-    genres: string[];
-    id: string;
-    band_type: string;
-    tribute_band_name: string;
-  }[];
-  towns: string[];
+  venues: VenueDTO[];
+  bands: BandDTO[];
 }
 
-export default function NewSearchBar({
-  venues,
-  bands,
-  towns,
-}: NewSearchBarProps) {
+export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
   const theme = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -49,40 +38,21 @@ export default function NewSearchBar({
 
   const filteredVenues = venues.filter(
     (venue) =>
-      venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      venue.town.toLowerCase().includes(searchTerm.toLowerCase())
+      venue.venueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      venue.town?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredBands = bands.filter(
     (band) =>
-      band.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      band.bandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       band.genres.some((genre) =>
         genre.toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
-      band.tribute_band_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      band.band_type.toLowerCase().includes(searchTerm.toLowerCase())
+      band.tributeBandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      band.bandType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredTowns = towns.filter((town) =>
-    town.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const hasResults =
-    filteredVenues.length > 0 ||
-    filteredBands.length > 0 ||
-    filteredTowns.length > 0;
-
-  const getTownUrl = (location: string) => {
-    const params = new URLSearchParams();
-    params.set("loc", location);
-    params.set("from", dayjs().format("YYYY-MM-DD"));
-    params.set("to", dayjs().add(14, "day").format("YYYY-MM-DD"));
-    params.set("dis", "20");
-    params.set("genres", "");
-    params.set("types", "");
-    params.set("sort", "Date");
-    return `/find?${params.toString()}`;
-  };
+  const hasResults = filteredVenues.length > 0 || filteredBands.length > 0;
 
   return (
     <Box
@@ -98,7 +68,7 @@ export default function NewSearchBar({
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search venues, bands, tributes, towns, etc."
+        placeholder="Search venues, bands, tributes, etc."
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -164,70 +134,6 @@ export default function NewSearchBar({
             </Box>
           ) : (
             <Box>
-              {/* Towns Section */}
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    px: 2,
-                    py: 1,
-                    bgcolor: "rgba(244, 241, 241, 0.98)",
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <LocationOn sx={{ fontSize: 25, color: "text.secondary" }} />
-                  <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    color="text.secondary"
-                  >
-                    Towns
-                  </Typography>
-                </Box>
-                <List disablePadding>
-                  {filteredTowns.slice(0, 9).map((town, index) => (
-                    <Link
-                      style={{ textDecoration: "none", color: "black" }}
-                      key={index}
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setSearchTerm("");
-                        if (pathname.includes("/find")) {
-                          window.location.href = getTownUrl(town);
-                        } else {
-                          router.push(getTownUrl(town));
-                        }
-                      }}
-                      prefetch={false}
-                    >
-                      <ListItem
-                        key={index}
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": {
-                            bgcolor: "grey.50",
-                          },
-                          borderBottom: index < 9 ? "1px solid" : "none",
-                          borderColor: "divider",
-                        }}
-                      >
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1" fontWeight="500">
-                              {town}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </Link>
-                  ))}
-                </List>
-              </Box>
-
               {/* Venues Section */}
               <Box>
                 <Box
@@ -271,7 +177,7 @@ export default function NewSearchBar({
                         }}
                       >
                         <ListItemText
-                          primary={venue.name}
+                          primary={venue.venueName}
                           secondary={venue.town}
                         />
                       </ListItem>
@@ -323,11 +229,15 @@ export default function NewSearchBar({
                         }}
                       >
                         <ListItemText
-                          primary={band.name}
+                          primary={band.bandName}
                           secondary={
-                            band.band_type === "Tribute Band"
-                              ? `${band.band_type} - ${band.tribute_band_name}`
-                              : band.genres.join(" • ")
+                            band.bandType === "TRIBUTE_BAND"
+                              ? `${BandTypeLabels[band.bandType]} - ${
+                                  band.tributeBandName
+                                }`
+                              : band.genres
+                                  .map((genre) => GenreLabels[genre])
+                                  .join(" • ")
                           }
                         />
                       </ListItem>

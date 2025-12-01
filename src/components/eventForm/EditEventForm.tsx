@@ -1,11 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  EventFormFields,
-  eventFormSchema,
-} from "@/types/schemas/eventFormSchema";
 import {
   Box,
   Button,
@@ -16,95 +12,60 @@ import {
   Typography,
 } from "@mui/material";
 import EventForm from "./EventForm";
-import axios from "axios";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { getEventById } from "@/lib/get-event-by-id";
-import { blankStructuredFormatting } from "@/types/constants";
-import dayjs from "dayjs";
 import { Clear, Delete, Save } from "@mui/icons-material";
 import { useState } from "react";
-
-const editEvent = async ({
-  data,
-  eventId,
-}: {
-  data: EventFormFields;
-  eventId: string;
-}) => {
-  const formattedData = {
-    ...data,
-    eventDate: data.eventDate.format("YYYY-MM-DD"),
-    eventStartTime: data.eventStartTime.format("HH:mm"),
-    eventEndTime: data.eventEndTime ? data.eventEndTime.format("HH:mm") : null,
-  };
-  const response = await axios.put(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}`,
-    formattedData
-  );
-  return response.data;
-};
-
-const deleteEvent = async (eventId: string) => {
-  const response = await axios.delete(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}`
-  );
-  return response.data;
-};
+import {
+  UpsertEventRequestDTOInput,
+  UpsertEventRequestDTOSchema,
+} from "@/dto/event/UpsertEventRequest.dto";
+import {
+  deleteEvent,
+  editEvent,
+  getEventByEventCode,
+  getLocationById,
+} from "@/api/apiCalls";
+import { HttpStatusCode, isAxiosError } from "axios";
+import BaseModal from "../base/BaseModal";
 
 interface EditEventFormProps {
-  eventId: string;
+  eventCode: string;
 }
 
-export default function EditEventForm({ eventId }: EditEventFormProps) {
-  const { data: eventInfo } = useSuspenseQuery({
-    queryKey: ["event-by-id"],
-    queryFn: () => getEventById(eventId),
+export default function EditEventForm({ eventCode }: EditEventFormProps) {
+  const [showConfirmAddressModal, setShowConfirmAddressModal] = useState(false);
+
+  const { data: initialEventInfo } = useSuspenseQuery({
+    queryKey: ["getEvent", eventCode],
+    queryFn: () => getEventByEventCode(eventCode),
+    retry: (failureCount, error: any) => {
+      return (
+        error?.response?.status === HttpStatusCode.InternalServerError &&
+        failureCount < 2
+      );
+    },
   });
 
-  const { register, handleSubmit, control, formState, setValue, watch } =
-    useForm<EventFormFields>({
-      resolver: zodResolver(eventFormSchema),
-      defaultValues: {
-        venueName: eventInfo.venue_name,
-        bandName: eventInfo.band_name,
-        bandType: eventInfo.band_type,
-        tributeBandName: eventInfo.tribute_band_name,
-        genres: eventInfo.genres,
-        venueAddress: {
-          description: eventInfo.address,
-          structured_formatting: blankStructuredFormatting,
-          place_id: eventInfo.place_id,
-        },
-        eventDate: dayjs(eventInfo.date_string),
-        eventStartTime: dayjs(
-          "1900-01-01 " + eventInfo.start_time_formatted,
-          "YYYY-MM-DD h:mm A"
-        ),
-        eventEndTime:
-          eventInfo.end_time === null
-            ? null
-            : dayjs("1900-01-01 " + eventInfo.end_time, "YYYY-MM-DD h:mm A"),
-        email: eventInfo.email_address,
-        phone: eventInfo.phone_number,
-        hasCoverCharge: eventInfo.cover_charge === 0 ? "No" : "Yes",
-        coverCharge: eventInfo.cover_charge.toString(),
-        facebookHandle: eventInfo.facebook_handle,
-        instagramHandle: eventInfo.instagram_handle,
-        website: eventInfo.website,
-        bandOrVenue: eventInfo.band_or_venue,
-        otherInfo: eventInfo.other_info,
-        agreeToTerms: true,
-      },
-    });
+  const formMethods = useForm<UpsertEventRequestDTOInput>({
+    resolver: zodResolver(UpsertEventRequestDTOSchema),
+    defaultValues: initialEventInfo,
+  });
 
   const router = useRouter();
   const {
     mutate: editEventMutation,
     isPending: editEventPending,
-    isError: editEventError,
+    isError: isEditEventError,
+    error: editEventError,
   } = useMutation({
-    mutationFn: editEvent,
+    mutationFn: ({
+      eventCode,
+      data,
+    }: {
+      eventCode: string;
+      data: UpsertEventRequestDTOInput;
+    }) => editEvent(eventCode, data),
     onSuccess: () => {
       router.push(`/edit/updated`);
     },
@@ -122,13 +83,32 @@ export default function EditEventForm({ eventId }: EditEventFormProps) {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const location = formMethods.watch("location");
+
+  const {
+    data: locationInfo,
+    isLoading: islocationInfoLoading,
+    isError: islocationInfoError,
+    error: locationInfoError,
+  } = useQuery({
+    queryKey: ["getLocationById", location?.locationId],
+    queryFn: () => getLocationById(location?.locationId),
+    enabled: !!location,
+  });
+
+  const confirmAddress = formMethods.handleSubmit(() => {
+    if (!islocationInfoLoading && !islocationInfoError && locationInfo) {
+      formMethods.setValue("location.address", locationInfo.address);
+      formMethods.setValue("location.locationId", locationInfo.locationId);
+      setShowConfirmAddressModal(true);
+    }
+  });
+
   return (
     <>
       <Box
         component="form"
-        onSubmit={handleSubmit((data) => {
-          editEventMutation({ data, eventId });
-        })}
+        onSubmit={confirmAddress}
         sx={{
           width: "100%",
           display: "flex",
@@ -136,6 +116,48 @@ export default function EditEventForm({ eventId }: EditEventFormProps) {
           paddingTop: "20px",
         }}
       >
+        <BaseModal
+          open={showConfirmAddressModal}
+          onClose={() => setShowConfirmAddressModal(false)}
+        >
+          <Typography sx={{ fontSize: "20px" }}>
+            {`Confirm this address is correct for ${formMethods.watch(
+              "venueName"
+            )}`}
+          </Typography>
+          <Typography sx={{ fontSize: "20px" }} fontWeight={"bold"}>
+            {formMethods.watch("location.address")}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="warning"
+              size="large"
+              onClick={() => {
+                setShowConfirmAddressModal(false);
+              }}
+            >
+              Edit Address
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={formMethods.handleSubmit((data) => {
+                setShowConfirmAddressModal(false);
+                editEventMutation({ eventCode, data });
+              })}
+            >
+              Update Event
+            </Button>
+          </Box>
+        </BaseModal>
         <Stack
           direction={"column"}
           spacing={2}
@@ -151,43 +173,58 @@ export default function EditEventForm({ eventId }: EditEventFormProps) {
           >
             Edit Your Event
           </Typography>
-          <EventForm
-            creatingEvent={false}
-            register={register}
-            control={control}
-            formState={formState}
-            setValue={setValue}
-            watch={watch}
-          />
-          {!editEventPending && !deleteEventPending && (
-            <Stack direction={"column"} spacing={2}>
-              <Stack direction="row" spacing={4}>
-                <Button
-                  onClick={() => {
-                    setConfirmDelete(true);
-                  }}
-                  variant="outlined"
-                  startIcon={<Delete />}
-                  size="large"
-                >
-                  Delete
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  endIcon={<Save />}
-                  size="large"
-                >
-                  Update
-                </Button>
+          <FormProvider {...formMethods}>
+            <EventForm creatingEvent={false} />
+          </FormProvider>
+          {!editEventPending &&
+            !deleteEventPending &&
+            !islocationInfoLoading && (
+              <Stack direction={"column"} spacing={2}>
+                <Stack direction="row" spacing={4}>
+                  <Button
+                    onClick={() => {
+                      setConfirmDelete(true);
+                    }}
+                    variant="outlined"
+                    startIcon={<Delete />}
+                    size="large"
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    endIcon={<Save />}
+                    size="large"
+                  >
+                    Update
+                  </Button>
+                </Stack>
+                {isEditEventError && (
+                  <Typography color="red">
+                    {isAxiosError(editEventError) &&
+                    editEventError?.response?.data?.code === "ADDRESS_ERROR"
+                      ? "There was an error with the given address. Please check that the given address is correct."
+                      : "There was an error posting the event. Our team has been made aware of the issue and we are looking into it."}
+                  </Typography>
+                )}
+                {islocationInfoError && (
+                  <Typography color="red">
+                    {isAxiosError(locationInfoError) &&
+                    locationInfoError?.response?.data?.code === "ADDRESS_ERROR"
+                      ? "There was an error with the given address. Please check that the given address is correct."
+                      : "There is an error on our end. Our team has been made aware of the issue and we are looking into it."}
+                  </Typography>
+                )}
+                {deleteEventError && (
+                  <Typography color="red">
+                    {
+                      "There is an error on our end. Our team has been made aware of the issue and we are looking into it."
+                    }
+                  </Typography>
+                )}
               </Stack>
-              {(editEventError || deleteEventError) && (
-                <Typography color="red">
-                  There was an error. Please try again.
-                </Typography>
-              )}
-            </Stack>
-          )}
+            )}
           {(editEventPending || deleteEventPending) && <CircularProgress />}
         </Stack>
       </Box>
@@ -246,7 +283,7 @@ export default function EditEventForm({ eventId }: EditEventFormProps) {
                   endIcon={<Delete />}
                   onClick={() => {
                     setConfirmDelete(false);
-                    deleteEventMutation(eventId);
+                    deleteEventMutation(eventCode);
                   }}
                 >
                   Delete Forever

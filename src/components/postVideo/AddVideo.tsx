@@ -1,5 +1,7 @@
 "use client";
 
+import { postVideo } from "@/api/apiCalls";
+import { useBandContext } from "@/context/BandContext";
 import {
   Autocomplete,
   Box,
@@ -10,30 +12,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const addVideo = async (data: { bandId: string; youTubeUrl: string }) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/bands/add-video/${data.bandId}`,
-    { video_url: data.youTubeUrl }
-  );
-  return response.data;
-};
-
 interface AddVideoProps {
-  bands: {
-    [key: string]: {
-      id: string;
-    };
-  };
   bandToPostFor: string | null;
   bandIdToPostFor: string | null;
 }
 
 export default function AddVideo({
-  bands,
   bandToPostFor,
   bandIdToPostFor,
 }: AddVideoProps) {
@@ -41,10 +28,12 @@ export default function AddVideo({
   const [bandId, setBandId] = useState<string | null>(bandIdToPostFor);
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
 
+  const { bands } = useBandContext();
+
   const router = useRouter();
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: addVideo,
-    onSuccess: (data) => {
+    mutationFn: () => postVideo(bandId ?? "", { youtubeUrl: youtubeUrl }),
+    onSuccess: () => {
       router.push(`/post/video/success`);
     },
   });
@@ -84,7 +73,7 @@ export default function AddVideo({
           onChange={(_, newBand) => {
             setBand(newBand);
             if (newBand) {
-              setBandId(bands[newBand]["id"]);
+              setBandId(String(bands[newBand].id));
             } else {
               setBandId(null);
             }
@@ -109,7 +98,7 @@ export default function AddVideo({
                   youtubeUrl.indexOf("youtube.com") != -1 ||
                   youtubeUrl.indexOf("youtu.be") != -1
                 ) {
-                  mutate({ bandId: bandId, youTubeUrl: youtubeUrl });
+                  mutate();
                 } else {
                   alert("Please post a valid YouTube link.");
                 }

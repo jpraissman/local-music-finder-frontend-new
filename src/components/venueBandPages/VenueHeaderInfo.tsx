@@ -1,10 +1,10 @@
-import Venue from "@/types/Venue";
+import { VenueDTO } from "@/dto/venue/Venue.dto";
 import { Directions, Facebook, Instagram, Language } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
 interface VenueHeaderInfoProps {
-  venueInfo: Venue;
+  venueInfo: VenueDTO;
 }
 
 const formatLink = (link: string) => {
@@ -70,7 +70,7 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
             fontWeight="bold"
             sx={{ fontSize: { xs: "35px", md: "55px" } }}
           >
-            {venueInfo.name}
+            {venueInfo.venueName}
           </Typography>
           <Stack
             direction={"row"}
@@ -80,7 +80,7 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
             <Link
               href={
                 "https://www.google.com/maps/search/?api=1&query=" +
-                venueInfo.address
+                venueInfo.location.address
               }
               target="_blank"
               rel="noopener noreferrer"
@@ -105,9 +105,9 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
                 </Typography>
               </Stack>
             </Link>
-            {venueInfo.facebook_link && (
+            {venueInfo.facebookUrl && (
               <Link
-                href={formatLink(venueInfo.facebook_link)}
+                href={formatLink(venueInfo.facebookUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}
@@ -132,9 +132,9 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
                 </Stack>
               </Link>
             )}
-            {venueInfo.instagram_link && (
+            {venueInfo.instagramUrl && (
               <Link
-                href={formatLink(venueInfo.instagram_link)}
+                href={formatLink(venueInfo.instagramUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}
@@ -159,9 +159,9 @@ export default function VenueHeaderInfo({ venueInfo }: VenueHeaderInfoProps) {
                 </Stack>
               </Link>
             )}
-            {venueInfo.website && (
+            {venueInfo.websiteUrl && (
               <Link
-                href={formatLink(venueInfo.website)}
+                href={formatLink(venueInfo.websiteUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "white" }}

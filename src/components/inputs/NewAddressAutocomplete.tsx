@@ -10,14 +10,28 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import parse from "autosuggest-highlight/parse";
-// For the sake of this demo, we have to use debounce to reduce Google Maps Places API quote use
-// But prefer to use throttle in practice
-// import throttle from 'lodash/throttle';
-import { debounce } from "@mui/material/utils";
-import { PlaceType } from "@/types/PlaceType";
+import throttle from "lodash.throttle";
 import { InputAdornment } from "@mui/material";
+import { LocationDTO } from "@/dto/location/Location.dto";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+interface MainTextMatchedSubstrings {
+  offset: number;
+  length: number;
+}
+
+interface StructuredFormatting {
+  main_text: string;
+  secondary_text?: string;
+  main_text_matched_substrings: MainTextMatchedSubstrings[];
+}
+
+interface PlaceType {
+  description: string;
+  structured_formatting: StructuredFormatting;
+  place_id: string;
+}
 
 const useEnhancedEffect =
   typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
@@ -63,7 +77,7 @@ function CustomPaper(props: PaperProps) {
   );
 }
 
-const fetch = debounce(
+const fetch = throttle(
   async (
     request: { input: string; sessionToken: any },
     callback: (results?: readonly PlaceType[]) => void
@@ -110,9 +124,11 @@ interface NewAddressAutocompleteProps {
   id: string;
   label: string;
   error: boolean;
-  value: PlaceType | null;
-  setValue: (newValue: PlaceType | null) => void;
+  value: LocationDTO | null;
+  setValue: (newValue: LocationDTO | null) => void;
   landingPage: boolean;
+  disabled?: boolean;
+  helperText?: string;
 }
 
 export default function NewAddressAutocomplete({
@@ -122,6 +138,8 @@ export default function NewAddressAutocomplete({
   value,
   setValue,
   landingPage,
+  disabled = false,
+  helperText,
 }: NewAddressAutocompleteProps) {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] =
@@ -150,7 +168,7 @@ export default function NewAddressAutocomplete({
         setLoaded(true);
       }
     }
-  }, []);
+  }, [callbackId, loaded]);
 
   useEnhancedEffect(() => {
     if (!loaded) {
@@ -158,7 +176,7 @@ export default function NewAddressAutocomplete({
     }
 
     if (inputValue === "") {
-      setOptions(value ? [value] : emptyOptions);
+      setOptions(emptyOptions);
       return undefined;
     }
 
@@ -178,22 +196,7 @@ export default function NewAddressAutocomplete({
           return;
         }
 
-        let newOptions: readonly PlaceType[] = [];
-
-        if (results) {
-          newOptions = results;
-
-          if (value) {
-            newOptions = [
-              value,
-              ...results.filter(
-                (result) => result.description !== value.description
-              ),
-            ];
-          }
-        } else if (value) {
-          newOptions = [value];
-        }
+        const newOptions = results ? results : [];
         setOptions(newOptions);
       }
     );
@@ -205,6 +208,8 @@ export default function NewAddressAutocomplete({
 
   return (
     <Autocomplete
+      freeSolo
+      disabled={disabled}
       fullWidth
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
@@ -217,14 +222,15 @@ export default function NewAddressAutocomplete({
       autoComplete
       includeInputInList
       filterSelectedOptions
-      value={value}
-      noOptionsText="Start typing location..."
-      onChange={(_, newValue: PlaceType | null) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        if (newValue?.description === "Madison, NJ, USA") {
-          setValue({ ...newValue, description: "Madison, NJ" });
-        } else {
-          setValue(newValue);
+      value={value?.address}
+      onChange={(_, newValue) => {
+        if (typeof newValue !== "string") {
+          setOptions(newValue ? [newValue, ...options] : options);
+          setValue(
+            newValue
+              ? { locationId: newValue.place_id, address: newValue.description }
+              : null
+          );
         }
       }}
       onInputChange={(_, newInputValue) => {
@@ -233,13 +239,12 @@ export default function NewAddressAutocomplete({
       renderInput={(params) => (
         <TextField
           {...params}
+          disabled={disabled}
           label={landingPage ? undefined : label}
           placeholder={landingPage ? label : undefined}
           fullWidth
           error={error}
-          helperText={
-            error && !landingPage ? "This field is required." : undefined
-          }
+          helperText={helperText}
           slotProps={{
             inputLabel: { shrink: value !== null || isFocused },
             input: {

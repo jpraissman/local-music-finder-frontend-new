@@ -1,47 +1,14 @@
+import { getVenueById } from "@/api/apiCalls";
 import VenuePage from "@/components/venueBandPages/VenuePage";
-import { loadVenueEvents, loadVenueInfo } from "@/lib/load-venue-info";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { cookies, headers } from "next/headers";
 
 interface PageProps {
   params: {
-    venueId: string;
+    venueId: number;
   };
 }
 
 export default async function Page({ params: { venueId } }: PageProps) {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userId")?.value || "Undefined";
-  const adminKey = cookieStore.get("adminKey")?.value || "Undefined";
-  const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent") || "Undefined";
+  const venueData = await getVenueById(venueId);
 
-  const queryClient = new QueryClient();
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["venueEvents", venueId],
-      queryFn: () => loadVenueEvents(venueId),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["venueInfo", venueId],
-      queryFn: () => loadVenueInfo(venueId),
-    }),
-  ]);
-
-  const dehydratedState = dehydrate(queryClient);
-
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <VenuePage
-        venueId={venueId}
-        userAgent={userAgent}
-        userId={userId}
-        userIsAdmin={adminKey === process.env.ADMIN_KEY}
-      />
-    </HydrationBoundary>
-  );
+  return <VenuePage venueId={venueId} initialVenueData={venueData} />;
 }

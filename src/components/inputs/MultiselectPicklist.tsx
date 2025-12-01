@@ -1,5 +1,6 @@
 "use client";
 
+import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
 import {
   Checkbox,
   FormControl,
@@ -10,7 +11,7 @@ import {
   OutlinedInput,
   Select,
 } from "@mui/material";
-import { Control, Controller, Field, FieldValues, Path } from "react-hook-form";
+import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,36 +26,27 @@ const MenuProps = {
 
 interface MultiselectPicklistProps<TFieldValues extends FieldValues> {
   label: string;
-  allLabel: string;
   allValues: string[];
+  valueDisplayNames: Record<string, string>;
   error: boolean;
-  control: Control<TFieldValues>;
   rhfName: Path<TFieldValues>;
 }
 
 export default function MultiselectPicklist<TFieldValues extends FieldValues>({
   label,
-  allLabel,
   allValues,
+  valueDisplayNames,
   error,
-  control,
   rhfName,
 }: MultiselectPicklistProps<TFieldValues>) {
+  const { control } = useFormContext<TFieldValues>();
+
   const handleChange = (
     values: string[] | string,
     setValues: (newValues: string[]) => void
   ) => {
     if (Array.isArray(values)) {
-      if (values.indexOf(allLabel) === 0 && values.length > 1) {
-        const newValues = values.filter((value) => value !== allLabel);
-        setValues(newValues);
-      } else if (values.indexOf(allLabel) > -1) {
-        setValues([allLabel]);
-      } else {
-        setValues(values);
-      }
-    } else {
-      console.log("Error");
+      setValues(values);
     }
   };
 
@@ -72,7 +64,12 @@ export default function MultiselectPicklist<TFieldValues extends FieldValues>({
             value={selectedValues ? selectedValues : []}
             onChange={(event) => handleChange(event.target.value, onChange)}
             input={<OutlinedInput label={label} />}
-            renderValue={(selected) => selected.join(", ")}
+            renderValue={(selected: string[]) =>
+              selected
+                .map((key) => valueDisplayNames[key])
+                .filter(Boolean)
+                .join(", ")
+            }
             MenuProps={MenuProps}
             sx={{ textAlign: "left" }}
             inputRef={ref}
@@ -80,7 +77,7 @@ export default function MultiselectPicklist<TFieldValues extends FieldValues>({
             {allValues.map((value) => (
               <MenuItem key={value} value={value}>
                 <Checkbox checked={selectedValues.indexOf(value) > -1} />
-                <ListItemText primary={value} />
+                <ListItemText primary={valueDisplayNames[value]} />
               </MenuItem>
             ))}
           </Select>

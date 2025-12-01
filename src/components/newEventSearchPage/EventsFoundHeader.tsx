@@ -1,15 +1,8 @@
 "use client";
 
+import { FilterRefsType } from "@/hooks/useFilterRefs";
 import { DateRange, LocationOn, Map, Tune } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Chip,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Chip, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 interface EventsFoundHeaderProps {
   eventCount: number;
@@ -17,7 +10,8 @@ interface EventsFoundHeaderProps {
   startDate: Date;
   endDate: Date;
   maxDistance: number | null;
-  handleFilterClick: () => void;
+  filterRefsHook: FilterRefsType;
+  onFilterClick: () => void;
 }
 
 export default function EventsFoundHeader({
@@ -26,7 +20,8 @@ export default function EventsFoundHeader({
   startDate,
   endDate,
   maxDistance,
-  handleFilterClick,
+  onFilterClick,
+  filterRefsHook,
 }: EventsFoundHeaderProps) {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -74,7 +69,7 @@ export default function EventsFoundHeader({
             }}
           >
             <Chip
-              clickable={isMdUp ? false : true}
+              clickable
               icon={<LocationOn sx={{ fontSize: "20px !important" }} />}
               label={location}
               variant="outlined"
@@ -87,11 +82,14 @@ export default function EventsFoundHeader({
                 borderColor: "primary.main",
                 color: "primary.main",
               }}
-              onClick={isMdUp ? () => {} : handleFilterClick}
+              onClick={() => {
+                filterRefsHook.handleChipFilterClick("LOCATION");
+                onFilterClick();
+              }}
             />
             {maxDistance && (
               <Chip
-                clickable={isMdUp ? false : true}
+                clickable
                 icon={<Map sx={{ fontSize: "20px !important" }} />}
                 label={`Within ${maxDistance.toString()} miles`}
                 variant="outlined"
@@ -104,11 +102,14 @@ export default function EventsFoundHeader({
                   borderColor: "primary.main",
                   color: "primary.main",
                 }}
-                onClick={isMdUp ? () => {} : handleFilterClick}
+                onClick={() => {
+                  filterRefsHook.handleChipFilterClick("DISTANCE");
+                  onFilterClick();
+                }}
               />
             )}
             <Chip
-              clickable={isMdUp ? false : true}
+              clickable
               icon={<DateRange sx={{ fontSize: "20px !important" }} />}
               label={`${formatDate(startDate)} - ${formatDate(endDate)}`}
               variant="outlined"
@@ -121,23 +122,12 @@ export default function EventsFoundHeader({
                 borderColor: "primary.main",
                 color: "primary.main",
               }}
-              onClick={isMdUp ? () => {} : handleFilterClick}
+              onClick={() => {
+                filterRefsHook.handleChipFilterClick("DATE");
+                onFilterClick();
+              }}
             />
           </Box>
-          {!isMdUp && (
-            <Box sx={{ paddingTop: "10px" }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleFilterClick}
-              >
-                <Stack direction={"row"} spacing={1}>
-                  <Tune />
-                  <Typography>All Filters</Typography>
-                </Stack>
-              </Button>
-            </Box>
-          )}
         </Box>
       )}
     </>

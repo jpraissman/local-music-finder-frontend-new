@@ -1,13 +1,14 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
-import SocialMediaIcons from "./SocialMediaIcons";
-import Event from "@/types/Event";
+// import SocialMediaIcons from "./SocialMediaIcons";
 import Link from "next/link";
+import { EventDTO } from "@/dto/event/Event.dto";
+import { GenreLabels } from "@/newTypes/Genre";
 
-export default function NamesAndGenres({ event }: { event: Event }) {
+export default function NamesAndGenres({ event }: { event: EventDTO }) {
   return (
     <Stack direction="column" sx={{ width: "50%" }}>
       <Link
-        href={`/venue/${event.venue_id}`}
+        href={`/venue/${event.venue.id}`}
         style={{ textDecoration: "none", color: "black" }}
         prefetch={false}
       >
@@ -21,11 +22,11 @@ export default function NamesAndGenres({ event }: { event: Event }) {
             },
           }}
         >
-          {event.venue_name}
+          {event.venue.venueName}
         </Typography>
       </Link>
       <Link
-        href={`/band/${event.band_id}`}
+        href={`/band/${event.band.id}`}
         style={{ textDecoration: "none", color: "black" }}
         prefetch={false}
       >
@@ -40,7 +41,7 @@ export default function NamesAndGenres({ event }: { event: Event }) {
             },
           }}
         >
-          {`Band: ${event.band_name}`}
+          {`Band: ${event.band.bandName}`}
         </Typography>
       </Link>
       <Box sx={{ paddingTop: "10px" }}>
@@ -54,10 +55,10 @@ export default function NamesAndGenres({ event }: { event: Event }) {
           paddingTop: "5px",
         }}
       >
-        {event.genres.map((genre) => (
+        {event.band.genres.map((genre) => (
           <Chip
-            key={genre}
-            label={genre}
+            key={GenreLabels[genre]}
+            label={GenreLabels[genre]}
             size="small"
             sx={{
               backgroundColor: "secondary.light",
@@ -66,13 +67,13 @@ export default function NamesAndGenres({ event }: { event: Event }) {
           />
         ))}
       </Box>
-      <Box sx={{ paddingTop: "20px" }}>
+      {/* <Box sx={{ paddingTop: "20px" }}>
         <SocialMediaIcons event={event} />
-      </Box>
-      {event.other_info !== "" && (
+      </Box> */}
+      {event.additionalInfo && (
         <Box sx={{ paddingTop: "20px", display: { xs: "none", sm: "flex" } }}>
           <Typography color="gray" variant="body1">
-            {event.other_info}
+            {event.additionalInfo}
           </Typography>
         </Box>
       )}

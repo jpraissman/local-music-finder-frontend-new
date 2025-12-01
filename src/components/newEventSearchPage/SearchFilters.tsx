@@ -1,46 +1,47 @@
 "use client";
 
-import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  keyframes,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
-import { PlaceType } from "@/types/PlaceType";
-import { DateRange, DayPicker } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 import RadioButtons from "../inputs/RadioButtons";
-import { useState } from "react";
-import CheckboxGroup from "../inputs/CheckboxGroup";
-import { BAND_TYPES, GENRES } from "@/types/constants";
-import MultiSelectChips from "../inputs/MultiSelectChips";
+import { useFiltersContext } from "@/context/FiltersContext";
+import MultiSelectGenreChips from "./MultiSelectGenreChips";
+import BandTypeCheckboxGroup from "./BandTypeCheckboxGroup";
+import React from "react";
+import { FilterRefsType } from "@/hooks/useFilterRefs";
 
-interface SearchFilterProps {
-  location: PlaceType | null;
-  setLocation: (newLocation: PlaceType | null) => void;
-  dateRange: DateRange | undefined;
-  setDateRange: (newDateRange: DateRange | undefined) => void;
-  maxDistance: number;
-  setMaxDistance: (newMaxDistance: number) => void;
-  genres: string[];
-  setGenres: (newGenres: string[]) => void;
-  bandTypes: string[];
-  setBandTypes: (newBandTypes: string[]) => void;
-  sort: "Date" | "Distance";
-  setSort: (newSort: "Date" | "Distance") => void;
-  locationError: boolean;
+interface SearchFiltersProps {
+  onManualFilterChange: () => void;
+  filterRefsHook: FilterRefsType;
 }
 
 export default function SearchFilters({
-  location,
-  setLocation,
-  locationError,
-  dateRange,
-  setDateRange,
-  maxDistance,
-  setMaxDistance,
-  genres,
-  setGenres,
-  bandTypes,
-  setBandTypes,
-  sort,
-  setSort,
-}: SearchFilterProps) {
+  onManualFilterChange,
+  filterRefsHook,
+}: SearchFiltersProps) {
+  const { filters, setFilters } = useFiltersContext();
+
+  const canEditAllFilters = () => {
+    if (filters.location) {
+      return true;
+    }
+
+    alert("You must add a location before editing other filters");
+    filterRefsHook.doScrollAndHighlight({
+      areaToHighlight: "LOCATION",
+      ref: filterRefsHook.locationRef,
+    });
+    return false;
+  };
+
   return (
     <Paper
       elevation={5}
@@ -50,6 +51,7 @@ export default function SearchFilters({
         height: { xs: "100%", md: "70vh" },
         overflowY: "auto",
       }}
+      ref={filterRefsHook.searchFiltersContainerRef}
     >
       <Box
         sx={{
@@ -63,26 +65,55 @@ export default function SearchFilters({
         >
           <Stack direction={"column"}>
             <Typography variant="h5" fontWeight={"bold"}>
-              Filter & Sort
+              Edit Filters
             </Typography>
             <Typography variant="h6">(scroll to see all options)</Typography>
           </Stack>
-          <Stack direction={"column"} spacing={1}>
+          <Stack
+            direction={"column"}
+            spacing={1}
+            ref={filterRefsHook.locationRef}
+            sx={{
+              backgroundColor:
+                filterRefsHook.areaToHighlight === "LOCATION"
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "LOCATION"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
+            }}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Location
             </Typography>
             <NewAddressAutocomplete
               id="location"
               label="Your Location (town, city, or zip)"
-              error={locationError}
-              value={location}
-              setValue={(newLocation: PlaceType | null) => {
-                setLocation(newLocation);
+              value={filters.location || { address: "", locationId: "" }}
+              setValue={(newLocation) => {
+                setFilters((prev) => ({ ...prev, location: newLocation }));
+                onManualFilterChange();
               }}
               landingPage={true}
+              error={false}
             />
           </Stack>
-          <Stack direction={"column"} spacing={0.5}>
+          <Stack
+            direction={"column"}
+            spacing={0.5}
+            ref={filterRefsHook.dateRangeRef}
+            sx={{
+              backgroundColor:
+                filterRefsHook.areaToHighlight === "DATE"
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "DATE"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
+            }}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Date Range
             </Typography>
@@ -96,24 +127,49 @@ export default function SearchFilters({
               <Stack display={"flex"} alignItems={"center"} spacing={1}>
                 <DayPicker
                   mode="range"
-                  selected={dateRange}
+                  selected={filters.dateRange}
                   disabled={{ before: new Date() }}
                   onSelect={(newDateRange) => {
-                    setDateRange(newDateRange);
+                    if (canEditAllFilters()) {
+                      setFilters((prev) => ({
+                        ...prev,
+                        dateRange: newDateRange,
+                      }));
+                      onManualFilterChange();
+                    }
                   }}
                 />
                 <Button
                   variant="contained"
                   color="secondary"
                   sx={{ maxWidth: "200px" }}
-                  onClick={() => setDateRange(undefined)}
+                  onClick={() => {
+                    if (canEditAllFilters()) {
+                      setFilters((prev) => ({ ...prev, dateRange: undefined }));
+                      onManualFilterChange();
+                    }
+                  }}
                 >
                   Clear Calendar
                 </Button>
               </Stack>
             </Box>
           </Stack>
-          <Stack direction={"column"} spacing={1}>
+          <Stack
+            direction={"column"}
+            spacing={1}
+            ref={filterRefsHook.maxDistanceRef}
+            sx={{
+              backgroundColor:
+                filterRefsHook.areaToHighlight === "DISTANCE"
+                  ? "#faf29d"
+                  : undefined,
+              boxShadow:
+                filterRefsHook.areaToHighlight === "DISTANCE"
+                  ? "0 0 0 20px #faf29d"
+                  : undefined,
+            }}
+          >
             <Typography variant="body1" fontWeight={"bold"}>
               Distance
             </Typography>
@@ -126,9 +182,15 @@ export default function SearchFilters({
                 "Within 35 miles",
                 "Within 50 miles",
               ]}
-              value={maxDistance.toString()}
+              value={filters.maxDistance.toString()}
               onChange={(_, newMaxDistanceStr) => {
-                setMaxDistance(Number(newMaxDistanceStr));
+                if (canEditAllFilters()) {
+                  setFilters({
+                    ...filters,
+                    maxDistance: Number(newMaxDistanceStr),
+                  });
+                  onManualFilterChange();
+                }
               }}
             />
           </Stack>
@@ -141,21 +203,13 @@ export default function SearchFilters({
                 Click to include/remove
               </Typography>
             </Stack>
-            <MultiSelectChips
-              chips={GENRES}
-              selectedChips={genres}
-              setSelectedChips={setGenres}
-            />
+            <MultiSelectGenreChips canEdit={canEditAllFilters} />
           </Stack>
           <Stack direction={"column"} spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>
               Band Types
             </Typography>
-            <CheckboxGroup
-              labels={BAND_TYPES}
-              selectedLabels={bandTypes}
-              setSelectedLabels={setBandTypes}
-            />
+            <BandTypeCheckboxGroup canEdit={canEditAllFilters} />
           </Stack>
           <Stack
             direction={"column"}
@@ -168,10 +222,13 @@ export default function SearchFilters({
             <RadioButtons
               labels={["Date", "Distance"]}
               values={["Date", "Distance"]}
-              value={sort}
+              value={filters.sort}
               onChange={(_, newSort) => {
                 if (newSort === "Date" || newSort === "Distance") {
-                  setSort(newSort);
+                  if (canEditAllFilters()) {
+                    setFilters((prev) => ({ ...prev, sort: newSort }));
+                    onManualFilterChange();
+                  }
                 }
               }}
             />

@@ -1,6 +1,5 @@
 "use client";
 
-import Event from "@/types/Event";
 import {
   Box,
   Button,
@@ -11,25 +10,22 @@ import {
 } from "@mui/material";
 import EventCalendarPicker from "./EventCalendarPicker";
 import NewEventCard from "../eventCard/NewEventCard";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { EventDTO } from "@/dto/event/Event.dto";
 
 interface DisplayEventsAndCalendarProps {
-  allEvents: Event[];
-  userId: string;
-  userAgent: string;
+  allEvents: EventDTO[];
   name: string;
   page: "Venue" | "Band";
 }
 
 export default function DisplayEventsAndCalendar({
   allEvents,
-  userId,
-  userAgent,
   name,
   page,
 }: DisplayEventsAndCalendarProps) {
-  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
+  const [displayedEvents, setDisplayedEvents] = useState<EventDTO[]>([]);
   const [date, setDate] = useState<string>("all");
 
   const theme = useTheme();
@@ -43,23 +39,25 @@ export default function DisplayEventsAndCalendar({
     });
   };
 
-  const setUpcomingEvents = () => {
+  const setUpcomingEvents = useCallback(() => {
     const today = dayjs();
     setDisplayedEvents(
       allEvents.filter((event) => {
         return (
-          today.isBefore(event.date_string, "day") ||
-          today.isSame(event.date_string, "day")
+          today.isBefore(event.eventDate, "day") ||
+          today.isSame(event.eventDate, "day")
         );
       })
     );
     setDate("all");
-  };
+  }, [setDisplayedEvents, allEvents, setDate]);
 
   const handleDateChange = (newDate: string | undefined) => {
     if (newDate) {
       setDisplayedEvents(
-        allEvents.filter((event) => event.date_string === newDate)
+        allEvents.filter(
+          (event) => dayjs(event.eventDate).format("YYYY-MM-DD") === newDate
+        )
       );
       setDate(dayjs(newDate).format("MMMM D"));
     } else {
@@ -72,7 +70,7 @@ export default function DisplayEventsAndCalendar({
 
   useEffect(() => {
     setUpcomingEvents();
-  }, []);
+  }, [setUpcomingEvents]);
 
   return (
     <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
@@ -144,8 +142,6 @@ export default function DisplayEventsAndCalendar({
                 key={event.id}
                 event={event}
                 size={isLgUp ? "Large" : "Small"}
-                userId={userId}
-                userAgent={userAgent}
               />
             ))}
           </Stack>
