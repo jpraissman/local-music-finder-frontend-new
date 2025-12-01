@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
+import Link from "next/link";
 
 export default function Error() {
   return (
@@ -13,8 +14,7 @@ export default function Error() {
       }}
     >
       <Typography variant="h6" color="red">
-        Unfortunately, there is currently an error with our technical provider.
-        We apologize for any inconvenience. Please check back later.
+        Something went wrong. <Link href={"/"}>Back to Home</Link>
       </Typography>
     </Box>
   );
