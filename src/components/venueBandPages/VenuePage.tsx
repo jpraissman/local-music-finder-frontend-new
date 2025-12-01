@@ -24,10 +24,6 @@ export default function VenuePage({
     initialData: initialVenueData,
   });
 
-  useEffect(() => {
-    console.log(dayjs());
-  }, []);
-
   return (
     <Stack
       direction={"column"}

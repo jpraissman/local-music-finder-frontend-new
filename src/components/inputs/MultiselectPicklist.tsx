@@ -47,8 +47,6 @@ export default function MultiselectPicklist<TFieldValues extends FieldValues>({
   ) => {
     if (Array.isArray(values)) {
       setValues(values);
-    } else {
-      console.log("Error");
     }
   };
 

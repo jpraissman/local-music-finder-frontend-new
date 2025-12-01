@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import Cookies from "js-cookie";
@@ -55,14 +56,21 @@ const defaultFilters: FiltersType = {
 export const FiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
 
+  const [didFirstRender, setDidFirstRender] = useState(false);
+
   useEffect(() => {
+    if (!didFirstRender) {
+      setDidFirstRender(true);
+      return;
+    }
+
     Cookies.set("locationId", filters.location?.locationId ?? "", {
       expires: 365,
     });
     Cookies.set("locationString", filters.location?.address ?? "", {
       expires: 365,
     });
-  }, [filters.location]);
+  }, [filters.location, didFirstRender, setDidFirstRender]);
 
   const setDateRangeWithString = useCallback(
     (dateRangeString: DateRangeValues) => {

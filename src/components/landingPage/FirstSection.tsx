@@ -73,7 +73,7 @@ export default function FirstSection() {
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <NewAddressAutocomplete
-              value={filters.location}
+              value={filters.location ?? { address: "", locationId: "" }}
               setValue={(newLocation) => {
                 setFilters((prev) => ({ ...prev, location: newLocation }));
               }}

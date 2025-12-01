@@ -18,7 +18,7 @@ import {
 } from "@/dto/event/UpsertEventRequest.dto";
 import { createEvent, getLocationById } from "@/api/apiCalls";
 import { isAxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BaseModal from "../base/BaseModal";
 
 export default function CreateEventForm() {
@@ -44,7 +44,7 @@ export default function CreateEventForm() {
     },
   });
 
-  const locationId = formMethods.watch("location.locationId");
+  const location = formMethods.watch("location");
 
   const {
     data: locationInfo,
@@ -52,9 +52,9 @@ export default function CreateEventForm() {
     isError: islocationInfoError,
     error: locationInfoError,
   } = useQuery({
-    queryKey: ["getLocationById", locationId],
-    queryFn: () => getLocationById(locationId),
-    enabled: !!locationId,
+    queryKey: ["getLocationById", location?.locationId],
+    queryFn: () => getLocationById(location?.locationId),
+    enabled: !!location,
   });
 
   const confirmAddress = formMethods.handleSubmit(() => {

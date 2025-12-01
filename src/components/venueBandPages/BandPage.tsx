@@ -32,10 +32,6 @@ export default function BandPage({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    console.log(dayjs());
-  }, []);
-
   const [navValue, setNavValue] = useState(initialNavValue);
   const handleNavChange = (_: React.SyntheticEvent, newNavValue: number) => {
     setNavValue(newNavValue);

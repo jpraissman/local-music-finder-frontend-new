@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
 import { BandDTO } from "@/dto/band/Band.dto";
 import { VenueDTO } from "@/dto/venue/Venue.dto";
+import { BandTypeLabels } from "@/newTypes/BandType";
+import { GenreLabels } from "@/newTypes/Genre";
 
 interface NewSearchBarProps {
   venues: VenueDTO[];
@@ -230,8 +232,12 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
                           primary={band.bandName}
                           secondary={
                             band.bandType === "TRIBUTE_BAND"
-                              ? `${band.bandType} - ${band.tributeBandName}`
-                              : band.genres.join(" • ")
+                              ? `${BandTypeLabels[band.bandType]} - ${
+                                  band.tributeBandName
+                                }`
+                              : band.genres
+                                  .map((genre) => GenreLabels[genre])
+                                  .join(" • ")
                           }
                         />
                       </ListItem>

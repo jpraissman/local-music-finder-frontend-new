@@ -28,7 +28,6 @@ import {
   EventCreatorType,
   EventCreatorTypeLabels,
 } from "@/newTypes/EventCreatorType";
-import { useEffect } from "react";
 
 interface EventFormProps {
   creatingEvent: boolean;

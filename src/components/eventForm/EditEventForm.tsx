@@ -83,7 +83,7 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const locationId = formMethods.watch("location.locationId");
+  const location = formMethods.watch("location");
 
   const {
     data: locationInfo,
@@ -91,9 +91,9 @@ export default function EditEventForm({ eventCode }: EditEventFormProps) {
     isError: islocationInfoError,
     error: locationInfoError,
   } = useQuery({
-    queryKey: ["getLocationById", locationId],
-    queryFn: () => getLocationById(locationId),
-    enabled: !!locationId,
+    queryKey: ["getLocationById", location?.locationId],
+    queryFn: () => getLocationById(location?.locationId),
+    enabled: !!location,
   });
 
   const confirmAddress = formMethods.handleSubmit(() => {
