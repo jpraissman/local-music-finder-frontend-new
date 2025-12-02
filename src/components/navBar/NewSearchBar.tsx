@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Paper,
@@ -13,46 +13,36 @@ import {
   alpha,
   useTheme,
 } from "@mui/material";
-import { Search, LocationOn, MusicNote, Business } from "@mui/icons-material";
+import { Search, MusicNote, Business } from "@mui/icons-material";
 import Link from "next/link";
-import dayjs from "dayjs";
-import { usePathname, useRouter } from "next/navigation";
-import { BandDTO } from "@/dto/band/Band.dto";
-import { VenueDTO } from "@/dto/venue/Venue.dto";
 import { BandTypeLabels } from "@/newTypes/BandType";
 import { GenreLabels } from "@/newTypes/Genre";
+import { useBandsSearch } from "@/hooks/useBandsSearch";
+import { useVenuesSearch } from "@/hooks/useVenuesSearch";
 
-interface NewSearchBarProps {
-  venues: VenueDTO[];
-  bands: BandDTO[];
-}
+export default function NewSearchBar() {
+  const {
+    setSearchTerm: setBandSearch,
+    isBandsLoading,
+    bands,
+  } = useBandsSearch();
+  const {
+    setSearchTerm: setVenueSearch,
+    isVenuesLoading,
+    venues,
+  } = useVenuesSearch();
 
-export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
   const theme = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const router = useRouter();
-  const pathname = usePathname();
+  useEffect(() => {
+    setBandSearch(searchTerm);
+    setVenueSearch(searchTerm);
+  }, [searchTerm, setBandSearch, setVenueSearch]);
 
-  const filteredVenues = venues.filter(
-    (venue) =>
-      venue.venueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      venue.town?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredBands = bands.filter(
-    (band) =>
-      band.bandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      band.genres.some((genre) =>
-        genre.toLowerCase().includes(searchTerm.toLowerCase())
-      ) ||
-      band.tributeBandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      band.bandType.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const hasResults = filteredVenues.length > 0 || filteredBands.length > 0;
+  const hasResults = bands.length > 0 || venues.length > 0;
 
   return (
     <Box
@@ -68,7 +58,7 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search venues, bands, tributes, etc."
+        placeholder="Search for venues or bands..."
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -130,7 +120,11 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
         >
           {!hasResults ? (
             <Box sx={{ p: 3, textAlign: "center" }}>
-              <Typography color="text.secondary">No results found</Typography>
+              <Typography color="text.secondary">
+                {isVenuesLoading || isBandsLoading
+                  ? "Loading..."
+                  : "No results found"}
+              </Typography>
             </Box>
           ) : (
             <Box>
@@ -158,7 +152,7 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {filteredVenues.slice(0, 9).map((venue, index) => (
+                  {venues.slice(0, 9).map((venue, index) => (
                     <Link
                       href={`/venue/${venue.id}`}
                       style={{ textDecoration: "none", color: "black" }}
@@ -210,7 +204,7 @@ export default function NewSearchBar({ venues, bands }: NewSearchBarProps) {
                   </Typography>
                 </Box>
                 <List disablePadding>
-                  {filteredBands.slice(0, 9).map((band, index) => (
+                  {bands.slice(0, 9).map((band, index) => (
                     <Link
                       href={`/band/${band.id}`}
                       style={{ textDecoration: "none", color: "black" }}

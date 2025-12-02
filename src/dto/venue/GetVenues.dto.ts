@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { VenueDTOSchema } from "./Venue.dto";
 
-export const GetVenuesDTOSchema = z.object({
-  venues: z.record(z.string(), VenueDTOSchema),
+export const SearchVenuesResponseDTOSchema = z.object({
+  venues: z.array(VenueDTOSchema),
 });
 
-export type GetVenuesDTO = z.infer<typeof GetVenuesDTOSchema>;
+export type SearchVenuesResponseDTO = z.infer<
+  typeof SearchVenuesResponseDTOSchema
+>;

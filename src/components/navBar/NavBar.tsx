@@ -14,14 +14,8 @@ import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
-import { TOWNS_2 } from "@/newTypes/constants";
-import { useBandContext } from "@/context/BandContext";
-import { useVenueContext } from "@/context/VenueContext";
 
 export default function NavBar() {
-  const { bands } = useBandContext();
-  const { venues } = useVenueContext();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -128,10 +122,7 @@ export default function NavBar() {
               />
             </Link>
           </Box>
-          <NewSearchBar
-            venues={Object.values(venues)}
-            bands={Object.values(bands)}
-          />
+          <NewSearchBar />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{

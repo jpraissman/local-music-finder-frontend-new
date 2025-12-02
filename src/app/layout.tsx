@@ -7,9 +7,6 @@ import "react-day-picker/style.css";
 import ThemeWrapper from "@/components/ThemeWrapper";
 import WebsiteFooter from "@/components/WebsiteFooter";
 import NavBar from "@/components/navBar/NavBar";
-import { cookies, headers } from "next/headers";
-import { BandProvider } from "@/context/BandContext";
-import { VenueProvider } from "@/context/VenueContext";
 import { FiltersProvider } from "@/context/FiltersContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,13 +22,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userId");
-  const requestHeaders = headers();
-  const userAgent = requestHeaders.get("user-agent");
-  const referer = requestHeaders.get("referer");
-  const ip = requestHeaders.get("x-forwarded-for");
-
   return (
     <ReactQueryClientProvider>
       <html lang="en">
@@ -50,21 +40,17 @@ export default async function RootLayout({
         </head>
         <body className={inter.className} style={{ margin: 0 }}>
           <ThemeWrapper>
-            <BandProvider>
-              <VenueProvider>
-                <FiltersProvider>
-                  <Box sx={{ minHeight: "100vh" }}>
-                    <NavBar />
-                    <Box sx={{ paddingTop: "75px" }}>
-                      <div>{children}</div>
-                    </Box>
-                  </Box>
-                  <Box sx={{ paddingTop: "100px" }}>
-                    <WebsiteFooter />
-                  </Box>
-                </FiltersProvider>
-              </VenueProvider>
-            </BandProvider>
+            <FiltersProvider>
+              <Box sx={{ minHeight: "100vh" }}>
+                <NavBar />
+                <Box sx={{ paddingTop: "75px" }}>
+                  <div>{children}</div>
+                </Box>
+              </Box>
+              <Box sx={{ paddingTop: "100px" }}>
+                <WebsiteFooter />
+              </Box>
+            </FiltersProvider>
           </ThemeWrapper>
         </body>
       </html>

@@ -20,22 +20,21 @@ import { Facebook, Instagram, Language, Phone } from "@mui/icons-material";
 import FreeSoloAutocomplete from "../inputs/FreeSoloAutocomplete";
 import TermsAgreement from "./TermsAgreement";
 import { UpsertEventRequestDTO } from "@/dto/event/UpsertEventRequest.dto";
-import { useBandContext } from "@/context/BandContext";
-import { useVenueContext } from "@/context/VenueContext";
 import { BandType, BandTypeLabels } from "@/newTypes/BandType";
 import { Genre, GenreLabels } from "@/newTypes/Genre";
 import {
   EventCreatorType,
   EventCreatorTypeLabels,
 } from "@/newTypes/EventCreatorType";
+import { useVenuesSearch } from "@/hooks/useVenuesSearch";
+import { useEffect } from "react";
+import { useBandsSearch } from "@/hooks/useBandsSearch";
 
 interface EventFormProps {
   creatingEvent: boolean;
 }
 
 export default function EventForm({ creatingEvent }: EventFormProps) {
-  const { bands } = useBandContext();
-  const { venues } = useVenueContext();
   const {
     register,
     control,
@@ -44,30 +43,51 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
     watch,
   } = useFormContext<UpsertEventRequestDTO>();
 
-  const prefillVenueInfo = (venueName: string | null) => {
-    const venueNameTrimmed = venueName?.trim();
-    if (venueNameTrimmed && venueNameTrimmed in venues) {
-      const existingVenue = venues[venueNameTrimmed];
-      setValue("location", existingVenue.location);
-      setValue("venuePhone", existingVenue?.phoneNumber || undefined);
-      setValue("venueFacebookUrl", existingVenue?.facebookUrl || undefined);
-      setValue("venueInstagramUrl", existingVenue?.instagramUrl || undefined);
-      setValue("venueWebsiteUrl", existingVenue?.websiteUrl || undefined);
-    }
-  };
+  const { venues, setSearchTerm: setVenueSearch } = useVenuesSearch();
+  const { bands, setSearchTerm: setBandSearch } = useBandsSearch();
 
-  const prefillBandInfo = (bandName: string | null) => {
-    const bandNameTrimmed = bandName?.trim();
-    if (bandNameTrimmed && bandNameTrimmed in bands) {
-      const existingBand = bands[bandNameTrimmed];
-      setValue("genres", existingBand.genres);
-      setValue("bandType", existingBand.bandType);
-      setValue("tributeBandName", existingBand.tributeBandName || undefined);
-      setValue("bandFacebookUrl", existingBand?.facebookUrl || undefined);
-      setValue("bandInstagramUrl", existingBand?.instagramUrl || undefined);
-      setValue("bandWebsiteUrl", existingBand?.websiteUrl || undefined);
+  const enteredVenueName = watch("venueName") || "";
+  const enteredBandName = watch("bandName") || "";
+
+  useEffect(() => {
+    setVenueSearch(enteredVenueName);
+  }, [enteredVenueName, setVenueSearch]);
+
+  useEffect(() => {
+    setBandSearch(enteredBandName);
+  }, [enteredBandName, setBandSearch]);
+
+  useEffect(() => {
+    // Prefill venue info
+    const venueNameNormalized = enteredVenueName.trim().toLocaleLowerCase();
+    const matchedVenue = venues.find(
+      (venue) =>
+        venue.venueName.trim().toLocaleLowerCase() === venueNameNormalized
+    );
+    if (matchedVenue) {
+      setValue("location", matchedVenue.location);
+      setValue("venuePhone", matchedVenue?.phoneNumber || undefined);
+      setValue("venueFacebookUrl", matchedVenue?.facebookUrl || undefined);
+      setValue("venueInstagramUrl", matchedVenue?.instagramUrl || undefined);
+      setValue("venueWebsiteUrl", matchedVenue?.websiteUrl || undefined);
     }
-  };
+  }, [enteredVenueName, venues, setValue]);
+
+  useEffect(() => {
+    // Prefill band info
+    const bandNameNormalized = enteredBandName.trim().toLocaleLowerCase();
+    const matchedBand = bands.find(
+      (band) => band.bandName.trim().toLocaleLowerCase() === bandNameNormalized
+    );
+    if (matchedBand) {
+      setValue("genres", matchedBand.genres);
+      setValue("bandType", matchedBand.bandType);
+      setValue("tributeBandName", matchedBand.tributeBandName || undefined);
+      setValue("bandFacebookUrl", matchedBand?.facebookUrl || undefined);
+      setValue("bandInstagramUrl", matchedBand?.instagramUrl || undefined);
+      setValue("bandWebsiteUrl", matchedBand?.websiteUrl || undefined);
+    }
+  }, [enteredBandName, bands, setValue]);
 
   return (
     <Box
@@ -118,9 +138,8 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               id="venue-name-input"
               label="Venue Name"
               error={!!errors.venueName}
-              options={Object.keys(venues)}
+              options={venues.map((venue) => venue.venueName)}
               rhfName="venueName"
-              valueChangeCallback={prefillVenueInfo}
               helperText={errors.venueName?.message}
             />
             <TextFieldWithAutofill
@@ -170,8 +189,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               id="band-name-input"
               label="Band/Performer Name *"
               error={!!errors.bandName}
-              options={Object.keys(bands)}
-              valueChangeCallback={prefillBandInfo}
+              options={bands.map((band) => band.bandName)}
               rhfName="bandName"
               helperText={errors.bandName?.message}
             />

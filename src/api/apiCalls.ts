@@ -6,7 +6,7 @@ import {
   BandWithEventsDTO,
   BandWithEventsDTOSchema,
 } from "@/dto/band/BandWithEvents.dto";
-import { GetBandsDTOSchema } from "@/dto/band/GetBands.dto";
+import { SearchBandsResponseDTOSchema } from "@/dto/band/GetBands.dto";
 import { CreateEventResponseDTOSchema } from "@/dto/event/CreateEventResponse.dto";
 import { MultiEventsResponseDTOSchema } from "@/dto/event/MultiEventsResponse.dto";
 import {
@@ -14,7 +14,7 @@ import {
   UpsertEventRequestDTOSchema,
 } from "@/dto/event/UpsertEventRequest.dto";
 import { LocationDTOSchema } from "@/dto/location/Location.dto";
-import { GetVenuesDTOSchema } from "@/dto/venue/GetVenues.dto";
+import { SearchVenuesResponseDTOSchema } from "@/dto/venue/GetVenues.dto";
 import {
   VenueWithEventsDTO,
   VenueWithEventsDTOSchema,
@@ -24,14 +24,20 @@ import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 
-export const getBands = async () => {
-  const { data } = await axios.get(`${BASE_URL}/api/bands`);
-  return GetBandsDTOSchema.parse(data);
+export const searchBands = async (bandNameQuery: string) => {
+  const encodedQuery = encodeURIComponent(bandNameQuery);
+  const { data } = await axios.get(
+    `${BASE_URL}/api/bands/search/${encodedQuery}`
+  );
+  return SearchBandsResponseDTOSchema.parse(data);
 };
 
-export const getVenues = async () => {
-  const { data } = await axios.get(`${BASE_URL}/api/venues`);
-  return GetVenuesDTOSchema.parse(data);
+export const searchVenues = async (venueNameQuery: string) => {
+  const encodedQuery = encodeURIComponent(venueNameQuery);
+  const { data } = await axios.get(
+    `${BASE_URL}/api/venues/search/${encodedQuery}`
+  );
+  return SearchVenuesResponseDTOSchema.parse(data);
 };
 
 export const getEventByEventCode = async (eventCode: string) => {
@@ -57,7 +63,10 @@ export const createEvent = async (data: UpsertEventRequestDTOInput) => {
   return CreateEventResponseDTOSchema.parse(response.data);
 };
 
-export const postVideo = async (bandId: string, data: AddVideoRequestDTO) => {
+export const postVideo = async (
+  bandId: number | null,
+  data: AddVideoRequestDTO
+) => {
   const dataValidated = AddVideoRequestDTOSchema.parse(data);
   await axios.post(`${BASE_URL}/api/bands/${bandId}/add-video`, dataValidated);
 };
