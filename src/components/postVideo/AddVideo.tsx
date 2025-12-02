@@ -1,7 +1,8 @@
 "use client";
 
 import { postVideo } from "@/api/apiCalls";
-import { useBandContext } from "@/context/BandContext";
+import { BandDTO } from "@/dto/band/Band.dto";
+import { useBandsSearch } from "@/hooks/useBandsSearch";
 import {
   Autocomplete,
   Box,
@@ -16,23 +17,29 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface AddVideoProps {
-  bandToPostFor: string | null;
-  bandIdToPostFor: string | null;
+  bandNameToPostFor: string | null;
+  bandIdToPostFor: number | null;
 }
 
 export default function AddVideo({
-  bandToPostFor,
+  bandNameToPostFor,
   bandIdToPostFor,
 }: AddVideoProps) {
-  const [band, setBand] = useState<string | null>(bandToPostFor);
-  const [bandId, setBandId] = useState<string | null>(bandIdToPostFor);
+  const { searchTerm, setSearchTerm, bands, isBandsLoading } = useBandsSearch();
+
+  const [band, setBand] = useState<Partial<BandDTO> | null>(
+    bandNameToPostFor && bandIdToPostFor
+      ? {
+          bandName: bandNameToPostFor,
+          id: Number(bandIdToPostFor),
+        }
+      : null
+  );
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
 
-  const { bands } = useBandContext();
-
   const router = useRouter();
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: () => postVideo(bandId ?? "", { youtubeUrl: youtubeUrl }),
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: () => postVideo(band?.id || null, { youtubeUrl: youtubeUrl }),
     onSuccess: () => {
       router.push(`/post/video/success`);
     },
@@ -65,19 +72,19 @@ export default function AddVideo({
         </Stack>
         <Autocomplete
           fullWidth
-          options={Object.keys(bands)}
+          loading={isBandsLoading}
+          loadingText="Loading..."
+          options={bands}
+          filterOptions={(options) => options}
+          getOptionKey={(option) => option?.id ?? ""}
+          getOptionLabel={(option) => option.bandName ?? ""}
+          noOptionsText={searchTerm ? "No bands found" : "Search for a band"}
           renderInput={(params) => (
             <TextField {...params} label="Band/Performer" />
           )}
+          onInputChange={(_, newSearchTerm) => setSearchTerm(newSearchTerm)}
           value={band}
-          onChange={(_, newBand) => {
-            setBand(newBand);
-            if (newBand) {
-              setBandId(String(bands[newBand].id));
-            } else {
-              setBandId(null);
-            }
-          }}
+          onChange={(_, newBand) => setBand(newBand)}
         />
         <TextField
           value={youtubeUrl}
@@ -93,7 +100,7 @@ export default function AddVideo({
             color="primary"
             size="large"
             onClick={() => {
-              if (bandId && youtubeUrl.length > 0) {
+              if (band?.id && youtubeUrl.length > 0) {
                 if (
                   youtubeUrl.indexOf("youtube.com") != -1 ||
                   youtubeUrl.indexOf("youtu.be") != -1

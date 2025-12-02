@@ -2,22 +2,27 @@
 
 import { useAdminApi } from "@/hooks/useAdminApi";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminEventCard from "./AdminEventCard";
-import { useVenueContext } from "@/context/VenueContext";
-import { useBandContext } from "@/context/BandContext";
 import { VenueDTO } from "@/dto/venue/Venue.dto";
 import { BandDTO } from "@/dto/band/Band.dto";
 import { BandTypeLabels } from "@/newTypes/BandType";
+import { useBandsSearch } from "@/hooks/useBandsSearch";
+import { useVenuesSearch } from "@/hooks/useVenuesSearch";
 
 export default function AdminSearch() {
   const { allFutureEventsQuery } = useAdminApi();
   const allFutureEvents = allFutureEventsQuery.data?.events;
 
-  const { venues } = useVenueContext();
-  const { bands } = useBandContext();
-
   const [search, setSearch] = useState<string>("");
+
+  const { bands, setSearchTerm: setBandSearch } = useBandsSearch();
+  const { venues, setSearchTerm: setVenueSearch } = useVenuesSearch();
+
+  useEffect(() => {
+    setBandSearch(search);
+    setVenueSearch(search);
+  }, [search, setBandSearch, setVenueSearch]);
 
   return (
     <Stack
@@ -81,21 +86,13 @@ export default function AdminSearch() {
           }}
         >
           <Typography variant="h4">Venues</Typography>
-          {Object.values(venues)
-            .filter(
-              (venue) =>
-                search.length > 3 &&
-                venue.venueName
-                  .toLocaleLowerCase()
-                  .includes(search.toLocaleLowerCase())
-            )
-            .map((venue) => {
-              return (
-                <Box key={venue.id} width={"100%"}>
-                  <VenueCard venue={venue} />
-                </Box>
-              );
-            })}
+          {venues.map((venue) => {
+            return (
+              <Box key={venue.id} width={"100%"}>
+                <VenueCard venue={venue} />
+              </Box>
+            );
+          })}
         </Stack>
         <Stack
           direction={"column"}
@@ -108,21 +105,13 @@ export default function AdminSearch() {
           }}
         >
           <Typography variant="h4">Bands</Typography>
-          {Object.values(bands)
-            .filter(
-              (band) =>
-                search.length > 3 &&
-                band.bandName
-                  .toLocaleLowerCase()
-                  .includes(search.toLocaleLowerCase())
-            )
-            .map((band) => {
-              return (
-                <Box key={band.id} width={"100%"}>
-                  <BandCard band={band} />
-                </Box>
-              );
-            })}
+          {bands.map((band) => {
+            return (
+              <Box key={band.id} width={"100%"}>
+                <BandCard band={band} />
+              </Box>
+            );
+          })}
         </Stack>
       </Stack>
     </Stack>

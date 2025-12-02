@@ -10,7 +10,6 @@ interface FreeSoloAutocompleteProps<T extends FieldValues> {
   label: string;
   options: string[];
   error: boolean;
-  valueChangeCallback: (newValue: string | null) => void;
   helperText?: string;
 }
 
@@ -41,7 +40,6 @@ export default function FreeSoloAutocomplete<T extends FieldValues>(
           )}
           onInputChange={(_, newInputValue) => {
             onChange(newInputValue);
-            props.valueChangeCallback(newInputValue);
           }}
           value={value ? value : ""}
         />
