@@ -29,6 +29,7 @@ export default function FreeSoloAutocomplete<T extends FieldValues>(
           multiple={false}
           id={props.id}
           options={value ? props.options : []}
+          filterOptions={(options) => options}
           renderInput={(params) => (
             <TextField
               {...params}
