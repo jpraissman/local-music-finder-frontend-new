@@ -27,7 +27,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 export const searchBands = async (bandNameQuery: string) => {
   const encodedQuery = encodeURIComponent(bandNameQuery);
   const { data } = await axios.get(
-    `${BASE_URL}/api/bands/search?bandNameQuery${encodedQuery}`
+    `${BASE_URL}/api/bands/search?bandNameQuery=${encodedQuery}`
   );
   return SearchBandsResponseDTOSchema.parse(data);
 };
