@@ -12,7 +12,7 @@ export function useVenuesSearch() {
     () =>
       throttle((newSearchTerm: string) => {
         setSearchTerm(newSearchTerm);
-      }, 1000),
+      }, 500),
     []
   );
 
