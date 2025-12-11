@@ -136,7 +136,9 @@ export default function BandMerge() {
         <Stack direction={"column"} spacing={"10px"} sx={{ width: "750px" }}>
           <FormProvider {...formMethods}>
             <TextField
-              {...formMethods.register("bandName")}
+              {...formMethods.register("bandName", {
+                setValueAs: (v) => (v ? v : undefined),
+              })}
               label="Band Name"
               error={!!formMethods.formState.errors.bandName}
               helperText={formMethods.formState.errors.bandName?.message}
@@ -152,7 +154,9 @@ export default function BandMerge() {
               helperText={formMethods.formState.errors.bandType?.message}
             />
             <TextField
-              {...formMethods.register("tributeBandName")}
+              {...formMethods.register("tributeBandName", {
+                setValueAs: (v) => (v ? v : undefined),
+              })}
               label="Tribute Band Name"
               error={!!formMethods.formState.errors.tributeBandName}
               helperText={formMethods.formState.errors.tributeBandName?.message}
@@ -166,21 +170,27 @@ export default function BandMerge() {
               rhfName="genres"
             />
             <TextField
-              {...formMethods.register("facebookUrl")}
+              {...formMethods.register("facebookUrl", {
+                setValueAs: (v) => (v ? v : undefined),
+              })}
               label="Facebook Url"
               error={!!formMethods.formState.errors.facebookUrl}
               helperText={formMethods.formState.errors.facebookUrl?.message}
               focused={!!formMethods.watch("facebookUrl")}
             />
             <TextField
-              {...formMethods.register("instagramUrl")}
+              {...formMethods.register("instagramUrl", {
+                setValueAs: (v) => (v ? v : undefined),
+              })}
               label="Instagram Url"
               error={!!formMethods.formState.errors.instagramUrl}
               helperText={formMethods.formState.errors.instagramUrl?.message}
               focused={!!formMethods.watch("instagramUrl")}
             />
             <TextField
-              {...formMethods.register("websiteUrl")}
+              {...formMethods.register("websiteUrl", {
+                setValueAs: (v) => (v ? v : undefined),
+              })}
               label="Website Url"
               error={!!formMethods.formState.errors.websiteUrl}
               helperText={formMethods.formState.errors.websiteUrl?.message}
