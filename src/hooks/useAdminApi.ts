@@ -1,6 +1,8 @@
 "use client";
 
+import { BandDTO, BandDTOSchema } from "@/dto/band/Band.dto";
 import { MultiAdminEventsResponseDTOSchema } from "@/dto/event/MultiAdminEventsResponse.dto";
+import { VenueDTO, VenueDTOSchema } from "@/dto/venue/Venue.dto";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -55,10 +57,52 @@ export function useAdminApi() {
     },
   });
 
+  const mergeBands = useCallback(
+    async ({
+      data,
+      band1Id,
+      band2Id,
+    }: {
+      data: BandDTO;
+      band1Id: number;
+      band2Id: number;
+    }) => {
+      const dataValidated = BandDTOSchema.parse(data);
+      await axios.post(
+        `${BASE_URL}/api/admin/band/merge?band1Id=${band1Id}&band2Id=${band2Id}`,
+        dataValidated,
+        { headers: { "Admin-Key": adminKey } }
+      );
+    },
+    [adminKey]
+  );
+
+  const mergeVenues = useCallback(
+    async ({
+      data,
+      venue1Id,
+      venue2Id,
+    }: {
+      data: VenueDTO;
+      venue1Id: number;
+      venue2Id: number;
+    }) => {
+      const dataValidated = VenueDTOSchema.parse(data);
+      await axios.post(
+        `${BASE_URL}/api/admin/venue/merge?venue1Id=${venue1Id}&venue2Id=${venue2Id}`,
+        dataValidated,
+        { headers: { "Admin-Key": adminKey } }
+      );
+    },
+    [adminKey]
+  );
+
   return {
     downloadEventsCsv,
     downloadBandsCsv,
     downloadVenuesCsv,
     allFutureEventsQuery,
+    mergeBands,
+    mergeVenues,
   };
 }
