@@ -9,6 +9,7 @@ import { BandDTO } from "@/dto/band/Band.dto";
 import { BandTypeLabels } from "@/newTypes/BandType";
 import { useBandsSearch } from "@/hooks/useBandsSearch";
 import { useVenuesSearch } from "@/hooks/useVenuesSearch";
+import Link from "next/link";
 
 export default function AdminSearch() {
   const { allFutureEventsQuery } = useAdminApi();
@@ -140,9 +141,11 @@ function BandCard({ band }: { band: BandDTO }) {
       <Typography variant="body2">Facebook: {band.facebookUrl}</Typography>
       <Typography variant="body2">Instagram: {band.instagramUrl}</Typography>
       <Typography variant="body2">Website: {band.websiteUrl}</Typography>
-      <Button variant="contained" color={"secondary"}>
-        Edit Band
-      </Button>
+      <Link href={`/admin/search/band/${band.id}`}>
+        <Button variant="contained" color={"secondary"}>
+          Edit Band
+        </Button>
+      </Link>
     </Stack>
   );
 }
@@ -168,9 +171,11 @@ function VenueCard({ venue }: { venue: VenueDTO }) {
       <Typography variant="body2">Facebook: {venue.facebookUrl}</Typography>
       <Typography variant="body2">Instagram: {venue.instagramUrl}</Typography>
       <Typography variant="body2">Website: {venue.websiteUrl}</Typography>
-      <Button variant="contained" color={"secondary"}>
-        Edit Venue
-      </Button>
+      <Link href={`/admin/search/venue/${venue.id}`}>
+        <Button variant="contained" color={"secondary"}>
+          Edit Venue
+        </Button>
+      </Link>
     </Stack>
   );
 }

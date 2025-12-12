@@ -46,6 +46,10 @@ export default function VenueMerge() {
       alert("You must select two venues to merge");
       return;
     }
+    if (venue1.id === venue2.id) {
+      alert("You must select different venues");
+      return;
+    }
     mergeVenuesMutation.mutate({
       data,
       venue1Id: venue1.id,
@@ -57,7 +61,7 @@ export default function VenueMerge() {
     if (!venue) {
       setVenue1(null);
       setVenue2(null);
-      formMethods.reset();
+      formMethods.reset({ location: {} });
       return;
     }
 
@@ -68,7 +72,9 @@ export default function VenueMerge() {
     );
     formMethods.setValue(
       "location",
-      formMethods.watch("location") || venue.location
+      formMethods.watch("location.locationId")
+        ? formMethods.watch("location")
+        : venue.location
     );
     formMethods.setValue("town", formMethods.watch("town") || venue.town);
     formMethods.setValue("county", formMethods.watch("county") || venue.county);

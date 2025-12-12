@@ -97,6 +97,43 @@ export function useAdminApi() {
     [adminKey]
   );
 
+  const deleteBandVideo = useCallback(
+    async ({
+      bandId,
+      youtubevideoId,
+    }: {
+      bandId: number;
+      youtubevideoId: string;
+    }) => {
+      console.log("Made it here");
+      await axios.delete(
+        `${BASE_URL}/api/admin/band/${bandId}/video/${youtubevideoId}`,
+        { headers: { "Admin-Key": adminKey } }
+      );
+    },
+    [adminKey]
+  );
+
+  const editBand = useCallback(
+    async (data: BandDTO) => {
+      const dataValidated = BandDTOSchema.parse(data);
+      await axios.put(`${BASE_URL}/api/admin/band/edit`, dataValidated, {
+        headers: { "Admin-Key": adminKey },
+      });
+    },
+    [adminKey]
+  );
+
+  const editVenue = useCallback(
+    async (data: VenueDTO) => {
+      const dataValidated = VenueDTOSchema.parse(data);
+      await axios.put(`${BASE_URL}/api/admin/venue/edit`, dataValidated, {
+        headers: { "Admin-Key": adminKey },
+      });
+    },
+    [adminKey]
+  );
+
   return {
     downloadEventsCsv,
     downloadBandsCsv,
@@ -104,5 +141,8 @@ export function useAdminApi() {
     allFutureEventsQuery,
     mergeBands,
     mergeVenues,
+    deleteBandVideo,
+    editBand,
+    editVenue,
   };
 }
