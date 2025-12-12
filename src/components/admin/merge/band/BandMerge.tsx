@@ -49,6 +49,10 @@ export default function BandMerge() {
       alert("You must select two bands to merge");
       return;
     }
+    if (band1.id === band2.id) {
+      alert("You must select different bands");
+      return;
+    }
     mergeBandsMutation.mutate({ data, band1Id: band1.id, band2Id: band2.id });
   });
 
