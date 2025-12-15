@@ -90,11 +90,11 @@ export default function VenueMerge() {
 
   useEffect(() => {
     autofillFields(venue1);
-  }, [venue1, autofillFields]);
+  }, [venue1]);
 
   useEffect(() => {
     autofillFields(venue2);
-  }, [venue2, autofillFields]);
+  }, [venue2]);
 
   return (
     <Box sx={{ width: "100%", paddingX: "100px" }}>

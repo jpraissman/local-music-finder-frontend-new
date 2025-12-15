@@ -95,11 +95,11 @@ export default function BandMerge() {
 
   useEffect(() => {
     autofillFields(band1);
-  }, [band1, autofillFields]);
+  }, [band1]);
 
   useEffect(() => {
     autofillFields(band2);
-  }, [band2, autofillFields]);
+  }, [band2]);
 
   return (
     <Box sx={{ width: "100%", paddingX: "100px" }}>
