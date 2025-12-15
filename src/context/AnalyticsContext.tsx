@@ -92,7 +92,7 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
     setUserIdOnMount();
     setCampaignIdOnMount();
     setUrlEntryOnMount();
-  }, []);
+  }, [setUserIdOnMount, setCampaignIdOnMount, setUrlEntryOnMount]);
 
   useEffect(() => {
     if (campaignId && pathname) {

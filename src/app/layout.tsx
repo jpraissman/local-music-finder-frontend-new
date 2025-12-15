@@ -9,6 +9,7 @@ import WebsiteFooter from "@/components/WebsiteFooter";
 import NavBar from "@/components/navBar/NavBar";
 import { FiltersProvider } from "@/context/FiltersContext";
 import { AnalyticsProvider } from "@/context/AnalyticsContext";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,19 +42,21 @@ export default async function RootLayout({
         </head>
         <body className={inter.className} style={{ margin: 0 }}>
           <ThemeWrapper>
-            <AnalyticsProvider>
-              <FiltersProvider>
-                <Box sx={{ minHeight: "100vh" }}>
-                  <NavBar />
-                  <Box sx={{ paddingTop: "75px" }}>
-                    <div>{children}</div>
+            <Suspense fallback={null}>
+              <AnalyticsProvider>
+                <FiltersProvider>
+                  <Box sx={{ minHeight: "100vh" }}>
+                    <NavBar />
+                    <Box sx={{ paddingTop: "75px" }}>
+                      <div>{children}</div>
+                    </Box>
                   </Box>
-                </Box>
-                <Box sx={{ paddingTop: "100px" }}>
-                  <WebsiteFooter />
-                </Box>
-              </FiltersProvider>
-            </AnalyticsProvider>
+                  <Box sx={{ paddingTop: "100px" }}>
+                    <WebsiteFooter />
+                  </Box>
+                </FiltersProvider>
+              </AnalyticsProvider>
+            </Suspense>
           </ThemeWrapper>
         </body>
       </html>

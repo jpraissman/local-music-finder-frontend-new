@@ -24,14 +24,6 @@ export default function BandMerge() {
     defaultValues: { genres: [] },
   });
 
-  useEffect(() => {
-    autofillFields(band1);
-  }, [band1]);
-
-  useEffect(() => {
-    autofillFields(band2);
-  }, [band2]);
-
   const mergeBandsMutation = useMutation({
     mutationFn: mergeBands,
     mutationKey: ["mergeBands", band1?.id, band2?.id],
@@ -100,6 +92,14 @@ export default function BandMerge() {
       formMethods.watch("youtubeVideoIds") || band.youtubeVideoIds
     );
   };
+
+  useEffect(() => {
+    autofillFields(band1);
+  }, [band1, autofillFields]);
+
+  useEffect(() => {
+    autofillFields(band2);
+  }, [band2, autofillFields]);
 
   return (
     <Box sx={{ width: "100%", paddingX: "100px" }}>
