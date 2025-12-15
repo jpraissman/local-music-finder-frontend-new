@@ -1,5 +1,10 @@
 "use client";
 
+import { CampaignQueryResponseDTOSchema } from "@/dto/analytics/CampaignQueryResponse.dto";
+import { CampaignUserQueryDTO } from "@/dto/analytics/CampaignUserQuery.dto";
+import { CreateCampaignDTO } from "@/dto/analytics/CreateCampaign.dto";
+import { CreateCampaignResponseDTOSchema } from "@/dto/analytics/CreateCampaignResponse.dto";
+import { GetAllCampaignsDTOSchema } from "@/dto/analytics/GetAllCampaignsResponse.dto";
 import { BandDTO, BandDTOSchema } from "@/dto/band/Band.dto";
 import { MultiAdminEventsResponseDTOSchema } from "@/dto/event/MultiAdminEventsResponse.dto";
 import { VenueDTO, VenueDTOSchema } from "@/dto/venue/Venue.dto";
@@ -9,6 +14,7 @@ import Cookies from "js-cookie";
 import { useCallback, useMemo } from "react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
+const ANALYTICS_BASE_URL = process.env.NEXT_PUBLIC_ANALYTICS_BASE_URL || "";
 
 export function useAdminApi() {
   const adminKey = Cookies.get("adminKey") ?? null;
@@ -134,6 +140,49 @@ export function useAdminApi() {
     [adminKey]
   );
 
+  // Analytics calls
+
+  const getAllCampaigns = useCallback(async () => {
+    const { data } = await axios.get(
+      `${ANALYTICS_BASE_URL}/api/admin/campaigns`,
+      {
+        headers: { "Admin-Key": adminKey },
+      }
+    );
+    const dataValidated = GetAllCampaignsDTOSchema.parse(data);
+    return dataValidated;
+  }, [adminKey]);
+
+  const createCampaign = useCallback(
+    async (data: CreateCampaignDTO) => {
+      const { data: response } = await axios.post(
+        `${ANALYTICS_BASE_URL}/api/admin/campaign`,
+        data,
+        {
+          headers: { "Admin-Key": adminKey },
+        }
+      );
+      const responseValidated = CreateCampaignResponseDTOSchema.parse(response);
+      return responseValidated;
+    },
+    [adminKey]
+  );
+
+  const queryCampaignUserEvents = useCallback(
+    async (data: CampaignUserQueryDTO) => {
+      const { data: response } = await axios.post(
+        `${ANALYTICS_BASE_URL}/api/admin/campaign/query`,
+        data,
+        {
+          headers: { "Admin-Key": adminKey },
+        }
+      );
+      const responseValidated = CampaignQueryResponseDTOSchema.parse(response);
+      return responseValidated;
+    },
+    [adminKey]
+  );
+
   return {
     downloadEventsCsv,
     downloadBandsCsv,
@@ -144,5 +193,8 @@ export function useAdminApi() {
     deleteBandVideo,
     editBand,
     editVenue,
+    getAllCampaigns,
+    createCampaign,
+    queryCampaignUserEvents,
   };
 }

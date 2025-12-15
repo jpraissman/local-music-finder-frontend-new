@@ -21,14 +21,6 @@ export default function VenueMerge() {
     resolver: zodResolver(VenueDTOSchema),
   });
 
-  useEffect(() => {
-    autofillFields(venue1);
-  }, [venue1]);
-
-  useEffect(() => {
-    autofillFields(venue2);
-  }, [venue2]);
-
   const mergeVenuesMutation = useMutation({
     mutationFn: mergeVenues,
     mutationKey: ["mergeVenues", venue1?.id, venue2?.id],
@@ -95,6 +87,14 @@ export default function VenueMerge() {
       formMethods.watch("websiteUrl") || venue.websiteUrl
     );
   };
+
+  useEffect(() => {
+    autofillFields(venue1);
+  }, [venue1, autofillFields]);
+
+  useEffect(() => {
+    autofillFields(venue2);
+  }, [venue2, autofillFields]);
 
   return (
     <Box sx={{ width: "100%", paddingX: "100px" }}>
