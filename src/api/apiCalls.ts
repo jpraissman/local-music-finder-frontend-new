@@ -1,4 +1,9 @@
 import {
+  CreateCampaignUserEventDTO,
+  CreateCampaignUserEventDTOSchema,
+} from "@/dto/analytics/CreateCampaignUserEvent.dto";
+import { CreateUserResponseDTOSchema } from "@/dto/analytics/CreateUserResponse.dto";
+import {
   AddVideoRequestDTO,
   AddVideoRequestDTOSchema,
 } from "@/dto/band/AddVideoRequest.dto";
@@ -23,6 +28,7 @@ import { sortEventsByDate } from "@/lib/sort-events";
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
+const ANALYTICS_BASE_URL = process.env.NEXT_PUBLIC_ANALYTICS_BASE_URL || "";
 
 export const searchBands = async (bandNameQuery: string) => {
   const encodedQuery = encodeURIComponent(bandNameQuery);
@@ -134,4 +140,20 @@ export const getEventsCsv = async (key: string | undefined) => {
   });
 
   return data;
+};
+
+// Analytics calls
+
+export const createUser = async () => {
+  const { data } = await axios.post(`${ANALYTICS_BASE_URL}/api/event/user`);
+  const dataValidated = CreateUserResponseDTOSchema.parse(data);
+  return dataValidated;
+};
+
+export const sendUrlEntryEvent = async (data: CreateCampaignUserEventDTO) => {
+  const dataValidated = CreateCampaignUserEventDTOSchema.parse(data);
+  await axios.post(
+    `${ANALYTICS_BASE_URL}/api/event/campaign-user`,
+    dataValidated
+  );
 };

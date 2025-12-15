@@ -7,6 +7,7 @@ import MergeIcon from "@mui/icons-material/Merge";
 import SearchIcon from "@mui/icons-material/Search";
 import AdminCard from "./AdminCard";
 import { useRouter } from "next/navigation";
+import { Analytics } from "@mui/icons-material";
 
 export default function AdminHome() {
   const router = useRouter();
@@ -40,6 +41,18 @@ export default function AdminHome() {
           icon={<SearchIcon />}
           text="Search"
           onClick={() => handleAdminCardClick("/admin/search")}
+        />
+      </Stack>
+      <Stack
+        direction="row"
+        spacing={10}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <AdminCard
+          icon={<Analytics />}
+          text="Analytics"
+          onClick={() => handleAdminCardClick("/admin/analytics")}
         />
       </Stack>
     </Stack>

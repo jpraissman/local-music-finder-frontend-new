@@ -1,5 +1,4 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function Page() {
