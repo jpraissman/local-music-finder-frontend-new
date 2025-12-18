@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const CampaignUserQueryDTOSchema = z.object({
+export const AnalyticsQueryDTOSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   platform: z.string().nullable(),
@@ -8,4 +8,4 @@ export const CampaignUserQueryDTOSchema = z.object({
   postMemo: z.string().nullable(),
 });
 
-export type CampaignUserQueryDTO = z.infer<typeof CampaignUserQueryDTOSchema>;
+export type AnalyticsQueryDTO = z.infer<typeof AnalyticsQueryDTOSchema>;
