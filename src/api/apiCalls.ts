@@ -26,7 +26,10 @@ import {
 } from "@/dto/venue/VenueWithEvents.dto";
 import { sortEventsByDate } from "@/lib/sort-events";
 import axios from "axios";
-import { CreateSearchUserEventDTO } from "@/dto/analytics/sendEvent/CreateSearchUserEvent.dto";
+import {
+  CreateSearchUserEventDTO,
+  CreateSearchUserEventDTOSchema,
+} from "@/dto/analytics/sendEvent/CreateSearchUserEvent.dto";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 const ANALYTICS_BASE_URL = process.env.NEXT_PUBLIC_ANALYTICS_BASE_URL || "";
@@ -160,7 +163,7 @@ export const sendUrlEntryEvent = async (data: CreateCampaignUserEventDTO) => {
 };
 
 export const sendSearchUserEvent = async (data: CreateSearchUserEventDTO) => {
-  const dataValidated = CreateCampaignUserEventDTOSchema.parse(data);
+  const dataValidated = CreateSearchUserEventDTOSchema.parse(data);
   await axios.post(
     `${ANALYTICS_BASE_URL}/api/event/search-user`,
     dataValidated
