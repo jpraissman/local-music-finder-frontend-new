@@ -45,6 +45,14 @@ export default function CreateCampaign() {
       return;
     }
 
+    if (
+      platform.toLocaleLowerCase() === "all" ||
+      subgroup.toLocaleLowerCase() === "all" ||
+      postMemo.toLocaleLowerCase() === "all"
+    ) {
+      alert('You cannot use the name "All" for any fields');
+    }
+
     createCampaignMutation.mutate({ platform, subgroup, postMemo });
   };
 

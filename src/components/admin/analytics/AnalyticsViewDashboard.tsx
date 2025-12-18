@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryDetailDTO } from "@/dto/analytics/CampaignQueryResponse.dto";
+import { QueryDetailDTO } from "@/dto/analytics/queryResponse/QueryDetail.dto";
 import { useAdminApi } from "@/hooks/useAdminApi";
 import {
   Autocomplete,
@@ -55,16 +55,16 @@ const SimpleTable = ({
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">Total Users</TableCell>
-            <TableCell align="right">Unique Users</TableCell>
+            <TableCell align="right">Total</TableCell>
+            <TableCell align="right">Unique</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.name}>
               <TableCell>{row.name}</TableCell>
-              <TableCell align="right">{row.totalUsers}</TableCell>
-              <TableCell align="right">{row.totalUniqueUsers}</TableCell>
+              <TableCell align="right">{row.total}</TableCell>
+              <TableCell align="right">{row.totalUnique}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -74,9 +74,10 @@ const SimpleTable = ({
 );
 
 export default function AnalyticsViewDashboard() {
-  const { getAllCampaigns, queryCampaignUserEvents } = useAdminApi();
+  const { getAllCampaigns, queryCampaignUserEvents, querySearchUserEvents } =
+    useAdminApi();
 
-  const { data: campaigns, isLoading } = useQuery({
+  const { data: campaigns } = useQuery({
     queryKey: ["getAllCampaigns"],
     queryFn: getAllCampaigns,
   });
@@ -86,46 +87,95 @@ export default function AnalyticsViewDashboard() {
   const [postMemo, setPostMemo] = useState<string | null>("All");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
-  const { data: analyticsData, isLoading: analyticsDataIsLoading } = useQuery({
-    queryKey: [
-      "queryCampaignUserEvents",
-      platform,
-      subgroup,
-      postMemo,
-      dateRange,
-    ],
-    queryFn: () => {
-      if (
-        dateRange &&
-        dateRange.to &&
-        dateRange.from &&
-        platform &&
-        subgroup &&
-        dateRange
-      ) {
-        const startDate = formatLocalDate(dateRange.from);
-        const endDate = formatLocalDate(dateRange.to);
-        const platformToUse = platform === "All" ? null : platform;
-        const subgroupToUse = subgroup === "All" ? null : subgroup;
-        const postMemoToUse = postMemo === "All" ? null : postMemo;
-        return queryCampaignUserEvents({
-          platform: platformToUse,
-          subgroup: subgroupToUse,
-          postMemo: postMemoToUse,
-          startDate,
-          endDate,
-        });
-      }
+  const { data: campaignUserData, isLoading: campaignUserDataIsLoading } =
+    useQuery({
+      queryKey: [
+        "queryCampaignUserEvents",
+        platform,
+        subgroup,
+        postMemo,
+        dateRange,
+      ],
+      queryFn: () => {
+        if (
+          dateRange &&
+          dateRange.to &&
+          dateRange.from &&
+          platform &&
+          subgroup &&
+          dateRange
+        ) {
+          const startDate = formatLocalDate(dateRange.from);
+          const endDate = formatLocalDate(dateRange.to);
+          const platformToUse = platform === "All" ? null : platform;
+          const subgroupToUse = subgroup === "All" ? null : subgroup;
+          const postMemoToUse = postMemo === "All" ? null : postMemo;
+          return queryCampaignUserEvents({
+            platform: platformToUse,
+            subgroup: subgroupToUse,
+            postMemo: postMemoToUse,
+            startDate,
+            endDate,
+          });
+        }
 
-      return { sublayerDetails: [], pathDetails: [] };
-    },
-  });
+        return {
+          totalUsers: -1,
+          totalUniqueUsers: -1,
+          sublayerDetails: [],
+          pathDetails: [],
+        };
+      },
+    });
 
-  if (isLoading) {
+  const { data: searchUserData, isLoading: searchUserDataIsLoading } = useQuery(
+    {
+      queryKey: [
+        "querySearchUserEvents",
+        platform,
+        subgroup,
+        postMemo,
+        dateRange,
+      ],
+      queryFn: () => {
+        if (
+          dateRange &&
+          dateRange.to &&
+          dateRange.from &&
+          platform &&
+          subgroup &&
+          dateRange
+        ) {
+          const startDate = formatLocalDate(dateRange.from);
+          const endDate = formatLocalDate(dateRange.to);
+          const platformToUse = platform === "All" ? null : platform;
+          const subgroupToUse = subgroup === "All" ? null : subgroup;
+          const postMemoToUse = postMemo === "All" ? null : postMemo;
+          return querySearchUserEvents({
+            platform: platformToUse,
+            subgroup: subgroupToUse,
+            postMemo: postMemoToUse,
+            startDate,
+            endDate,
+          });
+        }
+
+        return {
+          totalCustomSearches: -1,
+          totalUniqueUsersWhoSearched: -1,
+          counties: [],
+          towns: [],
+          formattedAddresses: [],
+        };
+      },
+    }
+  );
+
+  if (campaignUserDataIsLoading || searchUserDataIsLoading) {
     return <Box sx={{ paddingTop: "100px" }}>Loading...</Box>;
   }
 
-  if (!campaigns) {
+  if (!campaigns || !searchUserData) {
     return (
       <Box sx={{ paddingTop: "100px" }}>Something went wrong. Try again.</Box>
     );
@@ -147,8 +197,15 @@ export default function AnalyticsViewDashboard() {
             )}
             renderInput={(params) => <TextField {...params} label="Platform" />}
             value={platform}
-            onInputChange={(_, newValue) => setPlatform(newValue)}
-            onChange={(_, newValue) => setPlatform(newValue)}
+            onChange={(_, newValue) => {
+              if (newValue === "All" || newValue === null) {
+                setPlatform("All");
+                setSubgroup("All");
+                setPostMemo("All");
+              } else {
+                setPlatform(newValue);
+              }
+            }}
           />
           <Autocomplete
             disabled={!platform}
@@ -164,8 +221,14 @@ export default function AnalyticsViewDashboard() {
             )}
             renderInput={(params) => <TextField {...params} label="Subgroup" />}
             value={subgroup}
-            onInputChange={(_, newValue) => setSubgroup(newValue)}
-            onChange={(_, newValue) => setSubgroup(newValue)}
+            onChange={(_, newValue) => {
+              if (newValue === "All" || newValue === null) {
+                setSubgroup("All");
+                setPostMemo("All");
+              } else {
+                setSubgroup(newValue);
+              }
+            }}
           />
           <Autocomplete
             disabled={!subgroup}
@@ -185,8 +248,13 @@ export default function AnalyticsViewDashboard() {
               <TextField {...params} label="Post Summary" />
             )}
             value={postMemo}
-            onInputChange={(_, newValue) => setPostMemo(newValue)}
-            onChange={(_, newValue) => setPostMemo(newValue)}
+            onChange={(_, newValue) => {
+              if (newValue === "All" || newValue === null) {
+                setPostMemo("All");
+              } else {
+                setPostMemo(newValue);
+              }
+            }}
           />
           <DayPicker
             mode="range"
@@ -197,13 +265,44 @@ export default function AnalyticsViewDashboard() {
           />
         </Stack>
         <Box>
+          <Stack direction={"column"} spacing={2}>
+            <Typography variant="h4">
+              Total User Clicks: {campaignUserData?.totalUsers}
+            </Typography>
+            <Typography variant="h4">
+              Total Unique User Clicks: {campaignUserData?.totalUniqueUsers}
+            </Typography>
+          </Stack>
           <SimpleTable
             title="Sublayer Details"
-            rows={analyticsData?.sublayerDetails ?? []}
+            rows={campaignUserData?.sublayerDetails ?? []}
           />
           <SimpleTable
             title="Path Details"
-            rows={analyticsData?.pathDetails ?? []}
+            rows={campaignUserData?.pathDetails ?? []}
+          />
+        </Box>
+        <Box paddingTop={"50px"}>
+          <Stack direction={"column"} spacing={2}>
+            <Typography variant="h4">
+              Total Custom Searchs: {searchUserData?.totalCustomSearches}
+            </Typography>
+            <Typography variant="h4">
+              Total Unique Users Who Searched:{" "}
+              {searchUserData?.totalUniqueUsersWhoSearched}
+            </Typography>
+          </Stack>
+          <SimpleTable
+            title="County Searches"
+            rows={searchUserData?.counties ?? []}
+          />
+          <SimpleTable
+            title="Town Searches"
+            rows={searchUserData?.towns ?? []}
+          />
+          <SimpleTable
+            title="Address Searches"
+            rows={searchUserData?.formattedAddresses ?? []}
           />
         </Box>
       </Stack>

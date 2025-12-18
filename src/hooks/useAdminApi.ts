@@ -1,7 +1,7 @@
 "use client";
 
-import { CampaignQueryResponseDTOSchema } from "@/dto/analytics/CampaignQueryResponse.dto";
-import { CampaignUserQueryDTO } from "@/dto/analytics/CampaignUserQuery.dto";
+import { CampaignUserQueryResponseDTOSchema } from "@/dto/analytics/queryResponse/CampaignUserQueryResponse.dto";
+import { AnalyticsQueryDTO } from "@/dto/analytics/AnalyticsQuery.dto";
 import { CreateCampaignDTO } from "@/dto/analytics/CreateCampaign.dto";
 import { CreateCampaignResponseDTOSchema } from "@/dto/analytics/CreateCampaignResponse.dto";
 import { GetAllCampaignsDTOSchema } from "@/dto/analytics/GetAllCampaignsResponse.dto";
@@ -11,7 +11,8 @@ import { VenueDTO, VenueDTOSchema } from "@/dto/venue/Venue.dto";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
+import { SearchUserQueryResponseDTOSchema } from "@/dto/analytics/queryResponse/SearchUserQueryResponse.dto";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 const ANALYTICS_BASE_URL = process.env.NEXT_PUBLIC_ANALYTICS_BASE_URL || "";
@@ -169,15 +170,32 @@ export function useAdminApi() {
   );
 
   const queryCampaignUserEvents = useCallback(
-    async (data: CampaignUserQueryDTO) => {
+    async (data: AnalyticsQueryDTO) => {
       const { data: response } = await axios.post(
-        `${ANALYTICS_BASE_URL}/api/admin/campaign/query`,
+        `${ANALYTICS_BASE_URL}/api/admin/query/campaign-user`,
         data,
         {
           headers: { "Admin-Key": adminKey },
         }
       );
-      const responseValidated = CampaignQueryResponseDTOSchema.parse(response);
+      const responseValidated =
+        CampaignUserQueryResponseDTOSchema.parse(response);
+      return responseValidated;
+    },
+    [adminKey]
+  );
+
+  const querySearchUserEvents = useCallback(
+    async (data: AnalyticsQueryDTO) => {
+      const { data: response } = await axios.post(
+        `${ANALYTICS_BASE_URL}/api/admin/query/search-user`,
+        data,
+        {
+          headers: { "Admin-Key": adminKey },
+        }
+      );
+      const responseValidated =
+        SearchUserQueryResponseDTOSchema.parse(response);
       return responseValidated;
     },
     [adminKey]
@@ -196,5 +214,6 @@ export function useAdminApi() {
     getAllCampaigns,
     createCampaign,
     queryCampaignUserEvents,
+    querySearchUserEvents,
   };
 }

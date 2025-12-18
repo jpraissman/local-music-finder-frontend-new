@@ -3,21 +3,29 @@
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import Cookies from "js-cookie";
-import { createUser, sendUrlEntryEvent } from "@/api/apiCalls";
+import {
+  createUser,
+  sendSearchUserEvent as sendSearchUserEventApiCall,
+  sendUrlEntryEvent,
+} from "@/api/apiCalls";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CreateCampaignUserEventDTO } from "@/dto/analytics/CreateCampaignUserEvent.dto";
+import { CreateCampaignUserEventDTO } from "@/dto/analytics/sendEvent/CreateCampaignUserEvent.dto";
 
 const GOOGLE_CAMPAIGN_ID = 1;
 const UNKNOWN_CAMPAIGN_ID = 2;
 const ONE_HOUR = 60 * 60 * 1000;
 const TWO_MINUTES = 2 * 60 * 1000;
 
-type AnalyticsContextType = {};
+type AnalyticsContextType = {
+  sendSearchUserEvent: (locationId: string) => void;
+};
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(
   undefined
@@ -92,7 +100,7 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
     setUserIdOnMount();
     setCampaignIdOnMount();
     setUrlEntryOnMount();
-  }, [setUserIdOnMount, setCampaignIdOnMount, setUrlEntryOnMount]);
+  }, []);
 
   useEffect(() => {
     if (campaignId && pathname) {
@@ -117,8 +125,30 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [campaignId, userId, urlEntry]);
 
+  const sendSearchUserEvent = useCallback(
+    async (locationId: string) => {
+      try {
+        if (userId && campaignId) {
+          await sendSearchUserEventApiCall({
+            userId,
+            campaignId: Number(campaignId),
+            locationId,
+          });
+        }
+      } catch {}
+    },
+    [userId, campaignId]
+  );
+
   return (
-    <AnalyticsContext.Provider value={undefined}>
+    <AnalyticsContext.Provider
+      value={useMemo(
+        () => ({
+          sendSearchUserEvent,
+        }),
+        [sendSearchUserEvent]
+      )}
+    >
       {children}
     </AnalyticsContext.Provider>
   );
