@@ -34,6 +34,7 @@ import { LocationDTO } from "@/dto/location/Location.dto";
 import { Genre } from "@/newTypes/Genre";
 import { BandType } from "@/newTypes/BandType";
 import { useFilterRefs } from "@/hooks/useFilterRefs";
+import { SearchContext, useAnalyticsContext } from "@/context/AnalyticsContext";
 
 const EVENTS_PER_PAGE = 20;
 
@@ -51,12 +52,19 @@ export default function NewEventSearchPage({
   initialLocationDisplay,
 }: NewEventSearchPage) {
   const { filters, setFilters, setDateRangeWithString } = useFiltersContext();
+  const { sendSearchUserEvent } = useAnalyticsContext();
 
   useEffect(() => {
     if (initialLocation) {
       const locationToUse =
         initialLocation === "BLANK" ? null : initialLocation;
       setFilters((prev) => ({ ...prev, location: locationToUse }));
+      if (locationToUse) {
+        sendSearchUserEvent(
+          locationToUse.locationId,
+          SearchContext.LOCATION_LINK
+        );
+      }
     }
   }, [initialLocation, setFilters]);
 

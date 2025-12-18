@@ -5,15 +5,18 @@ import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFiltersContext } from "@/context/FiltersContext";
+import { SearchContext, useAnalyticsContext } from "@/context/AnalyticsContext";
 
 export default function FirstSection() {
   const { filters, setFilters } = useFiltersContext();
+  const { sendSearchUserEvent } = useAnalyticsContext();
   const [locationError, setLocationError] = useState(false);
   const router = useRouter();
 
   const findEvents = () => {
     if (filters.location) {
       router.push("/find");
+      sendSearchUserEvent(filters.location.locationId, SearchContext.HOME_PAGE);
     } else {
       setLocationError(true);
     }

@@ -14,7 +14,6 @@ import { LocationDTO } from "@/dto/location/Location.dto";
 import { DateRange } from "react-day-picker";
 import { Genre } from "@/newTypes/Genre";
 import { BandType } from "@/newTypes/BandType";
-import { useAnalyticsContext } from "./AnalyticsContext";
 
 export type DateRangeValues = "NEXT_7_DAYS" | "NEXT_30_DAYS";
 
@@ -54,8 +53,6 @@ const defaultFilters: FiltersType = {
 };
 
 export const FiltersProvider = ({ children }: { children: ReactNode }) => {
-  const { sendSearchUserEvent } = useAnalyticsContext();
-
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
 
   const [didFirstRender, setDidFirstRender] = useState(false);
@@ -114,12 +111,6 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
       dateRange: defaultDateRange,
     }));
   }, []);
-
-  useEffect(() => {
-    if (filters.location?.locationId) {
-      sendSearchUserEvent(filters.location?.locationId);
-    }
-  }, [filters.location?.locationId]);
 
   return (
     <FiltersContext.Provider

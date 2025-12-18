@@ -7,6 +7,7 @@ export const SearchUserQueryResponseDTOSchema = z.object({
   counties: z.array(QueryDetailDTOSchema),
   towns: z.array(QueryDetailDTOSchema),
   formattedAddresses: z.array(QueryDetailDTOSchema),
+  searchContexts: z.array(QueryDetailDTOSchema),
 });
 
 export type SearchUserQueryResponseDTO = z.infer<

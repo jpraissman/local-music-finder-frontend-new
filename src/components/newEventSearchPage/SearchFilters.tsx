@@ -17,6 +17,7 @@ import MultiSelectGenreChips from "./MultiSelectGenreChips";
 import BandTypeCheckboxGroup from "./BandTypeCheckboxGroup";
 import React from "react";
 import { FilterRefsType } from "@/hooks/useFilterRefs";
+import { SearchContext, useAnalyticsContext } from "@/context/AnalyticsContext";
 
 interface SearchFiltersProps {
   onManualFilterChange: () => void;
@@ -28,6 +29,7 @@ export default function SearchFilters({
   filterRefsHook,
 }: SearchFiltersProps) {
   const { filters, setFilters } = useFiltersContext();
+  const { sendSearchUserEvent } = useAnalyticsContext();
 
   const canEditAllFilters = () => {
     if (filters.location) {
@@ -94,6 +96,12 @@ export default function SearchFilters({
               setValue={(newLocation) => {
                 setFilters((prev) => ({ ...prev, location: newLocation }));
                 onManualFilterChange();
+                if (newLocation) {
+                  sendSearchUserEvent(
+                    newLocation.locationId,
+                    SearchContext.DIRECT_SEARCH
+                  );
+                }
               }}
               landingPage={true}
               error={false}

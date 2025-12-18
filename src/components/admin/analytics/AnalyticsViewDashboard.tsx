@@ -166,6 +166,7 @@ export default function AnalyticsViewDashboard() {
           counties: [],
           towns: [],
           formattedAddresses: [],
+          searchContexts: [],
         };
       },
     }
@@ -303,6 +304,10 @@ export default function AnalyticsViewDashboard() {
           <SimpleTable
             title="Address Searches"
             rows={searchUserData?.formattedAddresses ?? []}
+          />
+          <SimpleTable
+            title="Where are searchs coming from on the site?"
+            rows={searchUserData?.searchContexts ?? []}
           />
         </Box>
       </Stack>

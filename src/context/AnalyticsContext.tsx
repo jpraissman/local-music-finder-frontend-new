@@ -23,8 +23,17 @@ const UNKNOWN_CAMPAIGN_ID = 2;
 const ONE_HOUR = 60 * 60 * 1000;
 const TWO_MINUTES = 2 * 60 * 1000;
 
+export enum SearchContext {
+  HOME_PAGE = "Home Page",
+  LOCATION_LINK = "Location Link",
+  DIRECT_SEARCH = "Direct Search",
+}
+
 type AnalyticsContextType = {
-  sendSearchUserEvent: (locationId: string) => void;
+  sendSearchUserEvent: (
+    locationId: string,
+    searchContext: SearchContext
+  ) => void;
 };
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(
@@ -126,13 +135,14 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
   }, [campaignId, userId, urlEntry]);
 
   const sendSearchUserEvent = useCallback(
-    async (locationId: string) => {
+    async (locationId: string, searchContext: SearchContext) => {
       try {
         if (userId && campaignId) {
           await sendSearchUserEventApiCall({
             userId,
             campaignId: Number(campaignId),
             locationId,
+            searchContext,
           });
         }
       } catch {}
