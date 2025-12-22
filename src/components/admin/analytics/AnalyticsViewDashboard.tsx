@@ -76,7 +76,7 @@ export default function AnalyticsViewDashboard() {
             )}
             value={minDurationInSec}
             onChange={(_, newValue) => {
-              if (newValue) {
+              if (newValue || newValue === 0) {
                 setMinDurationInSec(newValue);
               }
             }}
