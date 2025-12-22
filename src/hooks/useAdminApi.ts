@@ -1,6 +1,6 @@
 "use client";
 
-import { CampaignUserQueryResponseDTOSchema } from "@/dto/analytics/queryResponse/CampaignUserQueryResponse.dto";
+import { SessionQueryResponseDTOSchema } from "@/dto/analytics/queryResponse/SessionQueryResponse.dto";
 import { AnalyticsQueryDTO } from "@/dto/analytics/AnalyticsQuery.dto";
 import { CreateCampaignDTO } from "@/dto/analytics/CreateCampaign.dto";
 import { CreateCampaignResponseDTOSchema } from "@/dto/analytics/CreateCampaignResponse.dto";
@@ -169,17 +169,16 @@ export function useAdminApi() {
     [adminKey]
   );
 
-  const queryCampaignUserEvents = useCallback(
+  const querySessions = useCallback(
     async (data: AnalyticsQueryDTO) => {
       const { data: response } = await axios.post(
-        `${ANALYTICS_BASE_URL}/api/admin/query/campaign-user`,
+        `${ANALYTICS_BASE_URL}/api/admin/query/session`,
         data,
         {
           headers: { "Admin-Key": adminKey },
         }
       );
-      const responseValidated =
-        CampaignUserQueryResponseDTOSchema.parse(response);
+      const responseValidated = SessionQueryResponseDTOSchema.parse(response);
       return responseValidated;
     },
     [adminKey]
@@ -201,6 +200,19 @@ export function useAdminApi() {
     [adminKey]
   );
 
+  const getSessionLogs = useCallback(
+    async (sessionId: number): Promise<string> => {
+      const { data } = await axios.get(
+        `${ANALYTICS_BASE_URL}/api/admin/query/session/${sessionId}/logs`,
+        {
+          headers: { "Admin-Key": adminKey },
+        }
+      );
+      return data;
+    },
+    [adminKey]
+  );
+
   return {
     downloadEventsCsv,
     downloadBandsCsv,
@@ -213,7 +225,8 @@ export function useAdminApi() {
     editVenue,
     getAllCampaigns,
     createCampaign,
-    queryCampaignUserEvents,
+    querySessions,
     querySearchUserEvents,
+    getSessionLogs,
   };
 }

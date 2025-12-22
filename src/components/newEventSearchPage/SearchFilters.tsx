@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Divider,
-  keyframes,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import NewAddressAutocomplete from "../inputs/NewAddressAutocomplete";
 import { DayPicker } from "react-day-picker";
 import RadioButtons from "../inputs/RadioButtons";
@@ -18,6 +10,7 @@ import BandTypeCheckboxGroup from "./BandTypeCheckboxGroup";
 import React from "react";
 import { FilterRefsType } from "@/hooks/useFilterRefs";
 import { SearchContext, useAnalyticsContext } from "@/context/AnalyticsContext";
+import { formatDateRange } from "@/lib/date-helpers";
 
 interface SearchFiltersProps {
   onManualFilterChange: () => void;
@@ -29,13 +22,16 @@ export default function SearchFilters({
   filterRefsHook,
 }: SearchFiltersProps) {
   const { filters, setFilters } = useFiltersContext();
-  const { sendSearchUserEvent } = useAnalyticsContext();
+  const { sendSearchUserEvent, addSessionActivity } = useAnalyticsContext();
 
   const canEditAllFilters = () => {
     if (filters.location) {
       return true;
     }
 
+    addSessionActivity(
+      "User tried changing filters but got alert saying to add location first"
+    );
     alert("You must add a location before editing other filters");
     filterRefsHook.doScrollAndHighlight({
       areaToHighlight: "LOCATION",
@@ -95,6 +91,9 @@ export default function SearchFilters({
               value={filters.location || { address: "", locationId: "" }}
               setValue={(newLocation) => {
                 setFilters((prev) => ({ ...prev, location: newLocation }));
+                addSessionActivity(
+                  `User updated location from search page to ${newLocation?.address}`
+                );
                 onManualFilterChange();
                 if (newLocation) {
                   sendSearchUserEvent(
@@ -139,6 +138,11 @@ export default function SearchFilters({
                   disabled={{ before: new Date() }}
                   onSelect={(newDateRange) => {
                     if (canEditAllFilters()) {
+                      addSessionActivity(
+                        `User updated date range from search page to ${formatDateRange(
+                          newDateRange
+                        )}`
+                      );
                       setFilters((prev) => ({
                         ...prev,
                         dateRange: newDateRange,
@@ -193,6 +197,9 @@ export default function SearchFilters({
               value={filters.maxDistance.toString()}
               onChange={(_, newMaxDistanceStr) => {
                 if (canEditAllFilters()) {
+                  addSessionActivity(
+                    `User updated max distance from search page to ${newMaxDistanceStr}`
+                  );
                   setFilters({
                     ...filters,
                     maxDistance: Number(newMaxDistanceStr),
@@ -234,6 +241,7 @@ export default function SearchFilters({
               onChange={(_, newSort) => {
                 if (newSort === "Date" || newSort === "Distance") {
                   if (canEditAllFilters()) {
+                    addSessionActivity(`User set the sort to ${newSort}`);
                     setFilters((prev) => ({ ...prev, sort: newSort }));
                     onManualFilterChange();
                   }

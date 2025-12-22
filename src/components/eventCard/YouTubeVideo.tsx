@@ -1,5 +1,6 @@
 "use client";
 
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 
@@ -26,19 +27,25 @@ interface YouTubeVideoProps {
   videoId: string;
   size: "Small" | "Large";
   eventId: number;
+  bandName: string;
 }
 
 export default function YouTubeVideo({
   videoId,
   size,
   eventId,
+  bandName,
 }: YouTubeVideoProps) {
   const [videoClicked, setVideoClicked] = useState(false);
+  const { addSessionActivity } = useAnalyticsContext();
 
   return (
     <Box
       onClick={() => {
         setVideoClicked(true);
+        addSessionActivity(
+          `Video clicked for ${bandName} for the event with id ${eventId}`
+        );
       }}
       sx={{ position: "relative" }}
     >

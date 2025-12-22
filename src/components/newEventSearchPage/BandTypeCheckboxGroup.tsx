@@ -1,3 +1,4 @@
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 import { useFiltersContext } from "@/context/FiltersContext";
 import { BandType, BandTypeLabels } from "@/newTypes/BandType";
 import { Checkbox, Stack, Typography } from "@mui/material";
@@ -10,6 +11,7 @@ export default function BandTypeCheckboxGroup({
   canEdit,
 }: BandTypeCheckboxGroupProps) {
   const { filters, setFilters } = useFiltersContext();
+  const { addSessionActivity } = useAnalyticsContext();
 
   return (
     <Stack direction={"column"}>
@@ -26,6 +28,9 @@ export default function BandTypeCheckboxGroup({
               onChange={() => {
                 if (canEdit()) {
                   if (filters.bandTypes.includes(bandType)) {
+                    addSessionActivity(
+                      `User removed the ${BandTypeLabels[bandType]} bandType from their filters.`
+                    );
                     const newBandTypes = filters.bandTypes.filter(
                       (selectedBandType) => selectedBandType !== bandType
                     );
@@ -34,6 +39,9 @@ export default function BandTypeCheckboxGroup({
                       bandTypes: newBandTypes,
                     }));
                   } else {
+                    addSessionActivity(
+                      `User added the ${BandTypeLabels[bandType]} bandType to their filters.`
+                    );
                     const newBandTypes = [...filters.bandTypes, bandType];
                     setFilters((prev) => ({
                       ...prev,

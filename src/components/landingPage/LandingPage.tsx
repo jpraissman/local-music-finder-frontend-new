@@ -6,12 +6,15 @@ import SectionSection from "./SecondSection";
 import NewEventCard from "../eventCard/NewEventCard";
 import Link from "next/link";
 import { EventDTO } from "@/dto/event/Event.dto";
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 
 export default function LandingPage({
   upcomingEvents,
 }: {
   upcomingEvents: EventDTO[];
 }) {
+  const { addSessionActivity } = useAnalyticsContext();
+
   return (
     <Stack direction="column" spacing={2}>
       <FirstSection />
@@ -47,6 +50,11 @@ export default function LandingPage({
               size="large"
               color="primary"
               sx={{ fontWeight: "bold" }}
+              onClick={() =>
+                addSessionActivity(
+                  "Clicked 'View All Upcoming Events' from Home Page"
+                )
+              }
             >
               View All Upcoming Events
             </Button>

@@ -12,12 +12,19 @@ export default function FirstSection() {
   const { sendSearchUserEvent } = useAnalyticsContext();
   const [locationError, setLocationError] = useState(false);
   const router = useRouter();
+  const { addSessionActivity } = useAnalyticsContext();
 
   const findEvents = () => {
     if (filters.location) {
+      addSessionActivity(
+        `Clicked 'Find Music Events' from Home Page with the location: ${filters.location.address}`
+      );
       router.push("/find");
       sendSearchUserEvent(filters.location.locationId, SearchContext.HOME_PAGE);
     } else {
+      addSessionActivity(
+        "Clicked 'Find Music Events' from Home Page without a location and got warning message"
+      );
       setLocationError(true);
     }
   };

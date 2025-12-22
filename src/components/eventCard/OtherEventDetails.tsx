@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Button, Stack, Typography } from "@mui/material";
 import {
   AttachMoney,
@@ -8,8 +10,11 @@ import {
 import { EventDTO } from "@/dto/event/Event.dto";
 import dayjs from "dayjs";
 import { BandTypeLabels } from "@/newTypes/BandType";
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 
 export default function OtherEventDetails({ event }: { event: EventDTO }) {
+  const { addSessionActivity } = useAnalyticsContext();
+
   return (
     <Stack direction="column" spacing={1.2} sx={{ width: "50%" }}>
       <Stack direction="row" spacing={0.7}>
@@ -67,6 +72,11 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
           rel="noopener noreferrer"
           sx={{ borderRadius: "10px", fontWeight: "bold" }}
           fullWidth
+          onClick={() =>
+            addSessionActivity(
+              `User clicked 'Get Directions' for event ${event.id} for venue ${event.venue.venueName} and band ${event.band.bandName}`
+            )
+          }
         >
           Get Directions
         </Button>
@@ -80,6 +90,11 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
           href={`/venue/${event.venue.id}`}
           sx={{ borderRadius: "10px", fontWeight: "bold" }}
           fullWidth
+          onClick={() =>
+            addSessionActivity(
+              `User clicked 'View Venue' for event ${event.id} for venue ${event.venue.venueName} and band ${event.band.bandName}`
+            )
+          }
         >
           View Venue
         </Button>
@@ -93,6 +108,11 @@ export default function OtherEventDetails({ event }: { event: EventDTO }) {
           href={`/band/${event.band.id}`}
           sx={{ borderRadius: "10px", fontWeight: "bold" }}
           fullWidth
+          onClick={() =>
+            addSessionActivity(
+              `User clicked 'View Band' for event ${event.id} for venue ${event.venue.venueName} and band ${event.band.bandName}`
+            )
+          }
         >
           View Band
         </Button>

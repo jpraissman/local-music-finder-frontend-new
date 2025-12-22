@@ -52,7 +52,7 @@ export default function NewEventSearchPage({
   initialLocationDisplay,
 }: NewEventSearchPage) {
   const { filters, setFilters, setDateRangeWithString } = useFiltersContext();
-  const { sendSearchUserEvent } = useAnalyticsContext();
+  const { sendSearchUserEvent, addSessionActivity } = useAnalyticsContext();
 
   useEffect(() => {
     if (initialLocation) {
@@ -84,6 +84,14 @@ export default function NewEventSearchPage({
       return findEvents(filters.location?.locationId);
     },
   });
+
+  useEffect(() => {
+    if (!isLoading) {
+      addSessionActivity(
+        `The events available to the user have changed. There are now ${events?.length} available events.`
+      );
+    }
+  }, [events, isLoading]);
 
   const [displayInitialEvents, setDisplayInitialEvents] = useState(
     initialEvents ? true : false
@@ -146,6 +154,9 @@ export default function NewEventSearchPage({
     const nextChunk = availableEvents.slice(
       visibleEvents.length,
       visibleEvents.length + EVENTS_PER_PAGE
+    );
+    addSessionActivity(
+      `User scrolled through events. ${nextChunk.length} more events were loaded.`
     );
     setVisibleEvents((prev) => [...prev, ...nextChunk]);
   };
