@@ -3,7 +3,7 @@ import { z } from "zod";
 export const StartSessionDTOSchema = z.object({
   userId: z.uuid(),
   campaignId: z.number().nullable(),
-  referrer: z.string().nullable(),
+  referer: z.string().nullable(),
   urlEntry: z.string(),
 });
 

@@ -31,13 +31,13 @@ export function middleware(req: NextRequest) {
     });
   }
 
-  const referrer = req.headers.get("referer");
+  const referer = req.headers.get("referer");
   if (
-    referrer &&
-    !referrer.includes("thelocalmusicfinder") &&
-    !referrer.includes("localhost")
+    referer &&
+    !referer.includes("thelocalmusicfinder") &&
+    !referer.includes("localhost")
   ) {
-    response.cookies.set(REFERER_COOKIE_NAME, referrer, {
+    response.cookies.set(REFERER_COOKIE_NAME, referer, {
       maxAge: TEN_MINUTES,
       path: "/",
       httpOnly: false,

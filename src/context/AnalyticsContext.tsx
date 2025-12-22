@@ -54,7 +54,7 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
         await startSessionApiCall({
           userId,
           campaignId: campaignId ? Number(campaignId) : null,
-          referrer: referer ?? null,
+          referer: referer ?? null,
           urlEntry: urlEntry ?? pathname,
         });
       } catch {}
