@@ -2,7 +2,6 @@ import {
   CreateCampaignUserEventDTO,
   CreateCampaignUserEventDTOSchema,
 } from "@/dto/analytics/sendEvent/CreateCampaignUserEvent.dto";
-import { CreateUserResponseDTOSchema } from "@/dto/analytics/CreateUserResponse.dto";
 import {
   AddVideoRequestDTO,
   AddVideoRequestDTOSchema,
@@ -30,6 +29,14 @@ import {
   CreateSearchUserEventDTO,
   CreateSearchUserEventDTOSchema,
 } from "@/dto/analytics/sendEvent/CreateSearchUserEvent.dto";
+import {
+  StartSessionDTO,
+  StartSessionDTOSchema,
+} from "@/dto/analytics/session/StartSession.dto";
+import {
+  SessionHeartbeatDTO,
+  SessionHeartbeatDTOSchema,
+} from "@/dto/analytics/session/SessionHeartbeat.dto";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL || "";
 const ANALYTICS_BASE_URL = process.env.NEXT_PUBLIC_ANALYTICS_BASE_URL || "";
@@ -148,24 +155,23 @@ export const getEventsCsv = async (key: string | undefined) => {
 
 // Analytics calls
 
-export const createUser = async () => {
-  const { data } = await axios.post(`${ANALYTICS_BASE_URL}/api/event/user`);
-  const dataValidated = CreateUserResponseDTOSchema.parse(data);
-  return dataValidated;
-};
-
-export const sendUrlEntryEvent = async (data: CreateCampaignUserEventDTO) => {
-  const dataValidated = CreateCampaignUserEventDTOSchema.parse(data);
-  await axios.post(
-    `${ANALYTICS_BASE_URL}/api/event/campaign-user`,
-    dataValidated
-  );
+export const startSession = async (data: StartSessionDTO) => {
+  const dataValidated = StartSessionDTOSchema.parse(data);
+  await axios.post(`${ANALYTICS_BASE_URL}/api/session`, dataValidated);
 };
 
 export const sendSearchUserEvent = async (data: CreateSearchUserEventDTO) => {
   const dataValidated = CreateSearchUserEventDTOSchema.parse(data);
   await axios.post(
-    `${ANALYTICS_BASE_URL}/api/event/search-user`,
+    `${ANALYTICS_BASE_URL}/api/session/search-user`,
+    dataValidated
+  );
+};
+
+export const sendHeartbeat = async (data: SessionHeartbeatDTO) => {
+  const dataValidated = SessionHeartbeatDTOSchema.parse(data);
+  await axios.post(
+    `${ANALYTICS_BASE_URL}/api/session/heartbeat`,
     dataValidated
   );
 };

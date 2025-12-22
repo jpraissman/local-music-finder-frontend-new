@@ -71,6 +71,7 @@ export default function NewEventCard({ event, size }: NewEventCardProps) {
             videoId={event.band.youtubeVideoIds[0]}
             size={size}
             eventId={event.id}
+            bandName={event.band.bandName}
           />
         )}
       </Box>

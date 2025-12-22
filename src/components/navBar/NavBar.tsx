@@ -14,8 +14,11 @@ import { Stack } from "@mui/material";
 import HamburgerIcon from "@mui/icons-material/Menu";
 import { Add, Create, Search } from "@mui/icons-material";
 import NewSearchBar from "./NewSearchBar";
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 
 export default function NavBar() {
+  const { addSessionActivity } = useAnalyticsContext();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -80,7 +83,13 @@ export default function NavBar() {
       onClose={handleMobileMenuClose}
     >
       <Stack direction="column" spacing={2}>
-        <Link href="/find" style={{ textDecoration: "none", color: "black" }}>
+        <Link
+          href="/find"
+          style={{ textDecoration: "none", color: "black" }}
+          onClick={() =>
+            addSessionActivity("Clicked 'Find Events' from NavBar on mobile")
+          }
+        >
           <MenuItem onClick={handleMobileMenuClose}>
             <Stack direction="row" spacing={1.5}>
               <Search />
@@ -88,7 +97,13 @@ export default function NavBar() {
             </Stack>
           </MenuItem>
         </Link>
-        <Link href="/post" style={{ textDecoration: "none", color: "black" }}>
+        <Link
+          href="/post"
+          style={{ textDecoration: "none", color: "black" }}
+          onClick={() =>
+            addSessionActivity("Clicked 'Post An Event' from NavBar on mobile")
+          }
+        >
           <MenuItem onClick={handleMobileMenuClose}>
             <Stack direction="row" spacing={1.5}>
               <Add />
@@ -96,7 +111,15 @@ export default function NavBar() {
             </Stack>
           </MenuItem>
         </Link>
-        <Link href="/edit" style={{ textDecoration: "none", color: "black" }}>
+        <Link
+          href="/edit"
+          style={{ textDecoration: "none", color: "black" }}
+          onClick={() =>
+            addSessionActivity(
+              "Clicked 'Edit Your Event' from NavBar on mobile"
+            )
+          }
+        >
           <MenuItem onClick={handleMobileMenuClose}>
             <Stack direction="row" spacing={1.5}>
               <Create />
@@ -137,6 +160,11 @@ export default function NavBar() {
               <Link
                 href="/find"
                 style={{ textDecoration: "none", color: "white" }}
+                onClick={() =>
+                  addSessionActivity(
+                    "Clicked 'Find Events' from NavBar on desktop"
+                  )
+                }
               >
                 <Typography
                   variant="h6"
@@ -153,6 +181,11 @@ export default function NavBar() {
               <Link
                 href="/post"
                 style={{ textDecoration: "none", color: "white" }}
+                onClick={() =>
+                  addSessionActivity(
+                    "Clicked 'Post an Event' from NavBar on desktop"
+                  )
+                }
               >
                 <Typography
                   variant="h6"
@@ -169,6 +202,11 @@ export default function NavBar() {
               <Link
                 href="/edit"
                 style={{ textDecoration: "none", color: "white" }}
+                onClick={() =>
+                  addSessionActivity(
+                    "Clicked 'Edit Your Event' from NavBar on desktop"
+                  )
+                }
               >
                 <Typography
                   variant="h6"

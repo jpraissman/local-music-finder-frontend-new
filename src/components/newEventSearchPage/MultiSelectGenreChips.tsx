@@ -1,3 +1,4 @@
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 import { useFiltersContext } from "@/context/FiltersContext";
 import { Genre, GenreLabels } from "@/newTypes/Genre";
 import { Button, Chip, Stack } from "@mui/material";
@@ -10,6 +11,7 @@ export default function MultiSelectGenreChips({
   canEdit,
 }: MultiSelectGenreChipsProps) {
   const { filters, setFilters } = useFiltersContext();
+  const { addSessionActivity } = useAnalyticsContext();
 
   return (
     <Stack display={"flex"} alignItems={"center"} spacing={2}>
@@ -23,11 +25,17 @@ export default function MultiSelectGenreChips({
             onClick={() => {
               if (canEdit()) {
                 if (filters.genres.includes(genre)) {
+                  addSessionActivity(
+                    `User removed the ${GenreLabels[genre]} genre from their filters.`
+                  );
                   const newGenres = filters.genres.filter(
                     (selectedGenre) => selectedGenre !== genre
                   );
                   setFilters((prev) => ({ ...prev, genres: newGenres }));
                 } else {
+                  addSessionActivity(
+                    `User added the ${GenreLabels[genre]} genre to their filters.`
+                  );
                   const newGenres = [...filters.genres, genre];
                   setFilters((prev) => ({ ...prev, genres: newGenres }));
                 }

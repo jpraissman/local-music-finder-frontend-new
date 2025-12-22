@@ -1,83 +1,25 @@
 "use client";
 
-import { QueryDetailDTO } from "@/dto/analytics/queryResponse/QueryDetail.dto";
 import { useAdminApi } from "@/hooks/useAdminApi";
 import {
   Autocomplete,
   Box,
-  Card,
-  CardContent,
+  Checkbox,
+  CircularProgress,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DateRange, DayPicker } from "react-day-picker";
-
-const formatLocalDate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-};
-
-const SimpleTable = ({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: QueryDetailDTO[];
-}) => (
-  <Card variant="outlined" sx={{ mt: 2 }}>
-    <CardContent>
-      <Typography variant="h4" gutterBottom>
-        {title}
-      </Typography>
-      <Table
-        size="small"
-        sx={{
-          "& th": {
-            fontSize: 22,
-            fontWeight: 600,
-          },
-          "& td": {
-            fontSize: 21,
-          },
-        }}
-      >
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Total</TableCell>
-            <TableCell align="right">Unique</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell align="right">{row.total}</TableCell>
-              <TableCell align="right">{row.totalUnique}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </CardContent>
-  </Card>
-);
+import SessionDetails from "./SessionDetails";
+import SearchUserDetails from "./SearchUserDetails";
 
 export default function AnalyticsViewDashboard() {
-  const { getAllCampaigns, queryCampaignUserEvents, querySearchUserEvents } =
-    useAdminApi();
+  const { getAllCampaigns } = useAdminApi();
 
-  const { data: campaigns } = useQuery({
+  const { data: campaigns, isLoading: campaignsIsLoading } = useQuery({
     queryKey: ["getAllCampaigns"],
     queryFn: getAllCampaigns,
   });
@@ -86,97 +28,18 @@ export default function AnalyticsViewDashboard() {
   const [subgroup, setSubgroup] = useState<string | null>("All");
   const [postMemo, setPostMemo] = useState<string | null>("All");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [includeAdmin, setIncludeAdmin] = useState(false);
+  const [minDurationInSec, setMinDurationInSec] = useState<number>(15);
 
-  const { data: campaignUserData, isLoading: campaignUserDataIsLoading } =
-    useQuery({
-      queryKey: [
-        "queryCampaignUserEvents",
-        platform,
-        subgroup,
-        postMemo,
-        dateRange,
-      ],
-      queryFn: () => {
-        if (
-          dateRange &&
-          dateRange.to &&
-          dateRange.from &&
-          platform &&
-          subgroup &&
-          dateRange
-        ) {
-          const startDate = formatLocalDate(dateRange.from);
-          const endDate = formatLocalDate(dateRange.to);
-          const platformToUse = platform === "All" ? null : platform;
-          const subgroupToUse = subgroup === "All" ? null : subgroup;
-          const postMemoToUse = postMemo === "All" ? null : postMemo;
-          return queryCampaignUserEvents({
-            platform: platformToUse,
-            subgroup: subgroupToUse,
-            postMemo: postMemoToUse,
-            startDate,
-            endDate,
-          });
-        }
-
-        return {
-          totalUsers: -1,
-          totalUniqueUsers: -1,
-          sublayerDetails: [],
-          pathDetails: [],
-        };
-      },
-    });
-
-  const { data: searchUserData, isLoading: searchUserDataIsLoading } = useQuery(
-    {
-      queryKey: [
-        "querySearchUserEvents",
-        platform,
-        subgroup,
-        postMemo,
-        dateRange,
-      ],
-      queryFn: () => {
-        if (
-          dateRange &&
-          dateRange.to &&
-          dateRange.from &&
-          platform &&
-          subgroup &&
-          dateRange
-        ) {
-          const startDate = formatLocalDate(dateRange.from);
-          const endDate = formatLocalDate(dateRange.to);
-          const platformToUse = platform === "All" ? null : platform;
-          const subgroupToUse = subgroup === "All" ? null : subgroup;
-          const postMemoToUse = postMemo === "All" ? null : postMemo;
-          return querySearchUserEvents({
-            platform: platformToUse,
-            subgroup: subgroupToUse,
-            postMemo: postMemoToUse,
-            startDate,
-            endDate,
-          });
-        }
-
-        return {
-          totalCustomSearches: -1,
-          totalUniqueUsersWhoSearched: -1,
-          counties: [],
-          towns: [],
-          formattedAddresses: [],
-          searchContexts: [],
-        };
-      },
-    }
-  );
-
-  if (campaignUserDataIsLoading || searchUserDataIsLoading) {
-    return <Box sx={{ paddingTop: "100px" }}>Loading...</Box>;
+  if (campaignsIsLoading) {
+    return (
+      <Box sx={{ paddingTop: "100px" }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
-  if (!campaigns || !searchUserData) {
+  if (!campaigns) {
     return (
       <Box sx={{ paddingTop: "100px" }}>Something went wrong. Try again.</Box>
     );
@@ -189,10 +52,39 @@ export default function AnalyticsViewDashboard() {
         spacing={4}
         sx={{ width: "100%", display: "flex", alignItems: "center" }}
       >
+        <Stack direction={"row"} spacing={3}>
+          <Stack
+            direction={"row"}
+            spacing={0.5}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography>Include Admins</Typography>
+            <Checkbox
+              checked={includeAdmin}
+              onChange={() => setIncludeAdmin(!includeAdmin)}
+            />
+          </Stack>
+          <Autocomplete
+            fullWidth
+            options={[0, 5, 10, 15, 30, 60, 120, 300]}
+            renderInput={(params) => (
+              <TextField {...params} label="Min Duration (seconds)" />
+            )}
+            value={minDurationInSec}
+            onChange={(_, newValue) => {
+              if (newValue) {
+                setMinDurationInSec(newValue);
+              }
+            }}
+          />
+        </Stack>
         <Stack direction={"row"} spacing={4} sx={{ width: "100%" }}>
           <Autocomplete
             fullWidth
-            freeSolo
             options={Array.from(
               new Set(["All", ...campaigns.map((c) => c.platform)])
             )}
@@ -211,7 +103,6 @@ export default function AnalyticsViewDashboard() {
           <Autocomplete
             disabled={!platform}
             fullWidth
-            freeSolo
             options={Array.from(
               new Set([
                 "All",
@@ -234,7 +125,6 @@ export default function AnalyticsViewDashboard() {
           <Autocomplete
             disabled={!subgroup}
             fullWidth
-            freeSolo
             options={Array.from(
               new Set([
                 "All",
@@ -265,51 +155,24 @@ export default function AnalyticsViewDashboard() {
             }}
           />
         </Stack>
-        <Box>
-          <Stack direction={"column"} spacing={2}>
-            <Typography variant="h4">
-              Total User Clicks: {campaignUserData?.totalUsers}
-            </Typography>
-            <Typography variant="h4">
-              Total Unique User Clicks: {campaignUserData?.totalUniqueUsers}
-            </Typography>
-          </Stack>
-          <SimpleTable
-            title="Sublayer Details"
-            rows={campaignUserData?.sublayerDetails ?? []}
+        <Stack direction={"column"} spacing={10}>
+          <SessionDetails
+            platform={platform}
+            subgroup={subgroup}
+            postMemo={postMemo}
+            includeAdmin={includeAdmin}
+            dateRange={dateRange}
+            minDurationInSec={minDurationInSec}
           />
-          <SimpleTable
-            title="Path Details"
-            rows={campaignUserData?.pathDetails ?? []}
+          <SearchUserDetails
+            platform={platform}
+            subgroup={subgroup}
+            postMemo={postMemo}
+            includeAdmin={includeAdmin}
+            dateRange={dateRange}
+            minDurationInSec={minDurationInSec}
           />
-        </Box>
-        <Box paddingTop={"50px"}>
-          <Stack direction={"column"} spacing={2}>
-            <Typography variant="h4">
-              Total Custom Searchs: {searchUserData?.totalCustomSearches}
-            </Typography>
-            <Typography variant="h4">
-              Total Unique Users Who Searched:{" "}
-              {searchUserData?.totalUniqueUsersWhoSearched}
-            </Typography>
-          </Stack>
-          <SimpleTable
-            title="County Searches"
-            rows={searchUserData?.counties ?? []}
-          />
-          <SimpleTable
-            title="Town Searches"
-            rows={searchUserData?.towns ?? []}
-          />
-          <SimpleTable
-            title="Address Searches"
-            rows={searchUserData?.formattedAddresses ?? []}
-          />
-          <SimpleTable
-            title="Where are searchs coming from on the site?"
-            rows={searchUserData?.searchContexts ?? []}
-          />
-        </Box>
+        </Stack>
       </Stack>
     </Box>
   );

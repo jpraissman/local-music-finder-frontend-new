@@ -1,3 +1,6 @@
+"use client";
+
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 import { MusicNote, Event } from "@mui/icons-material";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
@@ -7,6 +10,8 @@ interface LandingPageCardProps {
 }
 
 export default function LandingPageCard({ type }: LandingPageCardProps) {
+  const { addSessionActivity } = useAnalyticsContext();
+
   return (
     <Card
       sx={{
@@ -43,6 +48,9 @@ export default function LandingPageCard({ type }: LandingPageCardProps) {
                 variant="contained"
                 size="large"
                 sx={{ minWidth: "200px" }}
+                onClick={() =>
+                  addSessionActivity("Clicked 'Post An Event' from Home Page")
+                }
               >
                 Post An Event
               </Button>
@@ -54,6 +62,11 @@ export default function LandingPageCard({ type }: LandingPageCardProps) {
                 variant="contained"
                 size="large"
                 sx={{ minWidth: "200px" }}
+                onClick={() =>
+                  addSessionActivity(
+                    "Clicked 'Find Local Music' from Home Page (not the main Find Button)"
+                  )
+                }
               >
                 Find Local Music
               </Button>

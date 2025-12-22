@@ -7,21 +7,19 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from "react";
 import Cookies from "js-cookie";
 import {
-  createUser,
+  sendHeartbeat as sendHeartbeatApiCall,
   sendSearchUserEvent as sendSearchUserEventApiCall,
-  sendUrlEntryEvent,
+  startSession as startSessionApiCall,
 } from "@/api/apiCalls";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CreateCampaignUserEventDTO } from "@/dto/analytics/sendEvent/CreateCampaignUserEvent.dto";
-
-const GOOGLE_CAMPAIGN_ID = 1;
-const UNKNOWN_CAMPAIGN_ID = 2;
-const ONE_HOUR = 60 * 60 * 1000;
-const TWO_MINUTES = 2 * 60 * 1000;
+import { usePathname, useSearchParams } from "next/navigation";
+import {
+  REFERER_COOKIE_NAME,
+  URL_ENTRY_COOKIE_NAME,
+  USER_ID_COOKIE_NAME,
+} from "@/middleware";
 
 export enum SearchContext {
   HOME_PAGE = "Home Page",
@@ -34,6 +32,7 @@ type AnalyticsContextType = {
     locationId: string,
     searchContext: SearchContext
   ) => void;
+  addSessionActivity: (activity: string) => void;
 };
 
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(
@@ -43,111 +42,104 @@ const AnalyticsContext = createContext<AnalyticsContextType | undefined>(
 export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
 
-  const [userId, setUserId] = useState<string | null>(null);
-  const [campaignId, setCampaignId] = useState<string | null>(null);
-  const [urlEntry, setUrlEntry] = useState<string | null>(null);
-
-  const setUserIdOnMount = async () => {
-    const userIdCookie = Cookies.get("newUserId");
-    if (userIdCookie && userIdCookie !== "setting") {
-      Cookies.set("newUserId", userIdCookie, { expires: 365 });
-      setUserId(userIdCookie);
-    } else if (!userIdCookie) {
-      Cookies.set("newUserId", "setting", { expires: ONE_HOUR });
+  // Start session logic
+  const startSession = useCallback(async () => {
+    const userId = Cookies.get(USER_ID_COOKIE_NAME);
+    if (userId) {
+      const campaignId = searchParams.get("c");
+      const referer = Cookies.get(REFERER_COOKIE_NAME);
+      const urlEntry = Cookies.get(URL_ENTRY_COOKIE_NAME);
       try {
-        const { userId: newUserId } = await createUser();
-        Cookies.set("newUserId", newUserId, { expires: 365 });
-        setUserId(newUserId);
-      } catch {
-        setUserId(null);
-      }
+        await startSessionApiCall({
+          userId,
+          campaignId: campaignId ? Number(campaignId) : null,
+          referrer: referer ?? null,
+          urlEntry: urlEntry ?? pathname,
+        });
+      } catch {}
     }
-  };
-
-  const getNewCampaignId = (): string => {
-    const campaignIdQueryParam = searchParams.get("c");
-    if (campaignIdQueryParam) {
-      return campaignIdQueryParam;
-    }
-    if (
-      document.referrer &&
-      document.referrer.toLocaleLowerCase().includes("google")
-    ) {
-      return GOOGLE_CAMPAIGN_ID.toString();
-    }
-    return UNKNOWN_CAMPAIGN_ID.toString();
-  };
-
-  const setCampaignIdOnMount = () => {
-    const campaignIdCookie = Cookies.get("campaignId");
-    if (campaignIdCookie) {
-      setCampaignId(campaignIdCookie);
-    } else {
-      const newCampaignId = getNewCampaignId();
-      Cookies.set("campaignId", newCampaignId, {
-        expires: new Date(Date.now() + ONE_HOUR),
-      });
-      setCampaignId(newCampaignId);
-    }
-  };
-
-  const setUrlEntryOnMount = () => {
-    const urlEntry = Cookies.get("urlEntry");
-    if (urlEntry) {
-      setUrlEntry(urlEntry);
-    } else {
-      Cookies.set("urlEntry", pathname, {
-        expires: new Date(Date.now() + ONE_HOUR),
-      });
-      setUrlEntry(pathname);
-    }
-  };
+  }, [searchParams, pathname]);
 
   useEffect(() => {
-    setUserIdOnMount();
-    setCampaignIdOnMount();
-    setUrlEntryOnMount();
+    startSession();
+  }, [startSession]);
+
+  // Heartbeat logic
+  const addSessionActivity = useCallback((newActivity: string) => {
+    const curTimeEST = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).format(new Date());
+
+    const curSessionActivity = sessionStorage.getItem("sessionActivity") ?? "";
+    sessionStorage.setItem(
+      "sessionActivity",
+      `${curSessionActivity}\n\n[${curTimeEST}] ${newActivity}`
+    );
+  }, []);
+
+  const sendHeartbeat = useCallback(async () => {
+    const curSessionActivity = sessionStorage.getItem("sessionActivity") ?? "";
+    sessionStorage.setItem("sessionActivity", "");
+    const userId = Cookies.get(USER_ID_COOKIE_NAME);
+    if (userId) {
+      try {
+        await sendHeartbeatApiCall({
+          userId,
+          activityOverview: curSessionActivity,
+        });
+      } catch {}
+    }
   }, []);
 
   useEffect(() => {
-    if (campaignId && pathname) {
-      router.push(pathname, { scroll: false });
-    }
-  }, [campaignId, pathname, router]);
-
-  const sendUrlEntry = async (data: CreateCampaignUserEventDTO) => {
-    try {
-      await sendUrlEntryEvent(data);
-    } catch {}
-  };
+    addSessionActivity(`User went to path: ${pathname}`);
+  }, [pathname]);
 
   useEffect(() => {
-    // send an analytics request when all the information we need is set
-    const hasSentUrlEntryCookie = Cookies.get("hasSentUrlEntry");
-    if (campaignId && userId && urlEntry && !hasSentUrlEntryCookie) {
-      Cookies.set("hasSentUrlEntry", pathname, {
-        expires: new Date(Date.now() + ONE_HOUR + TWO_MINUTES),
-      });
-      sendUrlEntry({ userId, campaignId: Number(campaignId), url: urlEntry });
-    }
-  }, [campaignId, userId, urlEntry]);
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        sendHeartbeat();
+      }
+    }, 10_000); // send a heartbeat every 10 seconds
 
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        addSessionActivity("User went away from the tab");
+        sendHeartbeat();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, []);
+
+  // Event logic
   const sendSearchUserEvent = useCallback(
     async (locationId: string, searchContext: SearchContext) => {
       try {
-        if (userId && campaignId) {
+        const userId = Cookies.get(USER_ID_COOKIE_NAME);
+        if (userId) {
           await sendSearchUserEventApiCall({
             userId,
-            campaignId: Number(campaignId),
             locationId,
             searchContext,
           });
         }
       } catch {}
     },
-    [userId, campaignId]
+    []
   );
 
   return (
@@ -155,8 +147,9 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
       value={useMemo(
         () => ({
           sendSearchUserEvent,
+          addSessionActivity,
         }),
-        [sendSearchUserEvent]
+        [sendSearchUserEvent, addSessionActivity]
       )}
     >
       {children}

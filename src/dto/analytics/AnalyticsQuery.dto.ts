@@ -6,6 +6,8 @@ export const AnalyticsQueryDTOSchema = z.object({
   platform: z.string().nullable(),
   subgroup: z.string().nullable(),
   postMemo: z.string().nullable(),
+  includeAdmin: z.boolean(),
+  minDurationInSec: z.number(),
 });
 
 export type AnalyticsQueryDTO = z.infer<typeof AnalyticsQueryDTOSchema>;
