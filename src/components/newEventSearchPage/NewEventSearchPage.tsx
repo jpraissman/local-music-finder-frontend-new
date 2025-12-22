@@ -85,14 +85,6 @@ export default function NewEventSearchPage({
     },
   });
 
-  useEffect(() => {
-    if (!isLoading) {
-      addSessionActivity(
-        `The events available to the user have changed. There are now ${events?.length} available events.`
-      );
-    }
-  }, [events, isLoading]);
-
   const [displayInitialEvents, setDisplayInitialEvents] = useState(
     initialEvents ? true : false
   );
@@ -171,6 +163,25 @@ export default function NewEventSearchPage({
       setOpenFilterDrawer(true);
     }
   }, [isMdUp]);
+
+  // analytics tracking stuff
+  useEffect(() => {
+    if (initialEvents) {
+      addSessionActivity(
+        `Initial events loaded from server. There are ${initialEvents.length} events and we are displaying all of them.`
+      );
+    } else {
+      addSessionActivity(
+        `New events loaded client side. There are ${availableEvents.length} events and we are displaying ${visibleEvents.length} events (they can scroll for more).`
+      );
+    }
+  }, [availableEvents, initialEvents]);
+
+  useEffect(() => {
+    addSessionActivity(
+      `The location being searched for has changed to ${filters.location?.address}`
+    );
+  }, [filters.location?.address]);
 
   return (
     <>
