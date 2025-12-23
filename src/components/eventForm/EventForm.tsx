@@ -29,6 +29,7 @@ import {
 import { useVenuesSearch } from "@/hooks/useVenuesSearch";
 import { useEffect } from "react";
 import { useBandsSearch } from "@/hooks/useBandsSearch";
+import { useAnalyticsContext } from "@/context/AnalyticsContext";
 
 interface EventFormProps {
   creatingEvent: boolean;
@@ -42,6 +43,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
     setValue,
     watch,
   } = useFormContext<UpsertEventRequestDTO>();
+  const { addSessionActivity } = useAnalyticsContext();
 
   const { venues, setSearchTerm: setVenueSearch } = useVenuesSearch();
   const { bands, setSearchTerm: setBandSearch } = useBandsSearch();
@@ -65,6 +67,9 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
         venue.venueName.trim().toLocaleLowerCase() === venueNameNormalized
     );
     if (matchedVenue) {
+      addSessionActivity(
+        `Venue name typed ${enteredVenueName} was matched and prefilled`
+      );
       setValue("location", matchedVenue.location);
       setValue("venuePhone", matchedVenue?.phoneNumber || undefined);
       setValue("venueFacebookUrl", matchedVenue?.facebookUrl || undefined);
@@ -80,6 +85,9 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
       (band) => band.bandName.trim().toLocaleLowerCase() === bandNameNormalized
     );
     if (matchedBand) {
+      addSessionActivity(
+        `Band name typed ${enteredBandName} was matched and prefilled`
+      );
       setValue("genres", matchedBand.genres);
       setValue("bandType", matchedBand.bandType);
       setValue("tributeBandName", matchedBand.tributeBandName || undefined);
@@ -140,7 +148,11 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               error={!!errors.venueName}
               options={venues.map((venue) => venue.venueName)}
               rhfName="venueName"
-              helperText={errors.venueName?.message}
+              helperText={
+                !!errors.venueName
+                  ? errors.venueName?.message
+                  : "Start typing the venue name —— if it already exists, just select it from the list"
+              }
             />
             <TextFieldWithAutofill
               id="phone-number"
@@ -191,7 +203,11 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               error={!!errors.bandName}
               options={bands.map((band) => band.bandName)}
               rhfName="bandName"
-              helperText={errors.bandName?.message}
+              helperText={
+                !!errors.bandName
+                  ? errors.bandName?.message
+                  : "Start typing the band name —— if it already exists, just select it from the list"
+              }
             />
             <Picklist
               id="band-type-input"
