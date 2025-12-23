@@ -151,7 +151,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               helperText={
                 !!errors.venueName
                   ? errors.venueName?.message
-                  : "Start typing the venue name —— if it already exists, just select it from the list"
+                  : "Start typing the venue name — if it already exists, just select it from the list"
               }
             />
             <TextFieldWithAutofill
@@ -206,7 +206,7 @@ export default function EventForm({ creatingEvent }: EventFormProps) {
               helperText={
                 !!errors.bandName
                   ? errors.bandName?.message
-                  : "Start typing the band name —— if it already exists, just select it from the list"
+                  : "Start typing the band name — if it already exists, just select it from the list"
               }
             />
             <Picklist
