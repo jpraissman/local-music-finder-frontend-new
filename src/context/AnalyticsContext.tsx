@@ -20,6 +20,13 @@ import {
   URL_ENTRY_COOKIE_NAME,
   USER_ID_COOKIE_NAME,
 } from "@/middleware";
+import { useScrollTracking } from "@/hooks/useScrollTracking";
+
+const TEN_SECONDS = 10_000;
+const TWO_SECONDS = 2_000;
+
+const SESSION_ACTIVITY_NAME = "sessionActivity";
+const NUM_SCROLL_NAME = "numScroll";
 
 export enum SearchContext {
   HOME_PAGE = "Home Page",
@@ -78,22 +85,29 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
       hour12: false,
     }).format(new Date());
 
-    const curSessionActivity = sessionStorage.getItem("sessionActivity") ?? "";
+    const curSessionActivity =
+      sessionStorage.getItem(SESSION_ACTIVITY_NAME) ?? "";
     sessionStorage.setItem(
-      "sessionActivity",
+      SESSION_ACTIVITY_NAME,
       `${curSessionActivity}\n\n[${curTimeEST}] ${newActivity}`
     );
   }, []);
 
   const sendHeartbeat = useCallback(async () => {
-    const curSessionActivity = sessionStorage.getItem("sessionActivity") ?? "";
-    sessionStorage.setItem("sessionActivity", "");
+    const curSessionActivity =
+      sessionStorage.getItem(SESSION_ACTIVITY_NAME) ?? "";
+    sessionStorage.setItem(SESSION_ACTIVITY_NAME, "");
+    const curNumScrolls = sessionStorage.getItem(NUM_SCROLL_NAME)
+      ? Number(sessionStorage.getItem(NUM_SCROLL_NAME))
+      : 0;
+    sessionStorage.setItem(NUM_SCROLL_NAME, "0");
     const userId = Cookies.get(USER_ID_COOKIE_NAME);
     if (userId) {
       try {
         await sendHeartbeatApiCall({
           userId,
           activityOverview: curSessionActivity,
+          numScrolls: curNumScrolls,
         });
       } catch {}
     }
@@ -101,14 +115,15 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     addSessionActivity(`User went to path: ${pathname}`);
-  }, [pathname]);
+  }, [pathname, addSessionActivity]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (document.visibilityState === "visible") {
+        addSessionActivity("Ten Seconds Passed");
         sendHeartbeat();
       }
-    }, 10_000); // send a heartbeat every 10 seconds
+    }, TEN_SECONDS);
 
     const onVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
@@ -124,6 +139,18 @@ export const AnalyticsProvider = ({ children }: { children: ReactNode }) => {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
+
+  // Track scrolls
+  const handleScroll = useCallback(() => {
+    addSessionActivity("User scrolled");
+    const curNumScrolls = sessionStorage.getItem(NUM_SCROLL_NAME)
+      ? Number(sessionStorage.getItem(NUM_SCROLL_NAME))
+      : 0;
+    const newNumScrolls = curNumScrolls + 1;
+    sessionStorage.setItem(NUM_SCROLL_NAME, newNumScrolls.toString());
+  }, [addSessionActivity]);
+
+  useScrollTracking({ callback: handleScroll, wait: TWO_SECONDS });
 
   // Event logic
   const sendSearchUserEvent = useCallback(

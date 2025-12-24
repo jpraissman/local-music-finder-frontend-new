@@ -92,6 +92,9 @@ export default function ListSessionsTable({
                 <TableCell align="right">{"Duration (in min)"}</TableCell>
                 <TableCell align="right">Url Entry</TableCell>
                 <TableCell align="right">Platform</TableCell>
+                <TableCell align="right">Ip Address</TableCell>
+                <TableCell align="right">Num Scrolls</TableCell>
+                <TableCell align="right">Type</TableCell>
                 <TableCell align="right">Logs</TableCell>
               </TableRow>
             </TableHead>
@@ -104,6 +107,11 @@ export default function ListSessionsTable({
                   </TableCell>
                   <TableCell align="right">{row.urlEntry}</TableCell>
                   <TableCell align="right">{row.platform}</TableCell>
+                  <TableCell align="right">{row.ipAddress}</TableCell>
+                  <TableCell align="right">{row.numScrolls}</TableCell>
+                  <TableCell align="right">
+                    {row.newSession ? "New" : "Returning"}
+                  </TableCell>
                   <TableCell
                     align="right"
                     onClick={async () => {

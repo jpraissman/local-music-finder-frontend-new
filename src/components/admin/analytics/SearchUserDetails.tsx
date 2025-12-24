@@ -71,6 +71,8 @@ export default function SearchUserDetails({
         return {
           total: -1,
           totalUnique: -1,
+          totalUniqueNew: -1,
+          totalUniqueReturning: -1,
           counties: [],
           towns: [],
           formattedAddresses: [],
@@ -102,6 +104,14 @@ export default function SearchUserDetails({
             title="Total Unique Users Who Searched"
             value={searchUserData.totalUnique}
           />
+          <AnalyticsCard
+            title="New Unique Users Who Searched"
+            value={searchUserData.totalUnique}
+          />
+          <AnalyticsCard
+            title="Returning Unique Users Who Searched"
+            value={searchUserData.totalUnique}
+          />
         </Stack>
         <QueryDetailsTable
           title="Searches Grouped By Campaign"
@@ -119,6 +129,8 @@ export default function SearchUserDetails({
             "County",
             "Total Searches",
             "Total Unique Users Who Searched",
+            "New Unique Users",
+            "Returning Unique Users",
           ]}
         />
         <QueryDetailsTable
@@ -128,6 +140,8 @@ export default function SearchUserDetails({
             "Town",
             "Total Searches",
             "Total Unique Users Who Searched",
+            "New Unique Users",
+            "Returning Unique Users",
           ]}
         />
         <QueryDetailsTable
@@ -137,6 +151,8 @@ export default function SearchUserDetails({
             "Address",
             "Total Searches",
             "Total Unique Users Who Searched",
+            "New Unique Users",
+            "Returning Unique Users",
           ]}
         />
         <QueryDetailsTable
@@ -146,6 +162,8 @@ export default function SearchUserDetails({
             "Context",
             "Total Searches",
             "Total Unique Users Who Searched",
+            "New Unique Users",
+            "Returning Unique Users",
           ]}
         />
       </Stack>

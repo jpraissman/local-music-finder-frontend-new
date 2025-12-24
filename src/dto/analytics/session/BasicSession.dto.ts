@@ -6,6 +6,9 @@ export const BasicSessionDTOSchema = z.object({
   durationInSec: z.number(),
   urlEntry: z.string(),
   platform: z.string(),
+  ipAddress: z.string(),
+  numScrolls: z.number(),
+  newSession: z.boolean(),
 });
 
 export type BasicSessionDTO = z.infer<typeof BasicSessionDTOSchema>;

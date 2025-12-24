@@ -64,6 +64,8 @@ export default function SessionDetails({
       return {
         total: -1,
         totalUnique: -1,
+        totalUniqueNew: -1,
+        totalUniqueReturning: -1,
         sublayerDetails: [],
         pathDetails: [],
         sessions: [],
@@ -92,16 +94,36 @@ export default function SessionDetails({
             title="Total Unique Users"
             value={sessionsData.totalUnique}
           />
+          <AnalyticsCard
+            title="Unique New Users"
+            value={sessionsData.totalUniqueNew}
+          />
+          <AnalyticsCard
+            title="Unique Returning Users"
+            value={sessionsData.totalUniqueReturning}
+          />
         </Stack>
         <QueryDetailsTable
           title="Users Grouped By Campaign"
           rows={sessionsData.sublayerDetails}
-          tableHeaders={["Sublayer", "Total Sessions", "Total Unique Users"]}
+          tableHeaders={[
+            "Sublayer",
+            "Total Sessions",
+            "Total Unique Users",
+            "Unique New",
+            "Unique Returning",
+          ]}
         />
         <QueryDetailsTable
           title="Users Grouped By Entry URL"
           rows={sessionsData.pathDetails}
-          tableHeaders={["Entry URL", "Total Sessions", "Total Unique Users"]}
+          tableHeaders={[
+            "Entry URL",
+            "Total Sessions",
+            "Total Unique Users",
+            "Unique New",
+            "Unique Returning",
+          ]}
         />
         <ListSessionsTable title="All Sessions" rows={sessionsData.sessions} />
       </Stack>

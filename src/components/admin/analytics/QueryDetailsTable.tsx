@@ -48,6 +48,8 @@ export default function QueryDetailsTable({
               <TableCell>{tableHeaders[0]}</TableCell>
               <TableCell align="right">{tableHeaders[1]}</TableCell>
               <TableCell align="right">{tableHeaders[2]}</TableCell>
+              <TableCell align="right">{tableHeaders[3]}</TableCell>
+              <TableCell align="right">{tableHeaders[4]}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -56,6 +58,8 @@ export default function QueryDetailsTable({
                 <TableCell>{row.name}</TableCell>
                 <TableCell align="right">{row.total}</TableCell>
                 <TableCell align="right">{row.totalUnique}</TableCell>
+                <TableCell align="right">{row.totalUniqueNew}</TableCell>
+                <TableCell align="right">{row.totalUniqueReturning}</TableCell>
               </TableRow>
             ))}
           </TableBody>
