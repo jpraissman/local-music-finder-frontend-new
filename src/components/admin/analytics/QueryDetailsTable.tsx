@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -31,39 +32,43 @@ export default function QueryDetailsTable({
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Table
-          size="small"
-          sx={{
-            "& th": {
-              fontSize: 22,
-              fontWeight: 600,
-            },
-            "& td": {
-              fontSize: 21,
-            },
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>{tableHeaders[0]}</TableCell>
-              <TableCell align="right">{tableHeaders[1]}</TableCell>
-              <TableCell align="right">{tableHeaders[2]}</TableCell>
-              <TableCell align="right">{tableHeaders[3]}</TableCell>
-              <TableCell align="right">{tableHeaders[4]}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell align="right">{row.total}</TableCell>
-                <TableCell align="right">{row.totalUnique}</TableCell>
-                <TableCell align="right">{row.totalUniqueNew}</TableCell>
-                <TableCell align="right">{row.totalUniqueReturning}</TableCell>
+        <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
+          <Table
+            size="small"
+            sx={{
+              "& th": {
+                fontSize: 22,
+                fontWeight: 600,
+              },
+              "& td": {
+                fontSize: 21,
+              },
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>{tableHeaders[0]}</TableCell>
+                <TableCell align="right">{tableHeaders[1]}</TableCell>
+                <TableCell align="right">{tableHeaders[2]}</TableCell>
+                <TableCell align="right">{tableHeaders[3]}</TableCell>
+                <TableCell align="right">{tableHeaders[4]}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell align="right">{row.total}</TableCell>
+                  <TableCell align="right">{row.totalUnique}</TableCell>
+                  <TableCell align="right">{row.totalUniqueNew}</TableCell>
+                  <TableCell align="right">
+                    {row.totalUniqueReturning}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </AccordionDetails>
     </Accordion>
   );

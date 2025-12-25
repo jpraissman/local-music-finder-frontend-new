@@ -155,7 +155,7 @@ export default function AnalyticsViewDashboard() {
             }}
           />
         </Stack>
-        <Stack direction={"column"} spacing={10}>
+        <Stack direction={"column"} spacing={10} sx={{ maxWidth: "90%" }}>
           <SessionDetails
             platform={platform}
             subgroup={subgroup}

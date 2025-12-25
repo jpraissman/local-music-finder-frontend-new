@@ -11,6 +11,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -74,67 +75,69 @@ export default function ListSessionsTable({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Table
-            size="small"
-            sx={{
-              "& th": {
-                fontSize: 22,
-                fontWeight: 600,
-              },
-              "& td": {
-                fontSize: 21,
-              },
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Session Id</TableCell>
-                <TableCell align="right">{"Duration (in min)"}</TableCell>
-                <TableCell align="right">Url Entry</TableCell>
-                <TableCell align="right">Platform</TableCell>
-                <TableCell align="right">Ip Address</TableCell>
-                <TableCell align="right">Num Scrolls</TableCell>
-                <TableCell align="right">Type</TableCell>
-                <TableCell align="right">Logs</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.sessionId}>
-                  <TableCell>{row.sessionId}</TableCell>
-                  <TableCell align="right">
-                    {Math.round((row.durationInSec / 60) * 100) / 100}
-                  </TableCell>
-                  <TableCell align="right">{row.urlEntry}</TableCell>
-                  <TableCell align="right">{row.platform}</TableCell>
-                  <TableCell align="right">{row.ipAddress}</TableCell>
-                  <TableCell align="right">{row.numScrolls}</TableCell>
-                  <TableCell align="right">
-                    {row.newSession ? "New" : "Returning"}
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    onClick={async () => {
-                      const logs = await getSessionLogs(row.sessionId);
-                      setSessionLogs(logs);
-                      setShowSessionLogs(true);
-                    }}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": {
-                        textDecoration: "underline",
-                        color: "primary.main",
-                      },
-                      textDecoration: "underline",
-                      color: "blue",
-                    }}
-                  >
-                    View
-                  </TableCell>
+          <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
+            <Table
+              size="small"
+              sx={{
+                "& th": {
+                  fontSize: 22,
+                  fontWeight: 600,
+                },
+                "& td": {
+                  fontSize: 21,
+                },
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Session Id</TableCell>
+                  <TableCell align="right">{"Duration (in min)"}</TableCell>
+                  <TableCell align="right">Url Entry</TableCell>
+                  <TableCell align="right">Platform</TableCell>
+                  <TableCell align="right">Ip Address</TableCell>
+                  <TableCell align="right">Num Scrolls</TableCell>
+                  <TableCell align="right">Type</TableCell>
+                  <TableCell align="right">Logs</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow key={row.sessionId}>
+                    <TableCell>{row.sessionId}</TableCell>
+                    <TableCell align="right">
+                      {Math.round((row.durationInSec / 60) * 100) / 100}
+                    </TableCell>
+                    <TableCell align="right">{row.urlEntry}</TableCell>
+                    <TableCell align="right">{row.platform}</TableCell>
+                    <TableCell align="right">{row.ipAddress}</TableCell>
+                    <TableCell align="right">{row.numScrolls}</TableCell>
+                    <TableCell align="right">
+                      {row.newSession ? "New" : "Returning"}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      onClick={async () => {
+                        const logs = await getSessionLogs(row.sessionId);
+                        setSessionLogs(logs);
+                        setShowSessionLogs(true);
+                      }}
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": {
+                          textDecoration: "underline",
+                          color: "primary.main",
+                        },
+                        textDecoration: "underline",
+                        color: "blue",
+                      }}
+                    >
+                      View
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </AccordionDetails>
       </Accordion>
     </>
