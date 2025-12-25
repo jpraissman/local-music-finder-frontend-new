@@ -120,6 +120,8 @@ export default function SearchUserDetails({
             "Sublayer",
             "Total Searches",
             "Total Unique Users Who Searched",
+            "New Unique Users",
+            "Returning Unique Users",
           ]}
         />
         <QueryDetailsTable
