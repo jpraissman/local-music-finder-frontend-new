@@ -14,23 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-
-type Order = "asc" | "desc";
-
-function sortRows(
-  rows: QueryDetailDTO[],
-  orderBy: keyof QueryDetailDTO,
-  order: Order
-) {
-  return [...rows].sort((a, b) => {
-    const aVal = a[orderBy];
-    const bVal = b[orderBy];
-
-    if (aVal < bVal) return order === "asc" ? -1 : 1;
-    if (aVal > bVal) return order === "asc" ? 1 : -1;
-    return 0;
-  });
-}
+import { Order, sortRows } from "./TableUtils";
 
 interface QueryDetailsTableProps {
   title: string;

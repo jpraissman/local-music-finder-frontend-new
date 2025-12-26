@@ -3,8 +3,8 @@ import { Box, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { DateRange } from "react-day-picker";
 import AnalyticsCard from "./AnalyticsCard";
-import QueryDetailsTable from "./QueryDetailsTable";
-import ListSessionsTable from "./ListSessionsTable";
+import QueryDetailsTable from "./table/QueryDetailsTable";
+import ListSessionsTable from "./table/ListSessionsTable";
 
 const formatLocalDate = (date: Date) => {
   const year = date.getFullYear();

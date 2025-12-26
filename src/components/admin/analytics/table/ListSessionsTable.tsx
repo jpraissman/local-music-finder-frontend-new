@@ -14,9 +14,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { Order, sortRows } from "./TableUtils";
 
 interface ListSessionsTableProps {
   title: string;
@@ -31,6 +33,15 @@ export default function ListSessionsTable({
 
   const [sessionLogs, setSessionLogs] = useState<string>("");
   const [showSessionLogs, setShowSessionLogs] = useState(false);
+
+  const [orderBy, setOrderBy] = useState<keyof BasicSessionDTO>("sessionId");
+  const [order, setOrder] = useState<Order>("desc");
+
+  const handleSort = (property: keyof BasicSessionDTO) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   return (
     <>
@@ -90,18 +101,81 @@ export default function ListSessionsTable({
             >
               <TableHead>
                 <TableRow>
-                  <TableCell>Session Id</TableCell>
-                  <TableCell align="right">{"Duration (in min)"}</TableCell>
-                  <TableCell align="right">Url Entry</TableCell>
-                  <TableCell align="right">Platform</TableCell>
-                  <TableCell align="right">Ip Address</TableCell>
-                  <TableCell align="right">Num Scrolls</TableCell>
-                  <TableCell align="right">Type</TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderBy === "sessionId"}
+                      direction={orderBy === "sessionId" ? order : "asc"}
+                      onClick={() => handleSort("sessionId")}
+                    >
+                      Session Id
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "durationInSec"}
+                      direction={orderBy === "durationInSec" ? order : "asc"}
+                      onClick={() => handleSort("durationInSec")}
+                    >
+                      Duration (min)
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "urlEntry"}
+                      direction={orderBy === "urlEntry" ? order : "asc"}
+                      onClick={() => handleSort("urlEntry")}
+                    >
+                      Url Entry
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "platform"}
+                      direction={orderBy === "platform" ? order : "asc"}
+                      onClick={() => handleSort("platform")}
+                    >
+                      Platform
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "ipAddress"}
+                      direction={orderBy === "ipAddress" ? order : "asc"}
+                      onClick={() => handleSort("ipAddress")}
+                    >
+                      Ip Address
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "numScrolls"}
+                      direction={orderBy === "numScrolls" ? order : "asc"}
+                      onClick={() => handleSort("numScrolls")}
+                    >
+                      Num Scrolls
+                    </TableSortLabel>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <TableSortLabel
+                      active={orderBy === "newSession"}
+                      direction={orderBy === "newSession" ? order : "asc"}
+                      onClick={() => handleSort("newSession")}
+                    >
+                      Type
+                    </TableSortLabel>
+                  </TableCell>
+
                   <TableCell align="right">Logs</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {sortRows(rows, orderBy, order).map((row) => (
                   <TableRow key={row.sessionId}>
                     <TableCell>{row.sessionId}</TableCell>
                     <TableCell align="right">
