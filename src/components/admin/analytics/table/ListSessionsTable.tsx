@@ -121,7 +121,15 @@ export default function ListSessionsTable({
                     </TableSortLabel>
                   </TableCell>
 
-                  <TableCell align="right">
+                  <TableCell
+                    align="right"
+                    className="name"
+                    sx={{
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      maxWidth: "150px",
+                    }}
+                  >
                     <TableSortLabel
                       active={orderBy === "urlEntry"}
                       direction={orderBy === "urlEntry" ? order : "asc"}

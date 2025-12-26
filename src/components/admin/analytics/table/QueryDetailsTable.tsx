@@ -115,7 +115,17 @@ export default function QueryDetailsTable({
             <TableBody>
               {sortRows(rows, orderBy, order).map((row) => (
                 <TableRow key={row.name}>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell
+                    align="right"
+                    className="name"
+                    sx={{
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      maxWidth: "150px",
+                    }}
+                  >
+                    {row.name}
+                  </TableCell>
                   <TableCell align="right">{row.total}</TableCell>
                   <TableCell align="right">{row.totalUnique}</TableCell>
                   <TableCell align="right">{row.totalUniqueNew}</TableCell>
