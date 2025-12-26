@@ -121,7 +121,7 @@ export default function QueryDetailsTable({
                     sx={{
                       whiteSpace: "normal",
                       wordBreak: "break-word",
-                      maxWidth: "150px",
+                      maxWidth: "250px",
                     }}
                   >
                     {row.name}

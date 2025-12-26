@@ -121,15 +121,7 @@ export default function ListSessionsTable({
                     </TableSortLabel>
                   </TableCell>
 
-                  <TableCell
-                    align="right"
-                    className="name"
-                    sx={{
-                      whiteSpace: "normal",
-                      wordBreak: "break-word",
-                      maxWidth: "150px",
-                    }}
-                  >
+                  <TableCell>
                     <TableSortLabel
                       active={orderBy === "urlEntry"}
                       direction={orderBy === "urlEntry" ? order : "asc"}
@@ -189,7 +181,17 @@ export default function ListSessionsTable({
                     <TableCell align="right">
                       {Math.round((row.durationInSec / 60) * 100) / 100}
                     </TableCell>
-                    <TableCell align="right">{row.urlEntry}</TableCell>
+                    <TableCell
+                      align="right"
+                      className="name"
+                      sx={{
+                        whiteSpace: "normal",
+                        wordBreak: "break-word",
+                        maxWidth: "250px",
+                      }}
+                    >
+                      {row.urlEntry}
+                    </TableCell>
                     <TableCell align="right">{row.platform}</TableCell>
                     <TableCell align="right">{row.ipAddress}</TableCell>
                     <TableCell align="right">{row.numScrolls}</TableCell>
