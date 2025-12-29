@@ -18,6 +18,10 @@ export enum Genre {
   REGGAE = "REGGAE",
   ROCK = "ROCK",
   WORLD_MUSIC = "WORLD_MUSIC",
+  JAM_BAND = "JAM_BAND",
+  FUNK = "FUNK",
+  AMERICANA = "AMERICANA",
+  SINGER_SONGWRITER = "SINGER_SONGWRITER",
 }
 
 export const GenreLabels: Record<Genre, string> = {
@@ -40,4 +44,8 @@ export const GenreLabels: Record<Genre, string> = {
   [Genre.REGGAE]: "Reggae",
   [Genre.ROCK]: "Rock",
   [Genre.WORLD_MUSIC]: "World Music",
+  [Genre.JAM_BAND]: "Jam Band",
+  [Genre.FUNK]: "Funk",
+  [Genre.AMERICANA]: "Americana",
+  [Genre.SINGER_SONGWRITER]: "Singer-Songwriter",
 };
