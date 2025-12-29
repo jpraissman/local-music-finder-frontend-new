@@ -209,6 +209,22 @@ export default function Page() {
                   paddingLeft: "25px",
                 }}
               >
+                <strong>Event Information & Changes:</strong> Event details,
+                including but not limited to dates, times, venues, performers,
+                and admission information, are provided by venues, artists, or
+                third-party sources and are subject to change without notice.
+                The Local Music Finder does not guarantee the accuracy or
+                completeness of event listings and is not responsible for
+                cancellations, postponements, or other changes. Users are
+                encouraged to confirm event details directly with the venue or
+                artist prior to attending.
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "16px",
+                  paddingLeft: "25px",
+                }}
+              >
                 <strong>No Warranty:</strong> The Site is provided on an
                 &quot;as-is&quot; and &quot;as-available&quot; basis. We make no
                 warranties, express or implied, regarding the operation or

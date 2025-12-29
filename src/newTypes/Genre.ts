@@ -1,5 +1,6 @@
 export enum Genre {
   ALTERNATIVE = "ALTERNATIVE",
+  AMERICANA = "AMERICANA",
   BLUES = "BLUES",
   CLASSIC_ROCK = "CLASSIC_ROCK",
   COUNTRY = "COUNTRY",
@@ -7,8 +8,10 @@ export enum Genre {
   DJ = "DJ",
   EDM = "EDM",
   FOLK = "FOLK",
+  FUNK = "FUNK",
   HIP_HOP = "HIP_HOP",
   INDIE = "INDIE",
+  JAM_BAND = "JAM_BAND",
   JAZZ = "JAZZ",
   KARAOKE = "KARAOKE",
   LATIN = "LATIN",
@@ -17,11 +20,8 @@ export enum Genre {
   RNB_SOUL = "RNB_SOUL",
   REGGAE = "REGGAE",
   ROCK = "ROCK",
-  WORLD_MUSIC = "WORLD_MUSIC",
-  JAM_BAND = "JAM_BAND",
-  FUNK = "FUNK",
-  AMERICANA = "AMERICANA",
   SINGER_SONGWRITER = "SINGER_SONGWRITER",
+  WORLD_MUSIC = "WORLD_MUSIC",
 }
 
 export const GenreLabels: Record<Genre, string> = {
