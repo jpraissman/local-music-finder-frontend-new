@@ -6,6 +6,8 @@ export const QueryDetailDTOSchema = z.object({
   totalUnique: z.number(),
   totalUniqueNew: z.number(),
   totalUniqueReturning: z.number(),
+  totalUniqueMobile: z.number(),
+  totalUniqueDurationInSec: z.number(),
 });
 
 export type QueryDetailDTO = z.infer<typeof QueryDetailDTOSchema>;

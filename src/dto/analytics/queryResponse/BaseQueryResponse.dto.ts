@@ -6,6 +6,8 @@ export const BaseQueryResponseDTOSchema = z.object({
   totalUnique: z.number(),
   totalUniqueNew: z.number(),
   totalUniqueReturning: z.number(),
+  totalUniqueMobile: z.number(),
+  avgDurationInSec: z.number(),
   sublayerDetails: z.array(QueryDetailDTOSchema),
 });
 

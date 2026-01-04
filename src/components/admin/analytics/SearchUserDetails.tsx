@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { DateRange } from "react-day-picker";
 import AnalyticsCard from "./AnalyticsCard";
 import QueryDetailsTable from "./table/QueryDetailsTable";
-import ListSessionsTable from "./table/ListSessionsTable";
 
 const formatLocalDate = (date: Date) => {
   const year = date.getFullYear();
@@ -73,6 +72,8 @@ export default function SearchUserDetails({
           totalUnique: -1,
           totalUniqueNew: -1,
           totalUniqueReturning: -1,
+          totalUniqueMobile: -1,
+          avgDurationInSec: -1,
           counties: [],
           towns: [],
           formattedAddresses: [],
@@ -105,12 +106,23 @@ export default function SearchUserDetails({
             value={searchUserData.totalUnique}
           />
           <AnalyticsCard
-            title="New Unique Users Who Searched"
-            value={searchUserData.totalUniqueNew}
+            title="New User %"
+            value={Math.round(
+              (searchUserData.totalUniqueNew / searchUserData.totalUnique) * 100
+            )}
           />
           <AnalyticsCard
-            title="Returning Unique Users Who Searched"
-            value={searchUserData.totalUniqueReturning}
+            title="Mobile %"
+            value={Math.round(
+              (searchUserData.totalUniqueMobile / searchUserData.totalUnique) *
+                100
+            )}
+          />
+          <AnalyticsCard
+            title="Avg Duration (min)"
+            value={
+              Math.round((searchUserData.avgDurationInSec / 60) * 100) / 100
+            }
           />
         </Stack>
         <QueryDetailsTable
@@ -120,8 +132,9 @@ export default function SearchUserDetails({
             "Sublayer",
             "Total Searches",
             "Total Unique Users Who Searched",
-            "New Unique Users",
-            "Returning Unique Users",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <QueryDetailsTable
@@ -131,8 +144,9 @@ export default function SearchUserDetails({
             "County",
             "Total Searches",
             "Total Unique Users Who Searched",
-            "New Unique Users",
-            "Returning Unique Users",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <QueryDetailsTable
@@ -142,8 +156,9 @@ export default function SearchUserDetails({
             "Town",
             "Total Searches",
             "Total Unique Users Who Searched",
-            "New Unique Users",
-            "Returning Unique Users",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <QueryDetailsTable
@@ -153,8 +168,9 @@ export default function SearchUserDetails({
             "Address",
             "Total Searches",
             "Total Unique Users Who Searched",
-            "New Unique Users",
-            "Returning Unique Users",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <QueryDetailsTable
@@ -164,8 +180,9 @@ export default function SearchUserDetails({
             "Context",
             "Total Searches",
             "Total Unique Users Who Searched",
-            "New Unique Users",
-            "Returning Unique Users",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
       </Stack>

@@ -101,14 +101,16 @@ export default function QueryDetailsTable({
 
                 <TableCell align="right">
                   <TableSortLabel
-                    active={orderBy === "totalUniqueReturning"}
-                    direction={
-                      orderBy === "totalUniqueReturning" ? order : "asc"
-                    }
-                    onClick={() => handleSort("totalUniqueReturning")}
+                    active={orderBy === "totalUniqueMobile"}
+                    direction={orderBy === "totalUniqueMobile" ? order : "asc"}
+                    onClick={() => handleSort("totalUniqueMobile")}
                   >
                     {tableHeaders[4]}
                   </TableSortLabel>
+                </TableCell>
+
+                <TableCell align="right">
+                  <TableSortLabel>{tableHeaders[5]}</TableSortLabel>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -128,9 +130,19 @@ export default function QueryDetailsTable({
                   </TableCell>
                   <TableCell align="right">{row.total}</TableCell>
                   <TableCell align="right">{row.totalUnique}</TableCell>
-                  <TableCell align="right">{row.totalUniqueNew}</TableCell>
                   <TableCell align="right">
-                    {row.totalUniqueReturning}
+                    {Math.round((row.totalUniqueNew / row.totalUnique) * 100)}
+                  </TableCell>
+                  <TableCell align="right">
+                    {Math.round(
+                      (row.totalUniqueMobile / row.totalUnique) * 100
+                    )}
+                  </TableCell>
+                  <TableCell align="right">
+                    {Math.round(
+                      (row.totalUniqueDurationInSec / row.totalUnique / 60) *
+                        100
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

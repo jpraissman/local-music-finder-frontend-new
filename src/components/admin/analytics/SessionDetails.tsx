@@ -66,6 +66,8 @@ export default function SessionDetails({
         totalUnique: -1,
         totalUniqueNew: -1,
         totalUniqueReturning: -1,
+        totalUniqueMobile: -1,
+        avgDurationInSec: -1,
         sublayerDetails: [],
         pathDetails: [],
         sessions: [],
@@ -95,12 +97,20 @@ export default function SessionDetails({
             value={sessionsData.totalUnique}
           />
           <AnalyticsCard
-            title="Unique New Users"
-            value={sessionsData.totalUniqueNew}
+            title="New User %"
+            value={Math.round(
+              (sessionsData.totalUniqueNew / sessionsData.totalUnique) * 100
+            )}
           />
           <AnalyticsCard
-            title="Unique Returning Users"
-            value={sessionsData.totalUniqueReturning}
+            title="Mobile %"
+            value={Math.round(
+              (sessionsData.totalUniqueMobile / sessionsData.totalUnique) * 100
+            )}
+          />
+          <AnalyticsCard
+            title="Avg Duration (min)"
+            value={Math.round((sessionsData.avgDurationInSec / 60) * 100) / 100}
           />
         </Stack>
         <QueryDetailsTable
@@ -110,8 +120,9 @@ export default function SessionDetails({
             "Sublayer",
             "Total Sessions",
             "Total Unique Users",
-            "Unique New",
-            "Unique Returning",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <QueryDetailsTable
@@ -121,8 +132,9 @@ export default function SessionDetails({
             "Entry URL",
             "Total Sessions",
             "Total Unique Users",
-            "Unique New",
-            "Unique Returning",
+            "New User %",
+            "Mobile User %",
+            "Avg Duration (min)",
           ]}
         />
         <ListSessionsTable title="All Sessions" rows={sessionsData.sessions} />
