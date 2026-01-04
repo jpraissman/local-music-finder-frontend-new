@@ -89,8 +89,8 @@ export default function QueryDetailsTable({
                   </TableSortLabel>
                 </TableCell>
 
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="right">{tableHeaders[3]}</TableCell>
+                <TableCell align="right">{tableHeaders[4]}</TableCell>
                 <TableCell align="right">{tableHeaders[5]}</TableCell>
               </TableRow>
             </TableHead>

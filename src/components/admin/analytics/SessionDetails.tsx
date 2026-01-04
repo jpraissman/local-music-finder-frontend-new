@@ -96,6 +96,8 @@ export default function SessionDetails({
             title="Total Unique Users"
             value={sessionsData.totalUnique}
           />
+        </Stack>
+        <Stack direction={"row"} spacing={10}>
           <AnalyticsCard
             title="New User %"
             value={

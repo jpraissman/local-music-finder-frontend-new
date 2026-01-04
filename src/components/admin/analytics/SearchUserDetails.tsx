@@ -105,6 +105,8 @@ export default function SearchUserDetails({
             title="Total Unique Users Who Searched"
             value={searchUserData.totalUnique}
           />
+        </Stack>
+        <Stack direction={"row"} spacing={10}>
           <AnalyticsCard
             title="New User %"
             value={
