@@ -98,19 +98,27 @@ export default function SessionDetails({
           />
           <AnalyticsCard
             title="New User %"
-            value={Math.round(
-              (sessionsData.totalUniqueNew / sessionsData.totalUnique) * 100
-            )}
+            value={
+              Math.round(
+                (sessionsData.totalUniqueNew / sessionsData.totalUnique) * 100
+              ) + " %"
+            }
           />
           <AnalyticsCard
             title="Mobile %"
-            value={Math.round(
-              (sessionsData.totalUniqueMobile / sessionsData.totalUnique) * 100
-            )}
+            value={
+              Math.round(
+                (sessionsData.totalUniqueMobile / sessionsData.totalUnique) *
+                  100
+              ) + " %"
+            }
           />
           <AnalyticsCard
             title="Avg Duration (min)"
-            value={Math.round((sessionsData.avgDurationInSec / 60) * 100) / 100}
+            value={
+              Math.round((sessionsData.avgDurationInSec / 60) * 100) / 100 +
+              " min"
+            }
           />
         </Stack>
         <QueryDetailsTable

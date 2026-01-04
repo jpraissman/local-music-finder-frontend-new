@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 
 interface AnalyticsCardProps {
   title: string;
-  value: number;
+  value: number | string;
 }
 
 export default function AnalyticsCard({ title, value }: AnalyticsCardProps) {

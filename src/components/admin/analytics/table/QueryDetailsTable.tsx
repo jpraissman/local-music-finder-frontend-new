@@ -131,18 +131,19 @@ export default function QueryDetailsTable({
                   <TableCell align="right">{row.total}</TableCell>
                   <TableCell align="right">{row.totalUnique}</TableCell>
                   <TableCell align="right">
-                    {Math.round((row.totalUniqueNew / row.totalUnique) * 100)}
+                    {Math.round((row.totalUniqueNew / row.totalUnique) * 100) +
+                      " %"}
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
                       (row.totalUniqueMobile / row.totalUnique) * 100
-                    )}
+                    ) + " %"}
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
                       (row.totalUniqueDurationInSec / row.totalUnique / 60) *
                         100
-                    )}
+                    ) + " min"}
                   </TableCell>
                 </TableRow>
               ))}

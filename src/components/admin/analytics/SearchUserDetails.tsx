@@ -107,16 +107,22 @@ export default function SearchUserDetails({
           />
           <AnalyticsCard
             title="New User %"
-            value={Math.round(
-              (searchUserData.totalUniqueNew / searchUserData.totalUnique) * 100
-            )}
+            value={
+              Math.round(
+                (searchUserData.totalUniqueNew / searchUserData.totalUnique) *
+                  100
+              ) + " %"
+            }
           />
           <AnalyticsCard
             title="Mobile %"
-            value={Math.round(
-              (searchUserData.totalUniqueMobile / searchUserData.totalUnique) *
-                100
-            )}
+            value={
+              Math.round(
+                (searchUserData.totalUniqueMobile /
+                  searchUserData.totalUnique) *
+                  100
+              ) + " %"
+            }
           />
           <AnalyticsCard
             title="Avg Duration (min)"

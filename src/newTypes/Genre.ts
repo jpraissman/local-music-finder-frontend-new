@@ -16,6 +16,7 @@ export enum Genre {
   KARAOKE = "KARAOKE",
   LATIN = "LATIN",
   METAL = "METAL",
+  OPEN_MIC_NIGHT = "OPEN_MIC_NIGHT",
   POP = "POP",
   RNB_SOUL = "RNB_SOUL",
   REGGAE = "REGGAE",
@@ -48,4 +49,5 @@ export const GenreLabels: Record<Genre, string> = {
   [Genre.FUNK]: "Funk",
   [Genre.AMERICANA]: "Americana",
   [Genre.SINGER_SONGWRITER]: "Singer-Songwriter",
+  [Genre.OPEN_MIC_NIGHT]: "Open Mic Night",
 };
