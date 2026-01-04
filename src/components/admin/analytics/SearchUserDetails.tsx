@@ -106,11 +106,11 @@ export default function SearchUserDetails({
           />
           <AnalyticsCard
             title="New Unique Users Who Searched"
-            value={searchUserData.totalUnique}
+            value={searchUserData.totalUniqueNew}
           />
           <AnalyticsCard
             title="Returning Unique Users Who Searched"
-            value={searchUserData.totalUnique}
+            value={searchUserData.totalUniqueReturning}
           />
         </Stack>
         <QueryDetailsTable
