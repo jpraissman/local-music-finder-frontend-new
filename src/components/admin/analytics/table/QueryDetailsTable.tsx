@@ -141,8 +141,11 @@ export default function QueryDetailsTable({
                   </TableCell>
                   <TableCell align="right">
                     {Math.round(
-                      row.totalUniqueDurationInSec / row.totalUnique / 60
-                    ) + " min"}
+                      (row.totalUniqueDurationInSec / row.totalUnique / 60) *
+                        100
+                    ) /
+                      100 +
+                      " min"}
                   </TableCell>
                 </TableRow>
               ))}
