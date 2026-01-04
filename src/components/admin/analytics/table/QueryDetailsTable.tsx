@@ -89,29 +89,9 @@ export default function QueryDetailsTable({
                   </TableSortLabel>
                 </TableCell>
 
-                <TableCell align="right">
-                  <TableSortLabel
-                    active={orderBy === "totalUniqueNew"}
-                    direction={orderBy === "totalUniqueNew" ? order : "asc"}
-                    onClick={() => handleSort("totalUniqueNew")}
-                  >
-                    {tableHeaders[3]}
-                  </TableSortLabel>
-                </TableCell>
-
-                <TableCell align="right">
-                  <TableSortLabel
-                    active={orderBy === "totalUniqueMobile"}
-                    direction={orderBy === "totalUniqueMobile" ? order : "asc"}
-                    onClick={() => handleSort("totalUniqueMobile")}
-                  >
-                    {tableHeaders[4]}
-                  </TableSortLabel>
-                </TableCell>
-
-                <TableCell align="right">
-                  <TableSortLabel>{tableHeaders[5]}</TableSortLabel>
-                </TableCell>
+                <TableCell align="right"></TableCell>
+                <TableCell align="right"></TableCell>
+                <TableCell align="right">{tableHeaders[5]}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
